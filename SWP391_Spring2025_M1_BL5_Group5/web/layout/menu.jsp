@@ -8,6 +8,61 @@
     .canvas_open a, .canvas_close a, .dropdown_links a, .top_links a, .cart_link a, .offcanvas_footer a, .header_top a, .header_middel a, .main_menu a {
         text-decoration: none !important;
     }
+
+    /* Make specific menu items and links larger */
+    .header_top .top_links a, 
+    .main_menu a, 
+    .cart_link a {
+        font-size: 18px !important; /* Increase the font size */
+        font-weight: 600; /* Make the text bolder */
+    }
+
+    .main_menu a {
+        font-size: 22px; /* For the main menu items like "Trang chủ", "Sản phẩm", etc. */
+        font-weight: bold;
+    }
+
+    .cart_link a, 
+    .header_top .top_links a {
+        font-size: 20px; /* Make cart and login links larger */
+    }
+
+    /* Larger font for "Trang chủ", "Sản phẩm", etc. */
+    .header_bottom .main_menu_inner ul li a {
+        font-size: 24px !important;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    /* Adjust the size of links on hover */
+    .header_bottom .main_menu_inner ul li a:hover {
+        font-size: 26px; /* Slightly increase the font size when hovering */
+        color: #e74c3c; /* Optional: Change color on hover */
+    }
+
+    /* Increase the font size for the off-canvas menu items */
+    .offcanvas_menu .offcanvas_main_menu li a {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    /* Specific styles for header text */
+    .header_top .welcome_text ul li {
+        font-size: 16px;
+    }
+
+    /* Cart and Login button */
+    .cart_area .cart_link a {
+        font-size: 22px !important;
+        font-weight: bold;
+    }
+
+    /* Ensure "Đăng nhập" matches "Giỏ hàng" font size */
+    .header_top .top_links a:contains('Đăng nhập') {
+        font-size: 22px; /* Same size as the cart link */
+        font-weight: bold;
+    }
+
 </style>
 
 <div class="offcanvas_menu">
@@ -104,8 +159,8 @@
                 <div class="col-lg-7 col-md-12">
                     <div class="welcome_text">
                         <ul>
-                            <li><span>Giao hàng miễn phí:</span>Hãy tận dụng thời gian của chúng tôi để lưu lại sự kiện </li>
-                            <li><span>Trả hàng miễn phí</span> Đảm bảo sự hài lòng</li>
+                            <li><span>Giao hàng miễn phí:</span> Hãy tận dụng thời gian của chúng tôi để lưu lại sự kiện </li>
+                            <li><span>Trả hàng miễn phí:</span> Đảm bảo sự hài lòng</li>
                         </ul>
                     </div>
                 </div>
