@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>        
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>   
 <!doctype html>
 <html class="no-js" lang="en">
 
@@ -15,7 +16,6 @@
 
         <!-- CSS 
         ========================= -->
-
 
         <!-- Plugins CSS -->
         <link rel="stylesheet" href="assets/css/plugins.css">
@@ -151,6 +151,29 @@
                 color: #28a745;
                 font-weight: 500;
             }
+
+            /* Phân trang */
+            .pagination {
+                margin-top: 20px;
+                justify-content: center;
+                display: flex; /* Để hiển thị hàng ngang */
+            }
+            .page-item {
+                list-style: none;
+                margin: 0 5px;
+            }
+            .page-link {
+                color: #007bff;
+                text-decoration: none;
+                padding: 8px 12px;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+            }
+            .page-item.active .page-link {
+                background-color: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
         </style>
     </head>
 
@@ -158,9 +181,7 @@
 
         <!-- Main Wrapper Start -->
         <!--Offcanvas menu area start-->
-        <div class="off_canvars_overlay">
-
-        </div>
+        <div class="off_canvars_overlay"></div>
         <jsp:include page="layout/menu.jsp"/>
         <!--breadcrumbs area start-->
         <div class="breadcrumbs_area other_bread">
@@ -191,20 +212,21 @@
                                 <ul role="tablist" class="nav flex-column dashboard-list">
                                     <li><a href="#account-details" data-toggle="tab" class="nav-link">Tài khoản của tôi</a></li>
                                     <li><a href="#change-password" data-toggle="tab" class="nav-link">Đổi Mật Khẩu</a></li>
-                                    <li> <a href="#orders" data-toggle="tab" class="nav-link">Đơn hàng</a></li>
-                                    <li><a href="user?action=logout" class="nav-link">Đăng xuất</a></li>
+                                    <li><a href="#orders" data-toggle="tab" class="nav-link">Đơn hàng</a></li>
+                                    <!-- <li><a href="user?action=logout" class="nav-link">Đăng xuất</a></li> -->
                                 </ul>
                             </div>    
                         </div>
                         <div class="col-sm-12 col-md-9 col-lg-9">
                             <!-- Tab panes -->
                             <div class="tab-content dashboard_content">
-                                <div class="tab-pane fade" id="change-password"> <!-- Tab mới -->
+                                <!-- Tab ĐỔI MẬT KHẨU -->
+                                <div class="tab-pane fade" id="change-password">
                                     <h3>Đổi Mật Khẩu</h3>
                                     <div class="login">
                                         <div class="login_form_container">
                                             <div class="account_login_form">
-                                                <form action="users?action=changePassword" method="POST"> <!-- Gửi yêu cầu tới action changePassword -->
+                                                <form action="users?action=changePassword" method="POST">
                                                     <label><b>Mật khẩu cũ</b></label>
                                                     <input type="password" name="old_password" placeholder="Nhập mật khẩu cũ" required>
 
@@ -223,11 +245,23 @@
                                     </div>
                                 </div>
 
-
-
+                                <!-- Tab ĐƠN HÀNG -->
                                 <div class="tab-pane fade" id="orders">
                                     <h3>Đơn hàng</h3>
-                                    <div class="table-responsive">
+                                    <div class="table-responsive">                                       
+                                        <c:set var="itemsPerPage" value="5" />
+                                        <c:set var="currentPage" value="${param.page != null ? param.page : 1}" />
+                                        <c:set var="startIndex" value="${(currentPage - 1) * itemsPerPage}" />
+                                        <c:set var="endIndex" value="${startIndex + itemsPerPage}" />
+
+                                        <!-- Không out kích thước list -->
+                                        <c:if test="${startIndex lt 0}">
+                                            <c:set var="startIndex" value="0" />
+                                        </c:if>
+                                        <c:if test="${endIndex gt bill.size()}">
+                                            <c:set var="endIndex" value="${bill.size()}" />
+                                        </c:if>
+
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -240,20 +274,57 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach items="${bill}" var="b">
+                                                <!-- 5 record / trang -->
+                                                <c:forEach items="${bill}" var="b" 
+                                                           begin="${startIndex}" end="${endIndex - 1}">
                                                     <tr>
                                                         <td>${b.bill_id}</td>
                                                         <td>${b.date}</td>
                                                         <td><span class="success">${b.payment}</span></td>
                                                         <td>${b.address}</td>
-                                                        <td>${b.total}</td>
-                                                        <td><a href="user?action=showdetail&bill_id=${b.bill_id}" class="view">view</a></td>
+
+                                                        <!-- Format tiền-->
+                                                        <td>
+                                                            
+                                                            <c:set var="tempFormatted">
+                                                                <fmt:formatNumber value="${b.total}"
+                                                                                  type="number"
+                                                                                  groupingUsed="true"
+                                                                                  minFractionDigits="0"
+                                                                                  maxFractionDigits="0" />
+                                                            </c:set>
+                                                           
+                                                            <c:set var="finalPrice" value="${fn:replace(tempFormatted, ',', '.')}" />
+                                                            ${finalPrice} VND
+                                                        </td>
+
+                                                        <td>
+                                                            <a href="user?action=showdetail&bill_id=${b.bill_id}" class="view">view</a>
+                                                        </td>
                                                     </tr>
                                                 </c:forEach>
                                             </tbody>
                                         </table>
                                     </div>
+
+                                    <!-- Tính tổng trang -->
+                                    <c:set var="totalItems" value="${bill.size()}" />
+                                    <c:set var="totalPages" 
+                                           value="${(totalItems / itemsPerPage) + (totalItems % itemsPerPage == 0 ? 0 : 1)}" />
+
+                                    <!-- nút phân trang -->
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination">
+                                            <c:forEach var="i" begin="1" end="${totalPages}">
+                                                <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                                    <a class="page-link" href="?page=${i}">${i}</a>
+                                                </li>
+                                            </c:forEach>
+                                        </ul>
+                                    </nav>
                                 </div>
+
+                                <!-- Tab TÀI KHOẢN CỦA TÔI -->
                                 <div class="tab-pane fade show active" id="account-details">
                                     <h3>Tài khoản của tôi </h3>
                                     <div class="login">
@@ -262,16 +333,19 @@
                                                 <form action="user?action=updateinfo" method="POST">
                                                     <label><b>Tên người dùng</b></label>
                                                     <input type="text" name="user_name" value="${sessionScope.user.user_name}" placeholder="Nhập tên người dùng">
+
                                                     <label><b>Email</b></label>
                                                     <input type="text" readonly name="user_email" value="${sessionScope.user.user_email}">
-                                          
+
                                                     <label><b>Ngày sinh</b></label>
-                                                    <input type="Date" name="dateOfBirth" value="${sessionScope.user.dateOfBirth}" placeholder="Nhập ngày sinh(ngày/tháng/năm)">
+                                                    <input type="date" name="dateOfBirth" value="${sessionScope.user.dateOfBirth}" placeholder="Nhập ngày sinh(ngày/tháng/năm)">
 
                                                     <label><b>Địa chỉ</b></label>
                                                     <input type="text" name="address" value="${sessionScope.user.address}" placeholder="Nhập địa chỉ (Xã,Huyện,Tỉnh)">
+
                                                     <label><b>Số điện thoại</b></label>
-                                                    <input type="number" name="phoneNumber" value="${sessionScope.user.phoneNumber}" placeholder="Nhập số điện thoại (10 số)">
+                                                    <input type="text" name="phoneNumber" value="${sessionScope.user.phoneNumber}" placeholder="Nhập số điện thoại (10 số)">
+
                                                     <div class="cart_submit">
                                                         <button type="submit">Lưu</button>
                                                     </div> 
@@ -280,6 +354,8 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- end tab account-details -->
+
                             </div>
                         </div>
                     </div>
@@ -331,7 +407,6 @@
                     showNotification(updateMessage, true);
             <% session.removeAttribute("updateMessage"); %>
                 } else if (error_pass) {
-
                     showNotification(error_pass, false);
             <% session.removeAttribute("error_pass"); %>
                 }
@@ -339,4 +414,3 @@
         </script>
     </body>
 </html>
-

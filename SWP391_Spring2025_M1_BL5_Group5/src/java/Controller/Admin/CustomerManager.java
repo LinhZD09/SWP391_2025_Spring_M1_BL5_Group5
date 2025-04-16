@@ -6,7 +6,7 @@ package Controller.Admin;
  */
 
 
-import dal.UserDAO;
+import dal.userDAO;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,7 +40,7 @@ public class CustomerManager extends HttpServlet {
 
             if (user != null && "true".equalsIgnoreCase(user.getIsAdmin())) {
                 String action = request.getParameter("action");
-                UserDAO dao = new UserDAO();
+                userDAO dao = new userDAO();
 
                 if (action == null) {
                     List<User> userList = dao.getUser();

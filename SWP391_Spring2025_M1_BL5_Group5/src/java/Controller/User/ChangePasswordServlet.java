@@ -5,7 +5,7 @@
 package Controller.User;
 import java.sql.SQLException;
 import model.User;
-import dal.UserDAO;
+import dal.userDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -80,7 +80,7 @@ public class ChangePasswordServlet extends HttpServlet {
         String oldPassword = request.getParameter("old_password");
         String newPassword = request.getParameter("new_password");
         String confirmNewPassword = request.getParameter("confirm_new_password");
-        UserDAO usersDAO = new UserDAO();
+        userDAO usersDAO = new userDAO();
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("user");  // Lấy thông tin người dùng từ session
 
