@@ -4,10 +4,7 @@
  */
 package dal;
 
-/**
- *
- * @author Admin
- */
+
 public class UserDAO extends DBContext{
     
 }

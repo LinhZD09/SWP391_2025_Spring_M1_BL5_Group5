@@ -5,20 +5,19 @@
 
 package Controller.Home;
 
-import dal.productDAO;
+import dal.reportDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  *
  * @author MSI
  */
-public class Home extends HttpServlet {
+public class Contact extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -30,15 +29,7 @@ public class Home extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8");
-        productDAO c = new productDAO();
-        List<model.Product> product = c.getTop10Product();
-        List<model.Product> product1 = c.getTrendProduct();
-        List<model.Product> newProducts = c.getNewProducts(8);
-        request.setAttribute("top10", product);
-        request.setAttribute("topTrend", product1);
-        request.setAttribute("newProducts", newProducts);
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+        request.getRequestDispatcher("contact.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -65,7 +56,15 @@ public class Home extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        reportDAO dao = new reportDAO();
+        String user_id = request.getParameter("user_id");
+        String user_email = request.getParameter("user_email");
+        String subject_report = request.getParameter("subject_report");
+        String content_report = request.getParameter("content_report");
+        dao.InsertReport(user_id, content_report, subject_report, user_email);
+        String msg ="Bạn đã gửi phản hồi thành công cho cửa hàng";
+        request.setAttribute("msgc", msg);
+        request.getRequestDispatcher("contact.jsp").forward(request, response);
     }
 
     /** 

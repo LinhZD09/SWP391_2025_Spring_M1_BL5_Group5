@@ -74,10 +74,6 @@
             <a href="javascript:void(0)"><i class="ion-android-close"></i></a>  
         </div>
         <div class="welcome_text">
-            <ul>
-                <li><span>Giao hàng miễn phí: </span>Hãy tận dụng thời gian của chúng tôi để lưu lại sự kiện </li>
-                <li><span>Trả hàng miễn phí: </span> Đảm bảo sự hài lòng</li>
-            </ul>
         </div>
         <div class="top_right">
             <ul>
@@ -157,12 +153,6 @@
         <div class="container-fluid">   
             <div class="row align-items-center">
                 <div class="col-lg-7 col-md-12">
-                    <div class="welcome_text">
-                        <ul>
-                            <li><span>Giao hàng miễn phí:</span> Hãy tận dụng thời gian của chúng tôi để lưu lại sự kiện </li>
-                            <li><span>Trả hàng miễn phí:</span> Đảm bảo sự hài lòng</li>
-                        </ul>
-                    </div>
                 </div>
                 <div class="col-lg-5 col-md-12">
                     <div class="top_right text-right">

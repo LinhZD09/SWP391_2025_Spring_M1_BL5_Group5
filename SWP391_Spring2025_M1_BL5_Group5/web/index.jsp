@@ -284,10 +284,9 @@
 
         <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
     <df-messenger
-        intent="WELCOME"
-        chat-title="chatAI-YouAndMe"
-        agent-id="ec189088-7e7b-40b7-a464-fec9d527a03f"
-        language-code="en"
+        chat-title="You&Me"
+        agent-id="f1c1287e-819c-444f-8895-a49aaff26e74"
+        language-code="vi"
         ></df-messenger>
 
     <!--product section area end-->
