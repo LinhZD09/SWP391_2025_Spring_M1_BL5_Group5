@@ -83,7 +83,7 @@
                                 </p>    
                                 <div class="contact_textarea">
                                     <label>  Nội dung</label>
-                                    <input placeholder="Nhập nội dung của phản hồi ..." name="content_report" required/>  
+                                    <textarea placeholder="Nhập nội dung của phản hồi ..." name="content_report" required/></textarea>  
                                 </div>
                                 <input hidden name="user_id" require type="text" value="${user.user_id}">
                                 <br>
