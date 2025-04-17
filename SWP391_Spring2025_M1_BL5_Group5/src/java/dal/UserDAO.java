@@ -63,7 +63,52 @@ public class userDAO extends DBContext {
 
         }
     }
-
+public User checkUser(String user_email, String user_pass) {
+        try {
+            String query = "select * from users where user_email = ? and user_pass = ?";
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, user_email);
+            ps.setString(2, user_pass);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getBoolean(9), rs.getString(10), rs.getString(11));
+                return user;
+            }
+        } catch (Exception e) {
+        }
+        return null;
+    }
+ public void updateUser(int user_id, String user_name, String user_pass, String dateOfBirth, String address, String phoneNumner) {
+        String sql = "update users set user_name =? , user_pass = ?,dateOfBirth = ?,address = ?,phoneNumber = ? where user_id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, user_name);
+            ps.setString(2, user_pass);
+            ps.setString(3, dateOfBirth);
+            ps.setString(4, address);
+            ps.setString(5, phoneNumner);
+            ps.setInt(6, user_id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+        }
+    }
+  public User checkAcc(String user_email) {
+        try {
+            String query = "select * from users where user_email = ?";
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, user_email);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                User a = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getBoolean(9), rs.getString(10), rs.getString(11));
+                return a;
+            }
+        } catch (Exception e) {
+        }
+        return null;
+    }
     public void deleteUser(int user_id) {
         String sql = "DELETE FROM users WHERE user_id = ?";
         try {
