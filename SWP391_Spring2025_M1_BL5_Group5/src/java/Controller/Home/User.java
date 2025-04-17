@@ -6,7 +6,7 @@
 package Controller.Home;
 
 import dal.billDAO;
-import dal.userDAO;
+import dal.UserDAO;
 import model.BillDetail;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,7 +44,7 @@ public class User extends HttpServlet {
             String user_email = request.getParameter("user_email");
             String user_pass = request.getParameter("user_pass");
             String remember = request.getParameter("remember");
-            userDAO dao = new userDAO();
+            UserDAO dao = new UserDAO();
             model.User user = dao.checkUser(user_email, user_pass);
             if (user == null) {
                 HttpSession session = request.getSession();
@@ -143,7 +143,7 @@ public class User extends HttpServlet {
 
                     if (isValidPassword) {
                         int user_id = user.getUser_id();
-                        userDAO dao = new userDAO();
+                        UserDAO dao = new UserDAO();
                         dao.updateUser(user_id, user_name, user_pass, dateOfBirth, address, phoneNumber);
                         model.User user1 = new model.User(user.getUser_id(), user_name, user.getUser_email(), user_pass, user.getIsAdmin(), dateOfBirth, address, phoneNumber, user.isBanned(), user.getAdminReason(), user.getIsStoreStaff());
                         session.setAttribute("user", user1);
@@ -212,7 +212,7 @@ public class User extends HttpServlet {
 //    }
 if (action.equals("signup")) {
     HttpSession session = request.getSession();
-    userDAO da = new userDAO();
+    UserDAO da = new UserDAO();
     String email = request.getParameter("user_email");
     String pass = request.getParameter("user_pass");
     String repass = request.getParameter("re_pass");

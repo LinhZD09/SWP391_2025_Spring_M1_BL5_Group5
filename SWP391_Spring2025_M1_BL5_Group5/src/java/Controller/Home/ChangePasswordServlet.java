@@ -2,10 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package Controller.User;
+package Controller.Home;
+
 import java.sql.SQLException;
 import model.User;
-import dal.userDAO;
+import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -80,7 +81,7 @@ public class ChangePasswordServlet extends HttpServlet {
         String oldPassword = request.getParameter("old_password");
         String newPassword = request.getParameter("new_password");
         String confirmNewPassword = request.getParameter("confirm_new_password");
-        userDAO usersDAO = new userDAO();
+        UserDAO usersDAO = new UserDAO();
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("user");  // Lấy thông tin người dùng từ session
 
