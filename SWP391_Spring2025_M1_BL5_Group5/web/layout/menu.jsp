@@ -175,6 +175,7 @@
 
                                     <c:if test="${sessionScope.user == null}">
                                         <li><a href="user?action=login">Đăng nhập</a></li>
+                                        <li><a href="user?action=signup">Đăng kí</a></li>
                                         </c:if>
 
                                     <c:if test="${sessionScope.user != null}">
