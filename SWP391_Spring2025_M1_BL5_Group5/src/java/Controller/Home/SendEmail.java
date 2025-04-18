@@ -60,6 +60,7 @@ public class SendEmail {
         }
         return test;
     }
+    
     public boolean sendEmail2(UserC userc) {
         boolean test = false;
         String fromEmail = "hoangnam4869@gmail.com";
@@ -72,7 +73,7 @@ public class SendEmail {
             pr.setProperty("mail.smtp.auth", "true");
             pr.setProperty("mail.smtp.starttls.enable", "true");
             pr.setProperty("mail.smtp.socketFactory.port", "587");
-            pr.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+pr.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
             //get sesion
             Session session;
             session = Session.getInstance(pr, new Authenticator() {
