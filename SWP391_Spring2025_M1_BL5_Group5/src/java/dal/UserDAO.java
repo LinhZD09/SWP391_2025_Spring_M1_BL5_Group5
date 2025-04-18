@@ -163,4 +163,18 @@ public User checkUser(String user_email, String user_pass) {
         } catch (Exception e) {
         };
     }
+
+     public void change(User a) {
+        String sql = "UPDATE users SET user_pass = ? WHERE user_id= ?";
+
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, a.getUser_pass());
+            ps.setInt(2, a.getUser_id());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
