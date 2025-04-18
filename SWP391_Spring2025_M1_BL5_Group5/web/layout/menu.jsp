@@ -162,7 +162,10 @@
                                 <li class="top_links"><a href="#">Xin chào ${sessionScope.user.user_name}<i class="ion-chevron-down"></i></a>
                                     </c:if>
                                     <c:if test="${sessionScope.user == null}">
-                                <li class="top_links"><a href="#">Đăng nhập<i class="ion-chevron-down"></i></a>
+                                <li><a href="user?action=login">Đăng nhập<i></i></a>
+                                    </c:if>
+                                    <c:if test="${sessionScope.user == null}"> 
+                                <li><a href="register.jsp">Đăng kí<i></i></a>
                                     </c:if>
                                 <ul class="dropdown_links">
                                     <c:if test="${sessionScope.user != null}">
@@ -173,10 +176,7 @@
                                         <li><a href="dashboard">Quản lý</a></li>
                                         </c:if>
 
-                                    <c:if test="${sessionScope.user == null}">
-                                        <li><a href="user?action=login">Đăng nhập</a></li>
-                                        <li><a href="user?action=signup">Đăng kí</a></li>
-                                        </c:if>
+                                    
 
                                     <c:if test="${sessionScope.user != null}">
                                         <li><a href="user?action=logout">Đăng xuất</a></li>

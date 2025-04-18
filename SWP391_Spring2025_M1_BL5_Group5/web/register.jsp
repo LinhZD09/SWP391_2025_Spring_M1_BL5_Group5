@@ -1,201 +1,107 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Đăng ký | You&Me</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/plugins.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Đăng nhập  |  You&Me</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+<body>
+    <div class="off_canvars_overlay"></div>
+    <jsp:include page="layout/menu.jsp"/>
 
-        <!-- CSS 
-        ========================= -->
-        <!-- Plugins CSS -->
-        <link rel="stylesheet" href="assets/css/plugins.css">
-        <!-- Main Style CSS -->
-        <style>
-        body {
-            background: #ff3377 ;
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            padding: 0;
-            color: white;
-        }
-
-        .form-wrapper {
-            
-            background: linear-gradient(to bottom, #ffe0b2, #ffcc80, #ffb74d);
-            border-radius: 20px;
-            box-shadow: 0 0 25px #ff0055;
-        }
-
-        .form-wrapper h2 {
-            text-align: center;
-            color: #ff3377;
-            margin-bottom: 30px;
-        }
-
-        .form-wrapper label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 6px;
-            color: #ffc107;
-        }
-
-        .form-wrapper input[type="email"],
-        .form-wrapper input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 2px solid #ff3377;
-            border-radius: 8px;
-            background-color: #FF847C;
-            color: white;
-            font-size: 16px;
-        }
-
-        .form-wrapper input[type="email"]:focus,
-        .form-wrapper input[type="password"]:focus {
-            border-color: #00ffe1;
-            
-            
-            outline: none;
-        }
-
-        .form-wrapper .g-recaptcha {
-            margin: 15px 0;
-        }
-
-        .form-wrapper button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(45deg, #ff0055, #ff7700);
-            border: none;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s ease-in-out;
-        }
-
-        .form-wrapper button:hover {
-            background: linear-gradient(45deg, #00ffc8, #1de9b6);
-            color: #000;
-        }
-    </style>
-        <link rel="stylesheet" href="assets/css/style.css">
-    </head>
-
-    <body>
-        <div class="form-wrapper">
-        <div class="off_canvars_overlay"></div>
-        <jsp:include page="layout/menu.jsp"/>
-        <!--breadcrumbs area start-->
-        <div class="breadcrumbs_area other_bread">
-            <div class="container">   
-                <div class="row">
-                    <div class="col-12">
-                        <div class="breadcrumb_content">
-                            <ul>
-                                <li><a href="home">home</a></li>
-                                <li>/</li>
-                                <li>Đăng nhập</li>
-                            </ul>
-                        </div>
-                    </div>
+    <!-- breadcrumb -->
+    <div class="breadcrumbs_area other_bread">
+        <div class="container">
+            <div class="row"><div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="home">home</a></li>
+                        <li>/</li>
+                        <li>Đăng ký</li>
+                    </ul>
                 </div>
-            </div>         
+            </div></div>
         </div>
-        <!--breadcrumbs area end-->
+    </div>
 
-        <!-- customer login start -->
+    <!-- register -->
+    <div class="customer_login">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 mx-auto">
+                    <div class="account_form register">
+                        <h2>Đăng ký</h2>
 
+                        <form action="user?action=signup" method="POST">
+                            <p><label>Email</label>
+                               <input type="email" name="user_email"
+                                      placeholder="Nhập email của bạn" required></p>
 
-                    <!--register area start-->
-                    
-                    <div class="col-lg-6 col-md-6">
-                        <div class="account_form register">
-                            <h2>Đăng ký</h2>
-                            <form action="user?action=signup" method="POST">
-                                <p>   
-                                    <label>Email <span></span></label>
-                                    <input type="email" name="user_email" placeholder="Nhập email của bạn" required>
-                                </p>                                                               
-                                <p>   
-                                    <label>Mật khẩu <span></span></label>
-                                    <input type="password" name="user_pass" placeholder="Nhập mật khẩu dạng:a-zA-Z0-9..." required>
-                                </p>
-                                <p>   
-                                    <label>Nhập lại mật khẩu <span></span></label>
-                                    <input type="password" name="re_pass" placeholder="Nhập lại mật khẩu">
-                                </p>
-                                <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
-                                <div class="login_submit">
-                                <div class="g-recaptcha" data-sitekey="6LefS_ApAAAAAG7d6P0zRbGoed8oK2dwNnez6agN"></div>
-                                <button type="submit"  onclick="onSubmit()">Đăng Ký</button></div>
-                            </form>
-                        </div>    
+                            <p><label>Mật khẩu</label>
+                               <input type="password" name="user_pass"
+                                      placeholder="a‑zA‑Z0‑9..." required></p>
+
+                            <p><label>Nhập lại mật khẩu</label>
+                               <input type="password" name="re_pass"
+                                      placeholder="Nhập lại mật khẩu" required></p>
+
+                            <input type="hidden" name="g-recaptcha-response"
+                                   id="g-recaptcha-response">
+
+                            <div class="login_submit">
+                                <div class="g-recaptcha"
+                                     data-sitekey="6LefS_ApAAAAAG7d6P0zRbGoed8oK2dwNnez6agN"></div>
+                                <button type="submit" onclick="onSubmit()">Đăng Ký</button>
+                            </div>
+                        </form>
+
+                        <!-- Link sang trang đăng nhập -->
+                        <p style="margin-top:20px;">Đã có tài khoản?
+                            <a href="login.jsp">Đăng nhập</a>
+                        </p>
                     </div>
-                    </div>
-                    <!--register area end-->
-                </div>
                 </div>
             </div>
         </div>
-        <!-- customer login end -->
+    </div>
+<jsp:include page="layout/footer.jsp"/>
 
-        <!--footer area start-->
-        <jsp:include page="layout/footer.jsp"/>
-        <!--footer area end-->
-
-        <!-- JS
-        ============================================ -->
-
-
-        <!--map js code here-->
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdWLY_Y6FL7QGW5vcO3zajUEsrKfQPNzI"></script>
-        
-         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-         
-        <script  src="https://www.google.com/jsapi"></script>
-        <script src="assets/js/map.js"></script>
-        <script>
-            function onSubmit() {
-            var response = grecaptcha.getResponse();
+    <!-- JS -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function onSubmit(){
+            const response = grecaptcha.getResponse();
             document.getElementById('g-recaptcha-response').value = response;
         }
-        </script>
+    </script>
 
-        <!-- Plugins JS -->
-        <script src="assets/js/plugins.js"></script>
+    <script src="assets/js/plugins.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <!-- Main JS -->
-        <script src="assets/js/main.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function showNotification(message, isSuccess) {
+        function showNotification(msg, ok){
             Swal.fire({
-                title: isSuccess ? 'Thành công!' : 'Lỗi!',
-                text: message,
-                icon: isSuccess ? 'success' : 'error',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 5000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
+                title: ok?'Thành công!':'Lỗi!',
+                text: msg,
+                icon: ok?'success':'error',
+                toast:true,position:'top-end',timer:5000,showConfirmButton:false
             });
         }
 
-// Kiểm tra và hiển thị thông báo khi trang được tải
+        document.addEventListener('DOMContentLoaded', () => {
+            const err   = "${sessionScope.error_exist}";
+            const okMsg = "${sessionScope.signupMessage}";
+            if(err){ showNotification(err,false); <% session.removeAttribute("error_exist"); %>}
+            if(okMsg){ showNotification(okMsg,true); <% session.removeAttribute("signupMessage"); %>}
+        });
         document.addEventListener('DOMContentLoaded', function () {
             var error_match = "${sessionScope.error_match}";
             var Recaptcha = "${sessionScope.Recaptcha}";
@@ -234,8 +140,5 @@
             }
         });
     </script>
-
-
-    </body>
-
+</body>
 </html>
