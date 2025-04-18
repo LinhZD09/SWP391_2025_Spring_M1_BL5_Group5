@@ -17,18 +17,19 @@ import model.Product;
  * @author MSI
  */
 public class productDAO {
+
     Connection conn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    
-    public List<Product> getTop10Product(){
+
+    public List<Product> getTop10Product() {
         List<Product> list = new ArrayList<>();
         String sql = "SELECT TOP 10 p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img FROM product p inner join product_active pa on pa.product_id = p.product_id Where pa.active ='True' ORDER BY NEWID()";
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 list.add(new Product(rs.getString(1), rs.getString(2), rs.getFloat(3), rs.getString(4), rs.getInt(5), rs.getString(6)));
             }
         } catch (Exception e) {
@@ -36,10 +37,10 @@ public class productDAO {
         }
         return list;
     }
-    
+
     public List<Product> getTrendProduct() {
         List<Product> list = new ArrayList<>();
-         String sql = "SELECT TOP 5 p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img FROM product p inner join bill_detail bd on p.product_id = bd.product_id inner join product_active pa on pa.product_id = p.product_id Where pa.active ='True' \n"
+        String sql = "SELECT TOP 5 p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img FROM product p inner join bill_detail bd on p.product_id = bd.product_id inner join product_active pa on pa.product_id = p.product_id Where pa.active ='True' \n"
                 + "ORDER BY bd.quantity DESC";
         try {
             conn = new DBContext().getConnection();
@@ -53,7 +54,7 @@ public class productDAO {
         }
         return list;
     }
-    
+
     public List<Product> getNewProducts(int limit) {;
         List<Product> list = new ArrayList<>();
         String sql = "SELECT TOP  p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img FROM product p inner join bill_detail bd on p.product_id = bd.product_id\n"
@@ -74,18 +75,77 @@ public class productDAO {
     }
 
     public int CountProduct() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int count = 0;
+        String sql = "SELECT COUNT(*) as 'count'\n"
+                + "  FROM product";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+        }
+        return count;
     }
 
     public int CountUser() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int count = 0;
+        String sql = "SELECT COUNT(*) as 'count'\n"
+                + "  FROM users where isAdmin = 'False' or isAdmin = 'FALSE' ";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+        }
+        return count;
     }
 
     public int CountBill() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int count = 0;
+        String sql = "SELECT COUNT(*) as 'count'\n"
+                + "  FROM bill";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+        }
+        return count;
     }
 
     public int CountProductLow() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int count = 0;
+        String sql = "SELECT COUNT(*) as 'count'\n"
+                + "  FROM product where quantity < 50 ";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        // Tạo đối tượng của DAO
+        productDAO dao = new productDAO();
+
+        // Gọi phương thức CountUser để lấy số lượng người dùng
+        int countUser = dao.CountUser();
+
+        // In kết quả ra console
+        System.out.println("Tổng số người dùng: " + countUser);
     }
 }

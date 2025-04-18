@@ -36,10 +36,7 @@
         <servlet-name>User</servlet-name>
         <url-pattern>/user</url-pattern>
     </servlet-mapping>
-     <servlet>
-        <servlet-name>Dashboard</servlet-name>
-        <jsp-file>/admin/dashboard.jsp</jsp-file>
-    </servlet> 
+    
     <servlet-mapping>
         <servlet-name>Dashboard</servlet-name>
         <url-pattern>/dashboard</url-pattern>
