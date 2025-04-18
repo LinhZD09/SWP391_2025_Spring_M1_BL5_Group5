@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -114,12 +115,16 @@ public class User extends HttpServlet {
             try {
                 HttpSession session = request.getSession();
                 model.User user = (model.User) session.getAttribute("user");
+
                 if (user != null) {
+                    // Lấy thông tin từ form
                     String user_name = request.getParameter("user_name");
-                    String user_pass = request.getParameter("user_pass");
+                    String user_email = request.getParameter("user_email");
                     String dateOfBirth = request.getParameter("dateOfBirth");
                     String address = request.getParameter("address");
                     String phoneNumber = request.getParameter("phoneNumber");
+
+                    // Kiểm tra ngày sinh
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     try {
                         Date dob = sdf.parse(dateOfBirth);
@@ -129,37 +134,36 @@ public class User extends HttpServlet {
                             request.getRequestDispatcher("user?action=myaccount").forward(request, response);
                             return;
                         }
-                    } catch (NumberFormatException e) {
-
+                    } catch (ParseException e) {
+                        session.setAttribute("error_dob", "Ngày sinh không hợp lệ");
+                        request.getRequestDispatcher("user?action=myaccount").forward(request, response);
+                        return;
                     }
 
-                    //Check if the password has a capital initials and contains at least 1 number
-                    boolean isValidPassword = false;
-                    if (user_pass != null && !user_pass.isEmpty()) {
-                        boolean hasUpperCase = !user_pass.equals(user_pass.toLowerCase());
-                        boolean hasNumber = user_pass.matches(".*\\d.*");
-                        isValidPassword = hasUpperCase && hasNumber;
-                    }
+                    // Cập nhật thông tin người dùng
+                    UserDAO userDao = new UserDAO();
+                    boolean updateSuccess = userDao.updateUser(user.getUser_id(), user_name, user_email, dateOfBirth, address, phoneNumber);
 
-                    if (isValidPassword) {
-                        int user_id = user.getUser_id();
-                        UserDAO dao = new UserDAO();
-                        dao.updateUser(user_id, user_name, user_pass, dateOfBirth, address, phoneNumber);
-                        model.User user1 = new model.User(user.getUser_id(), user_name, user.getUser_email(), user_pass, user.getIsAdmin(), dateOfBirth, address, phoneNumber, user.isBanned(), user.getAdminReason(), user.getIsStoreStaff());
-                        session.setAttribute("user", user1);
-                        session.setAttribute("updateMessage", "Cập nhật thông tin thành công!");
+                    if (updateSuccess) {
+                        // Cập nhật lại thông tin người dùng trong session
+                        user.setUser_name(user_name);
+                        user.setUser_email(user_email);
+                        user.setDateOfBirth(dateOfBirth);
+                        user.setAddress(address);
+                        user.setPhoneNumber(phoneNumber);
+                        session.setAttribute("user", user);
                         response.sendRedirect("user?action=myaccount");
                     } else {
-                        session.setAttribute("error_pass", "Mật khẩu chữ cái đầu phải viết hoa");
-                        request.getRequestDispatcher("user?action=myaccount").forward(request, response);
+                        session.setAttribute("error_update", "Cập nhật thông tin không thành công");
+                        request.getRequestDispatcher("user?action=updateinfo").forward(request, response);
                     }
                 } else {
-
+                    // Trường hợp không tìm thấy user trong session
                     response.sendRedirect("user?action=login");
                 }
             } catch (Exception e) {
-
-                response.sendRedirect("user?action=login");
+                e.printStackTrace(); // Log lỗi
+                response.sendRedirect("user?action=updateinfo");
             }
         }
 
@@ -210,63 +214,65 @@ public class User extends HttpServlet {
 //            }
 //        }
 //    }
-if (action.equals("signup")) {
-    HttpSession session = request.getSession();
-    UserDAO da = new UserDAO();
-    String email = request.getParameter("user_email");
-    String pass = request.getParameter("user_pass");
-    String repass = request.getParameter("re_pass");
-    String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        if (action.equals("signup")) {
+            HttpSession session = request.getSession();
+            UserDAO da = new UserDAO();
+            String email = request.getParameter("user_email");
+            String pass = request.getParameter("user_pass");
+            String repass = request.getParameter("re_pass");
+            String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 
-    System.out.println(gRecaptchaResponse);
+            System.out.println(gRecaptchaResponse);
 
-    // Validate reCAPTCHA
-    boolean verify = VerifyRecaptcha.verify(gRecaptchaResponse);
-    if (!verify) {
-        session.setAttribute("Recaptcha", "Vui lòng xác nhận mã captcha");
-        request.getRequestDispatcher("register.jsp").forward(request, response);
-        return;
+            // Validate reCAPTCHA
+            boolean verify = VerifyRecaptcha.verify(gRecaptchaResponse);
+            if (!verify) {
+                session.setAttribute("Recaptcha", "Vui lòng xác nhận mã captcha");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+                return;
+            }
+
+            // Password validation
+            String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{6,}$";
+            if (!pass.matches(passwordRegex)) {
+                session.setAttribute("error_match", "Mật khẩu phải có ít nhất 6 ký tự, bao gồm ít nhất một chữ cái viết hoa và một chữ số");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+                return;
+            }
+
+            // Re-password validation
+            if (!pass.equals(repass)) {
+                session.setAttribute("error_rePass", "Vui lòng nhập lại mật khẩu cho đúng");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+                return;
+            }
+
+            // Check if the user already exists
+            model.User existingUser = da.checkAcc(email);
+            if (existingUser != null) {
+                session.setAttribute("msg", "Email đã tồn tại");
+                response.sendRedirect("user?action=login");
+                return;
+            }
+
+            // Generate and send verification email
+            SendEmail sm = new SendEmail();
+            String code = sm.getRandom();
+            UserC userc = new UserC(code, email);
+            boolean emailSent = sm.sendEmail1(userc);
+
+            if (emailSent) {
+                session.setAttribute("userc", userc);
+                session.setAttribute("email", email);
+                session.setAttribute("pass", pass);
+                response.sendRedirect("verify.jsp");
+            } else {
+                session.setAttribute("emailError", "Lỗi khi gửi email. Vui lòng thử lại sau.");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+            }
+        }
     }
 
-    // Password validation
-    String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{6,}$";
-    if (!pass.matches(passwordRegex)) {
-        session.setAttribute("error_match", "Mật khẩu phải có ít nhất 6 ký tự, bao gồm ít nhất một chữ cái viết hoa và một chữ số");
-        request.getRequestDispatcher("register.jsp").forward(request, response);
-        return;
-    }
-
-    // Re-password validation
-    if (!pass.equals(repass)) {
-        session.setAttribute("error_rePass", "Vui lòng nhập lại mật khẩu cho đúng");
-        request.getRequestDispatcher("register.jsp").forward(request, response);
-        return;
-    }
-
-    // Check if the user already exists
-    model.User existingUser = da.checkAcc(email);
-    if (existingUser != null) {
-        session.setAttribute("msg", "Email đã tồn tại");
-        response.sendRedirect("user?action=login");
-        return;
-    }
-
-    // Generate and send verification email
-    SendEmail sm = new SendEmail();
-    String code = sm.getRandom();
-    UserC userc = new UserC(code, email);
-    boolean emailSent = sm.sendEmail1(userc);
-
-    if (emailSent) {
-        session.setAttribute("userc", userc);
-        session.setAttribute("email", email);
-        session.setAttribute("pass", pass);
-        response.sendRedirect("verify.jsp");
-    } else {
-        session.setAttribute("emailError", "Lỗi khi gửi email. Vui lòng thử lại sau.");
-        request.getRequestDispatcher("register.jsp").forward(request, response);
-    }
-}}
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

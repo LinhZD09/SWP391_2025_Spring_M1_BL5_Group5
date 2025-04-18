@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO extends DBContext {
+
     Connection conn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -31,7 +32,7 @@ public class UserDAO extends DBContext {
             return false; // Trả về false nếu có lỗi xảy ra
         }
     }
-    
+
     public List<User> getUser() {
         List<User> list = new ArrayList<>();
         String sql = "select *, CAST(banned AS BIT) AS banned FROM users";
@@ -48,6 +49,7 @@ public class UserDAO extends DBContext {
         }
         return list;
     }
+
     public void setAdmin(int user_id, String isAdmin, String isStoreStaff, String adminReason) {
         String sql = "UPDATE users SET isAdmin = ?, isStoreStaff = ?, adminReason = ? WHERE user_id = ?";
         try {
@@ -63,7 +65,8 @@ public class UserDAO extends DBContext {
 
         }
     }
-public User checkUser(String user_email, String user_pass) {
+
+    public User checkUser(String user_email, String user_pass) {
         try {
             String query = "select * from users where user_email = ? and user_pass = ?";
             conn = new DBContext().getConnection();
@@ -79,22 +82,29 @@ public User checkUser(String user_email, String user_pass) {
         }
         return null;
     }
- public void updateUser(int user_id, String user_name, String user_pass, String dateOfBirth, String address, String phoneNumner) {
-        String sql = "update users set user_name =? , user_pass = ?,dateOfBirth = ?,address = ?,phoneNumber = ? where user_id = ?";
-        try {
-            conn = new DBContext().getConnection();
-            ps = conn.prepareStatement(sql);
+
+    public boolean updateUser(int user_id, String user_name, String user_email, String dateOfBirth, String address, String phoneNumber) throws Exception {
+        String sql = "UPDATE users SET user_name = ?, user_email = ?, dateOfBirth = ?, address = ?, phoneNumber = ? WHERE user_id = ?";
+        boolean updateSuccess = false;
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, user_name);
-            ps.setString(2, user_pass);
+            ps.setString(2, user_email);
             ps.setString(3, dateOfBirth);
             ps.setString(4, address);
-            ps.setString(5, phoneNumner);
+            ps.setString(5, phoneNumber);
             ps.setInt(6, user_id);
-            ps.executeUpdate();
-        } catch (Exception e) {
+
+            int rowsUpdated = ps.executeUpdate();
+            updateSuccess = (rowsUpdated > 0);
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the error (optional)
         }
+        return updateSuccess;
     }
-  public User checkAcc(String user_email) {
+
+    public User checkAcc(String user_email) {
         try {
             String query = "select * from users where user_email = ?";
             conn = new DBContext().getConnection();
@@ -109,6 +119,7 @@ public User checkUser(String user_email, String user_pass) {
         }
         return null;
     }
+
     public void deleteUser(int user_id) {
         String sql = "DELETE FROM users WHERE user_id = ?";
         try {
@@ -119,7 +130,7 @@ public User checkUser(String user_email, String user_pass) {
         } catch (Exception e) {
             System.out.println(e);
         }
-    }  
+    }
 
     public void banUser(int user_id) {
         String sql = "UPDATE users SET banned = 1 WHERE user_id = ?";
@@ -144,6 +155,7 @@ public User checkUser(String user_email, String user_pass) {
             System.out.println(e);
         }
     }
+
     public void signup(String user_email, String user_pass) {
         try {
             String query = "insert into users values(?,?,?,?,?,?,?,?,?,?)";
@@ -164,7 +176,7 @@ public User checkUser(String user_email, String user_pass) {
         };
     }
 
-     public void change(User a) {
+    public void change(User a) {
         String sql = "UPDATE users SET user_pass = ? WHERE user_id= ?";
 
         try {
