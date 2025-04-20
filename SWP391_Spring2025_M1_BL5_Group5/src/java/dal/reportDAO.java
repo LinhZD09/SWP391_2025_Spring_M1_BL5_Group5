@@ -7,6 +7,9 @@ package dal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import model.Report;
 
 
 public class reportDAO extends DBContext{
@@ -31,6 +34,36 @@ public class reportDAO extends DBContext{
                 ps.setString(4, user_email); 
                 ps.executeUpdate();
         } catch (Exception e) {
+        }
+    }
+    
+    public List<Report> getAll() {
+        List<Report> list = new ArrayList<>();
+        String sql = "Select r.id_report,r.user_id,r.content_report,r.subject_report,u.user_email From report r INNER JOIN users u On u.user_id=r.user_id";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Report(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5)));
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    
+    
+    public void deleteReport(int reportId) {
+        try {
+            String sql = "DELETE FROM report WHERE id_report = ?";
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, reportId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
