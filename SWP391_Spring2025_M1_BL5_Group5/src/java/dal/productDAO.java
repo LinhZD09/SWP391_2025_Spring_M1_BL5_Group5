@@ -250,7 +250,61 @@ public class productDAO {
         }
         return count;
     }
+    
+    public List<Product> getProductByPrice(int a){
+        List<Product> list = new ArrayList<>();
+        String sql = "select c.category_name ,  p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img, p.category_id from  \n"
+                + "product p inner join category c on p.category_id = c.category_id inner join product_active pa on pa.product_id = p.product_id Where pa.active ='True' And p.product_price >=" + a + " Order By p.product_price";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Category c = new Category(rs.getInt(8), rs.getString(1));
+                list.add(new Product(c, rs.getString(2), rs.getString(3), rs.getFloat(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return list;
+    }
 
+    // search by price
+    public List<Product> searchProductByPrice(double a, double b){
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT c.category_name, p.product_id, p.product_name, p.product_price, p.product_describe, p.quantity, p.img, p.category_id "
+                + "FROM product p INNER JOIN category c ON p.category_id = c.category_id inner join product_active pa on pa.product_id = p.product_id "
+                + "WHERE pa.active='True' AND p.product_price >= ? AND p.product_price <= ? "
+                + "ORDER BY p.product_price";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setDouble(1, a);
+            ps.setDouble(2, b);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Category c = new Category(rs.getInt(8), rs.getString(1));
+                list.add(new Product(c, rs.getString(2), rs.getString(3), rs.getFloat(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return list;
+    }
     public static void main(String[] args) {
         // Tạo đối tượng của DAO
         productDAO dao = new productDAO();

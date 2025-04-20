@@ -124,6 +124,43 @@
                     <li class="breadcrumb-item active" aria-current="page">Cửa hàng</li>
                 </ol>
             </nav>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="sidebar mb-4">
+                        <h2><i class="fas fa-th-list mr-2"></i>Danh mục</h2>
+                        <ul>
+                            <li><a href="product">TẤT CẢ</a></li>
+                                <c:forEach items="${CategoryData}" var="c">
+                                <li><a href="search?action=listByCategory&category_id=${c.category_id}">${c.category_name}</a></li>
+                                </c:forEach>
+                        </ul>
+
+                        <h2 class="mt-4"><i class="fas fa-money-bill mr-2"></i>Giá</h2>
+                        <form action="search?action=searchByPrice" method="POST">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="price" value="0" id="price1">
+                                <label class="form-check-label" for="price1">Dưới 50.000VND</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="price" value="1" id="price2">
+                                <label class="form-check-label" for="price2">Từ 50.000VND - 200.000VND</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="price" value="2" id="price3">
+                                <label class="form-check-label" for="price3">Từ 200.000VND - 500.000VND</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="price" value="3" id="price4">
+                                <label class="form-check-label" for="price4">Từ 500.000 VND - 1.000.000 VND</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="price" value="4" id="price5">
+                                <label class="form-check-label" for="price5">1 triệu VND trở lên</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm mt-3">Tìm kiếm</button>
+                        </form>
+                    </div>
+                </div>
             <div class="col-lg-9">
                 <h1 class="mb-4">Sản phẩm</h1>
                 <div class="d-flex justify-content-between align-items-center mb-4">
