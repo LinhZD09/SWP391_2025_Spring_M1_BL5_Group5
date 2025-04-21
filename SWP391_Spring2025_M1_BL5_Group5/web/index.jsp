@@ -329,8 +329,9 @@
             if (loginMessage) {
                 showNotification(loginMessage, true);
         <% session.removeAttribute("loginMessage"); %>
-            }  if (logoutMessage) {
-           
+            }
+            if (logoutMessage) {
+
                 showNotification(logoutMessage, true);
         <% session.removeAttribute("logoutMessage"); %>
             } else if (errorMessage) {

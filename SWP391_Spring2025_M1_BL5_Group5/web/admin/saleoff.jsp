@@ -85,7 +85,7 @@
         <main class="app-content">
             <div class="app-title">
                 <ul class="app-breadcrumb breadcrumb side">
-                    <li class="breadcrumb-item active"><a href="#"><b>Quản Lí Sale off</b></a></li>
+                    <li class="breadcrumb-item active"><a href="#"><b>Quản Lý Sale Off</b></a></li>
                 </ul>
                 <div id="clock"></div>
             </div>
@@ -94,24 +94,24 @@
                 <div class="col-md-12">
                     <div class="tile">
                         <div class="tile-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#addSaleModal">
+                            <!-- Button to Add Sale Off -->
+                            <div class="row mb-3">
+                                <div class="col-md-12 text-right">
+                                    <button class="btn btn-success" data-toggle="modal" data-target="#addSaleModal">
                                         <i class="fa fa-plus"></i> Thêm Mới Sale Off
                                     </button>
                                 </div>
                             </div>
-                            <br>
                             <!-- Sale Off Table -->
-                            <table class="table table-bordered" id="saleOffTable">
-                                <thead>
+                            <table class="table table-striped table-hover" id="saleOffTable">
+                                <thead class="thead-dark">
                                     <tr>
-                                    
                                         <th>Sale ID</th>
                                         <th>Product ID</th>
                                         <th>Discount Percentage</th>
                                         <th>Start Date</th>
                                         <th>End Date</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,10 +119,18 @@
                                         <tr>
                                             <td>${sale.sale_id}</td>
                                             <td>${sale.product_id}</td>
-                                            <td>${sale.discount_percentage}</td>
+                                            <td>${sale.discount_percentage}%</td>
                                             <td>${sale.start_date}</td>
                                             <td>${sale.end_date}</td>
-                                           
+                                            <td>
+                                                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editSaleModal"
+                                                        onclick="editSale(${sale.sale_id}, '${sale.product_id}', '${sale.discount_percentage}', '${sale.start_date}', '${sale.end_date}')">
+                                                    <i class="fa fa-edit"></i> Sửa
+                                                </button>
+                                                <button class="btn btn-danger btn-sm" onclick="deleteSale(${sale.sale_id})">
+                                                    <i class="fa fa-trash"></i> Xóa
+                                                </button>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -131,8 +139,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 </html>
 
 

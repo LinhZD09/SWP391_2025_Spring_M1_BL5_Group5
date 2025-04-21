@@ -17,6 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -103,7 +105,12 @@ public class ChangePasswordServlet extends HttpServlet {
             response.sendRedirect("my-account.jsp");  // Quay lại trang tài khoản
             return;
         }
-
+        // Kiểm tra mật khẩu mới có hợp lệ không (điều kiện: bắt đầu bằng chữ in hoa, không có ký tự đặc biệt, độ dài <= 20)
+        if (!isValidPassword(newPassword)) {
+            session.setAttribute("error_pass", "Mật khẩu mới không hợp lệ. Mật khẩu phải bắt đầu bằng chữ in hoa và không có ký tự đặc biệt. Độ dài tối đa là 20 ký tự.");
+            response.sendRedirect("my-account.jsp");  // Quay lại trang tài khoản
+            return;
+        }
         // Cập nhật mật khẩu mới trong cơ sở dữ liệu
         currentUser.setUser_pass(newPassword);
 
@@ -127,16 +134,35 @@ public class ChangePasswordServlet extends HttpServlet {
 
         // Chuyển hướng trở lại trang tài khoản
         response.sendRedirect("my-account.jsp");
-    
-}
 
-/**
- * Returns a short description of the servlet.
- *
- * @return a String containing servlet description
- */
-@Override
-public String getServletInfo() {
+    }
+
+    
+    public boolean isValidPassword(String password) {
+        //Kiểm tra mật khẩu null và không rỗng
+        if (password == null || password.trim().isEmpty()) {
+            return false;
+        }
+        if (password.length() > 50) {
+            return false;
+        }
+
+        //Điều kiện mật khẩu bắt đầu bằng chữ in hoa và không chứa kí tự đặc biệt
+        String regex = "^[A-Z][A-Za-z0-9]*$";   //Bắt đầu bằng chữ in hoa và chỉ chứa chữ cái và số
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        
+        //trả về true nếu mk hợp lệ, false nếu không hợp lệ
+        return matcher.matches();
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 
