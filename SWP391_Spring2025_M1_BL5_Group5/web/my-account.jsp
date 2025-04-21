@@ -326,25 +326,47 @@
 
                                 <!-- Tab TÀI KHOẢN CỦA TÔI -->
                                 <div class="tab-pane fade show active" id="account-details">
-                                    <h3>Tài khoản của tôi </h3>
+                                    <h3>Tài khoản của tôi</h3>
                                     <div class="login">
                                         <div class="login_form_container">
                                             <div class="account_login_form">
                                                 <form action="user?action=updateinfo" method="POST">
                                                     <label><b>Tên người dùng</b></label>
-                                                    <input type="text" name="user_name" value="${sessionScope.user.user_name}" placeholder="Nhập tên người dùng">
+                                                    <input type="text" name="user_name"
+                                                           value="${sessionScope.user.user_name}"
+                                                           placeholder="Nhập tên người dùng">
+                                                    <c:if test="${not empty sessionScope.error_userName}">
+                                                        <div class="text-danger" style="margin-top:5px;">
+                                                            ${sessionScope.error_userName}
+                                                        </div>
+                                                        <c:remove var="error_userName" scope="session"/>
+                                                    </c:if>
 
                                                     <label><b>Email</b></label>
-                                                    <input type="text" readonly name="user_email" value="${sessionScope.user.user_email}">
+                                                    <input type="text" readonly name="user_email"
+                                                           value="${sessionScope.user.user_email}">
 
                                                     <label><b>Ngày sinh</b></label>
-                                                    <input type="date" name="dateOfBirth" value="${sessionScope.user.dateOfBirth}" placeholder="Nhập ngày sinh(ngày/tháng/năm)">
+                                                    <input type="date" name="dateOfBirth"
+                                                           value="${sessionScope.user.dateOfBirth}"
+                                                           placeholder="Nhập ngày sinh (ngày/tháng/năm)">
+                                                    <!-- error_dob sẽ show bằng toast phía dưới -->
 
                                                     <label><b>Địa chỉ</b></label>
-                                                    <input type="text" name="address" value="${sessionScope.user.address}" placeholder="Nhập địa chỉ (Xã,Huyện,Tỉnh)">
+                                                    <input type="text" name="address"
+                                                           value="${sessionScope.user.address}"
+                                                           placeholder="Nhập địa chỉ (Xã,Huyện,Tỉnh)">
 
                                                     <label><b>Số điện thoại</b></label>
-                                                    <input type="text" name="phoneNumber" value="${sessionScope.user.phoneNumber}" placeholder="Nhập số điện thoại (10 số)">
+                                                    <input type="text" name="phoneNumber"
+                                                           value="${sessionScope.user.phoneNumber}"
+                                                           placeholder="Nhập số điện thoại (10 số)">
+                                                    <c:if test="${not empty sessionScope.error_phoneNumber}">
+                                                        <div class="text-danger" style="margin-top:5px;">
+                                                            ${sessionScope.error_phoneNumber}
+                                                        </div>
+                                                        <c:remove var="error_phoneNumber" scope="session"/>
+                                                    </c:if>
 
                                                     <div class="cart_submit">
                                                         <button type="submit">Lưu</button>
@@ -395,22 +417,16 @@
             }
 
             // Kiểm tra và hiển thị thông báo khi trang được tải
-            document.addEventListener('DOMContentLoaded', function () {
-                var error_dob = "${sessionScope.error_dob}";
-                var error_pass = "${sessionScope.error_pass}";
-                var updateMessage = "${sessionScope.updateMessage}";
-                if (error_dob) {
-                    showNotification(error_dob, false);
-            <% session.removeAttribute("error_dob"); %>
-                }
-                if (updateMessage) {
-                    showNotification(updateMessage, true);
-            <% session.removeAttribute("updateMessage"); %>
-                } else if (error_pass) {
-                    showNotification(error_pass, false);
-            <% session.removeAttribute("error_pass"); %>
-                }
+           document.addEventListener('DOMContentLoaded', function () {
+                var errorDob      = "${fn:escapeXml(sessionScope.error_dob)}";
+                var updateMessage = "${fn:escapeXml(sessionScope.updateMessage)}";
+
+                if (errorDob)      { showNotification(errorDob, false); }
+                if (updateMessage) { showNotification(updateMessage, true); }
             });
+        </script>
+        <c:remove var="error_dob" scope="session"/>
+        <c:remove var="updateMessage" scope="session"/>
         </script>
     </body>
 </html>
