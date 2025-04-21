@@ -107,7 +107,7 @@ public class ChangePasswordServlet extends HttpServlet {
         }
         // Kiểm tra mật khẩu mới có hợp lệ không (điều kiện: bắt đầu bằng chữ in hoa, không có ký tự đặc biệt, độ dài <= 20)
         if (!isValidPassword(newPassword)) {
-            session.setAttribute("error_pass", "Mật khẩu mới không hợp lệ. Mật khẩu phải bắt đầu bằng chữ in hoa và không có ký tự đặc biệt. Độ dài tối đa là 20 ký tự.");
+            session.setAttribute("error_pass", "Mật khẩu phải có ít nhất 6 ký tự, bao gồm ít nhất một chữ cái viết hoa và một chữ số");
             response.sendRedirect("my-account.jsp");  // Quay lại trang tài khoản
             return;
         }
@@ -137,22 +137,23 @@ public class ChangePasswordServlet extends HttpServlet {
 
     }
 
-    
     public boolean isValidPassword(String password) {
-        //Kiểm tra mật khẩu null và không rỗng
+        // Kiểm tra mật khẩu null hoặc rỗng
         if (password == null || password.trim().isEmpty()) {
             return false;
         }
-        if (password.length() > 50) {
+
+        // Kiểm tra độ dài mật khẩu phải từ 6 đến 20 ký tự
+        if (password.length() < 6) {
             return false;
         }
 
-        //Điều kiện mật khẩu bắt đầu bằng chữ in hoa và không chứa kí tự đặc biệt
-        String regex = "^[A-Z][A-Za-z0-9]*$";   //Bắt đầu bằng chữ in hoa và chỉ chứa chữ cái và số
+        // Điều kiện: ít nhất 1 chữ cái in hoa và ít nhất 1 chữ số, không chứa ký tự đặc biệt
+        String regex = "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{6,20}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);
-        
-        //trả về true nếu mk hợp lệ, false nếu không hợp lệ
+
+        // Trả về true nếu mật khẩu hợp lệ, false nếu không hợp lệ
         return matcher.matches();
     }
 
