@@ -14,11 +14,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class User extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         // giữ nguyên phần encoding
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
@@ -30,11 +32,11 @@ public class User extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
 
         } else if ("checkLogin".equals(action)) {
-            String user_email  = request.getParameter("user_email");
-            String user_pass   = request.getParameter("user_pass");
-            String remember    = request.getParameter("remember");
-            UserDAO dao        = new UserDAO();
-            model.User user    = dao.checkUser(user_email, user_pass);
+            String user_email = request.getParameter("user_email");
+            String user_pass = request.getParameter("user_pass");
+            String remember = request.getParameter("remember");
+            UserDAO dao = new UserDAO();
+            model.User user = dao.checkUser(user_email, user_pass);
             HttpSession session = request.getSession();
 
             if (user == null) {
@@ -50,17 +52,17 @@ public class User extends HttpServlet {
                 session.setAttribute("loginMessage", "Đăng nhập thành công!");
 
                 Cookie emailCookie = new Cookie("email", user_email);
-                Cookie passCookie  = new Cookie("pass", user_pass);
-                Cookie remCookie   = new Cookie("remember", remember);
+                Cookie passCookie = new Cookie("pass", user_pass);
+                Cookie remCookie = new Cookie("remember", remember);
 
                 if (remember != null) {
                     emailCookie.setMaxAge(60 * 60 * 24 * 30);
-                    passCookie .setMaxAge(60 * 60 * 24 * 30);
-                    remCookie  .setMaxAge(60 * 60 * 24 * 30);
+                    passCookie.setMaxAge(60 * 60 * 24 * 30);
+                    remCookie.setMaxAge(60 * 60 * 24 * 30);
                 } else {
                     emailCookie.setMaxAge(0);
-                    passCookie .setMaxAge(0);
-                    remCookie  .setMaxAge(0);
+                    passCookie.setMaxAge(0);
+                    remCookie.setMaxAge(0);
                 }
 
                 response.addCookie(emailCookie);
@@ -108,14 +110,21 @@ public class User extends HttpServlet {
                 return;
             }
 
-            String user_name   = request.getParameter("user_name");
-            String user_email  = request.getParameter("user_email");
+            String user_name = request.getParameter("user_name");
+            String user_email = request.getParameter("user_email");
             String dateOfBirth = request.getParameter("dateOfBirth");
-            String address     = request.getParameter("address");
+            String address = request.getParameter("address");
             String phoneNumber = request.getParameter("phoneNumber");
 
             // 1. Validate date of birth
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            address = (address != null ? address.trim() : "");
+            if (address.isEmpty()) {
+                session.setAttribute("error_address", "Địa chỉ không được để trống");
+                request.getRequestDispatcher("user?action=myaccount")
+                        .forward(request, response);
+                return;
+            }
             try {
                 Date dob = sdf.parse(dateOfBirth);
                 if (dob.after(new Date())) {
@@ -130,14 +139,14 @@ public class User extends HttpServlet {
             }
 
             // 2. Validate User Name và Phone Number
+            // loại bỏ khoảng trắng đầu/cuối
+            user_name = (user_name != null) ? user_name.trim() : "";
+
             boolean hasError = false;
 
-            // User Name: không được trống, 3–50 ký tự, không chứa khoảng trắng
-            if (user_name == null || user_name.trim().isEmpty()) {
+// User Name: không được trống, 3–50 ký tự (khoảng trắng giữa vẫn cho phép)
+            if (user_name.isEmpty()) {
                 session.setAttribute("error_userName", "User Name không được để trống");
-                hasError = true;
-            } else if (user_name.contains(" ")) {
-                session.setAttribute("error_userName", "User Name không được chứa khoảng trắng");
                 hasError = true;
             } else if (user_name.length() < 3 || user_name.length() > 50) {
                 session.setAttribute("error_userName", "User Name phải từ 3 đến 50 ký tự");
@@ -147,7 +156,7 @@ public class User extends HttpServlet {
             // Phone Number: đúng 10 chữ số, không chứa khoảng trắng hay ký tự chữ
             if (phoneNumber == null || !phoneNumber.matches("\\d{10}")) {
                 session.setAttribute("error_phoneNumber",
-                    "Phone Number phải gồm đúng 10 chữ số, không được chứa khoảng trắng hay ký tự chữ");
+                        "Phone Number phải gồm đúng 10 chữ số, không được chứa khoảng trắng hay ký tự chữ");
                 hasError = true;
             }
 
@@ -163,17 +172,17 @@ public class User extends HttpServlet {
 
             // 4. Refresh session và thông báo thành công
             model.User updatedUser = new model.User(
-                user_id,
-                user_name,
-                user.getUser_email(),
-                user_email,
-                user.getIsAdmin(),
-                dateOfBirth,
-                address,
-                phoneNumber,
-                user.isBanned(),
-                user.getAdminReason(),
-                user.getIsStoreStaff()
+                    user_id,
+                    user_name,
+                    user.getUser_email(),
+                    user_email,
+                    user.getIsAdmin(),
+                    dateOfBirth,
+                    address,
+                    phoneNumber,
+                    user.isBanned(),
+                    user.getAdminReason(),
+                    user.getIsStoreStaff()
             );
             session.setAttribute("user", updatedUser);
             session.setAttribute("updateMessage", "Cập nhật thông tin thành công!");
@@ -182,10 +191,10 @@ public class User extends HttpServlet {
         } else if ("signup".equals(action)) {
             HttpSession session = request.getSession();
             UserDAO da = new UserDAO();
-            String email               = request.getParameter("user_email");
-            String pass                = request.getParameter("user_pass");
-            String repass              = request.getParameter("re_pass");
-            String gRecaptchaResponse  = request.getParameter("g-recaptcha-response");
+            String email = request.getParameter("user_email");
+            String pass = request.getParameter("user_pass");
+            String repass = request.getParameter("re_pass");
+            String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 
             // Validate reCAPTCHA
             boolean verify = VerifyRecaptcha.verify(gRecaptchaResponse);
@@ -199,7 +208,7 @@ public class User extends HttpServlet {
             String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{6,}$";
             if (!pass.matches(passwordRegex)) {
                 session.setAttribute("error_match",
-                    "Mật khẩu phải có ít nhất 6 ký tự, bao gồm ít nhất một chữ cái viết hoa và một chữ số");
+                        "Mật khẩu phải có ít nhất 6 ký tự, bao gồm ít nhất một chữ cái viết hoa và một chữ số");
                 request.getRequestDispatcher("register.jsp").forward(request, response);
                 return;
             }
@@ -221,8 +230,8 @@ public class User extends HttpServlet {
 
             // Send verification email
             SendEmail sm = new SendEmail();
-            String code  = sm.getRandom();
-            UserC userc  = new UserC(code, email);
+            String code = sm.getRandom();
+            UserC userc = new UserC(code, email);
             boolean emailSent = sm.sendEmail1(userc);
 
             if (emailSent) {
@@ -244,13 +253,21 @@ public class User extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -258,4 +275,3 @@ public class User extends HttpServlet {
         return "Short description";
     }
 }
-

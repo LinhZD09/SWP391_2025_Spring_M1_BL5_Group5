@@ -356,6 +356,12 @@
                                                     <input type="text" name="address"
                                                            value="${sessionScope.user.address}"
                                                            placeholder="Nhập địa chỉ (Xã,Huyện,Tỉnh)">
+                                                    <c:if test="${not empty sessionScope.error_address}">
+                                                        <div class="text-danger" style="margin-top:5px;">
+                                                            ${sessionScope.error_address}
+                                                        </div>
+                                                        <c:remove var="error_address" scope="session"/>
+                                                    </c:if>
 
                                                     <label><b>Số điện thoại</b></label>
                                                     <input type="text" name="phoneNumber"
@@ -417,12 +423,21 @@
             }
 
             // Kiểm tra và hiển thị thông báo khi trang được tải
-           document.addEventListener('DOMContentLoaded', function () {
-                var errorDob      = "${fn:escapeXml(sessionScope.error_dob)}";
-                var updateMessage = "${fn:escapeXml(sessionScope.updateMessage)}";
-
-                if (errorDob)      { showNotification(errorDob, false); }
-                if (updateMessage) { showNotification(updateMessage, true); }
+          document.addEventListener('DOMContentLoaded', function () {
+                var error_dob = "${sessionScope.error_dob}";
+                var error_pass = "${sessionScope.error_pass}";
+                var updateMessage = "${sessionScope.updateMessage}";
+                if (error_dob) {
+                    showNotification(error_dob, false);
+            <% session.removeAttribute("error_dob"); %>
+                }
+                if (updateMessage) {
+                    showNotification(updateMessage, true);
+            <% session.removeAttribute("updateMessage"); %>
+                } else if (error_pass) {
+                    showNotification(error_pass, false);
+            <% session.removeAttribute("error_pass"); %>
+                }
             });
         </script>
         <c:remove var="error_dob" scope="session"/>

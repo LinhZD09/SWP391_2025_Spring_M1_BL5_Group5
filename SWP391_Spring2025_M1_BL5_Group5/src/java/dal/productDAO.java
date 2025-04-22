@@ -22,8 +22,8 @@ public class productDAO {
     Connection conn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    
-    public List<Product> getProduct(){
+
+    public List<Product> getProduct() {
         List<Product> list = new ArrayList<>();
         String sql = "select c.category_name ,  p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img, p.category_id from  \n"
                 + "product p inner join category c on p.category_id = c.category_id";
@@ -31,17 +31,17 @@ public class productDAO {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 Category c = new Category(rs.getInt(8), rs.getString(1));
                 list.add(new Product(c, rs.getString(2), rs.getString(3), rs.getFloat(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
-            }        
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
         return list;
     }
-    
-    public List<Product> getProductA(){
+
+    public List<Product> getProductA() {
         List<Product> list = new ArrayList<>();
         String sql = "select c.category_name ,  p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img, p.category_id from  \n"
                 + "product p inner join category c on p.category_id = c.category_id inner join product_active pa on pa.product_id = p.product_id Where pa.active='True'";
@@ -49,7 +49,7 @@ public class productDAO {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 Category c = new Category(rs.getInt(8), rs.getString(1));
                 list.add(new Product(c, rs.getString(2), rs.getString(3), rs.getFloat(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
             }
@@ -57,18 +57,17 @@ public class productDAO {
             System.out.println(e);
         }
         return list;
-            
-        }
-  
 
-    public List<Product_Active> getActive(){
+    }
+
+    public List<Product_Active> getActive() {
         List<Product_Active> list = new ArrayList<>();
         String sql = "select * from product_active";
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 list.add(new Product_Active(rs.getString(1), rs.getString(2)));
             }
         } catch (Exception e) {
@@ -76,15 +75,15 @@ public class productDAO {
         }
         return list;
     }
-    
-    public List<Product> getProductHigh(){
+
+    public List<Product> getProductHigh() {
         List<Product> list = new ArrayList<>();
         String sql = "select c.category_name , p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img from product p inner join category c on p.category_id = c.category_id ORDER BY p.product_price DESC";
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Category c = new Category(rs.getString(1));
                 list.add(new Product(c, rs.getString(2), rs.getString(3), rs.getFloat(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
             }
@@ -93,7 +92,7 @@ public class productDAO {
         }
         return list;
     }
-    
+
     public List<Product> getProductAZ() {
         List<Product> list = new ArrayList<>();
         String sql = "select c.category_name , p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img from product p inner join category c on p.category_id = c.category_id inner join product_active pa on pa.product_id = p.product_id Where pa.active ='True' ORDER BY p.product_name";
@@ -110,7 +109,7 @@ public class productDAO {
         }
         return list;
     }
-    
+
     public List<Product> getListByPage(List<Product> list,
             int start, int end) {
         ArrayList<Product> arr = new ArrayList<>();
@@ -119,7 +118,7 @@ public class productDAO {
         }
         return arr;
     }
-    
+
     public List<Category> getCategory() {
         List<Category> list = new ArrayList<>();
         String sql = "select * from category";
@@ -134,7 +133,7 @@ public class productDAO {
         }
         return list;
     }
-    
+
     public List<Product> getTop10Product() {
         List<Product> list = new ArrayList<>();
         String sql = "SELECT TOP 10 p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img FROM product p inner join product_active pa on pa.product_id = p.product_id Where pa.active ='True' ORDER BY NEWID()";
@@ -250,8 +249,8 @@ public class productDAO {
         }
         return count;
     }
-    
-    public List<Product> getProductByPrice(int a){
+
+    public List<Product> getProductByPrice(int a) {
         List<Product> list = new ArrayList<>();
         String sql = "select c.category_name ,  p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img, p.category_id from  \n"
                 + "product p inner join category c on p.category_id = c.category_id inner join product_active pa on pa.product_id = p.product_id Where pa.active ='True' And p.product_price >=" + a + " Order By p.product_price";
@@ -270,7 +269,7 @@ public class productDAO {
     }
 
     // search by price
-    public List<Product> searchProductByPrice(double a, double b){
+    public List<Product> searchProductByPrice(double a, double b) {
         List<Product> list = new ArrayList<>();
         String sql = "SELECT c.category_name, p.product_id, p.product_name, p.product_price, p.product_describe, p.quantity, p.img, p.category_id "
                 + "FROM product p INNER JOIN category c ON p.category_id = c.category_id inner join product_active pa on pa.product_id = p.product_id "
@@ -305,6 +304,46 @@ public class productDAO {
         }
         return list;
     }
+
+    // search by color
+    public List<Product> getProductByColor(String a) {
+        List<Product> list = new ArrayList<>();
+        String sql = "Select Distinct c.category_name ,  p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img, p.category_id, co.color\n"
+                + "FROM category c \n"
+                + "INNER JOIN product p ON p.category_id = c.category_id\n"
+                + "INNER JOIN product_color co ON co.product_id = p.product_id\n"
+                + " Inner join product_active pa on pa.product_id = p.product_id\n"
+                + "WHERE pa.active ='True' and co.color = ?\n"
+                + "ORDER BY p.product_id";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, a);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Category c = new Category(rs.getInt(8), rs.getString(1));
+                list.add(new Product(c, rs.getString(2), rs.getString(3), rs.getFloat(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         // Tạo đối tượng của DAO
         productDAO dao = new productDAO();
