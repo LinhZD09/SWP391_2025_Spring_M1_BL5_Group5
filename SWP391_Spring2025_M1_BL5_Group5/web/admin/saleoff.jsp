@@ -98,7 +98,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-12 text-right">
                                     <button class="btn btn-success" data-toggle="modal" data-target="#addSaleModal">
-                                        <i class="fa fa-plus"></i> Thêm Mới Sale Off
+                                        <i class="fa fa-plus"></i> Thêm Mới 
                                     </button>
                                 </div>
                             </div>
