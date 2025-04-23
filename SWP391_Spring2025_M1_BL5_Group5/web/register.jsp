@@ -10,6 +10,18 @@
     <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="assets/css/plugins.css">
     <link rel="stylesheet" href="assets/css/style.css">
+<style>
+
+
+.customer_login, 
+.customer_login .container,
+.customer_login .row,
+.customer_login .col-lg-6,
+.customer_login .account_form {
+    
+    padding: 0 !important;
+}
+</style>
 </head>
 
 <body>
