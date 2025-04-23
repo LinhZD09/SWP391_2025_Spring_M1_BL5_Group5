@@ -9,7 +9,7 @@
         <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-         <link rel="stylesheet" href="assets/css/plugins.css">
+        <link rel="stylesheet" href="assets/css/plugins.css">
         <link rel="stylesheet" href="assets/css/style.css">
         <style>
             body {
@@ -101,14 +101,14 @@
                 border-color: #007bff;
             }
             .breadcrumb_content ul li:last-child {
-    margin-right: 0;
-}
-.breadcrumb_content ul li a {
-    color: #999999;
-}
-.breadcrumb_content ul li a:hover {
-    color: #ff6a28;
-}
+                margin-right: 0;
+            }
+            .breadcrumb_content ul li a {
+                color: #999999;
+            }
+            .breadcrumb_content ul li a:hover {
+                color: #ff6a28;
+            }
         </style>
 
 
@@ -117,7 +117,7 @@
         <jsp:include page="layout/menu.jsp"/>
         <!--Offcanvas menu area start-->
         <div class="off_canvars_overlay"></div>
-        
+
 
         <div class="container my-5">
             <nav aria-label="breadcrumb">
@@ -182,6 +182,31 @@
                             </div>
                             <button type="submit" class="btn btn-primary btn-sm mt-3">Lọc</button>
                         </form>
+
+                        <h2 class="mt-4"><i class="fas fa-cogs mr-2"></i>Kích Cỡ</h2>
+<form action="search?action=searchproductbysize" method="POST">
+    <div class="form-check">
+        <select class="form-control" name="size">
+            <!-- Duyệt qua các kích cỡ và tạo các option -->
+            <c:forEach items="${SizeData}" var="size">
+                <!-- Kiểm tra nếu kích cỡ là 'S' hoặc kích cỡ đã được chọn thì thêm thuộc tính selected -->
+                <option value="${size.size}" 
+                        <c:if test="${size.size == (param.size != null && param.size != '' ? param.size : 'S')}">selected</c:if>>
+                    ${size.size} <!-- Hiển thị tên kích cỡ -->
+                </option>
+            </c:forEach>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm mt-3">Tìm kiếm</button>
+</form>
+
+
+
+
+
+
+
+
                     </div>
                 </div>
 
@@ -200,7 +225,7 @@
                             </div>
                         </div>
                     </div>
-                
+
 
 
                     <div class="row">

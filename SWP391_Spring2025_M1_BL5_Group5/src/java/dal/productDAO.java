@@ -10,8 +10,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import model.Category;
+import model.Color;
 import model.Product;
 import model.Product_Active;
+import model.Size;
 
 /**
  *
@@ -343,6 +345,180 @@ public class productDAO {
         }
         return list;
     }
+
+    public List<Product> getProductLow() {
+        List<Product> list = new ArrayList<>();
+        String sql = "select c.category_name , p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img from product p inner join category c on p.category_id = c.category_id inner join product_active pa on pa.product_id = p.product_id Where pa.active ='True' ORDER BY p.product_price ASC";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Category c = new Category(rs.getString(1));
+                list.add(new Product(c, rs.getString(2), rs.getString(3), rs.getFloat(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    public List<Product> SearchAll(String text) {
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT DISTINCT c.category_name , p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img \n"
+                + "FROM product p inner join category c on c.category_id = p.category_id inner join product_color ps on p.product_id = ps.product_id Inner Join Product_Active pa On pa.product_id =p.product_id\n"
+                + "WHERE pa.active ='True' And product_name LIKE ? OR  product_price LIKE ? OR ps.color LIKE ? OR c.category_name LIKE ?";
+
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, "%" + text + "%");
+            ps.setString(2, "%" + text + "%");
+            ps.setString(3, text);
+            ps.setString(4, "_%" + text + "%_");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Category c = new Category(rs.getString(1));
+                list.add(new Product(c, rs.getString(2), rs.getString(3), rs.getFloat(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
+
+    public List<Product> getProductByCategory(int category_id) {
+        List<Product> list = new ArrayList<>();
+        String sql = "select c.category_name , p.product_id , p.product_name, p.product_price, p.product_describe, p.quantity,p.img from product p inner join category c on p.category_id = c.category_id inner join product_active pa on pa.product_id = p.product_id Where pa.active ='True' And p.category_id=?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, category_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Category c = new Category(rs.getString(1));
+                list.add(new Product(c, rs.getString(2), rs.getString(3), rs.getFloat(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    public List<Size> getSizeByID(String product_id) {
+        List<Size> list = new ArrayList<>();
+        String sql = "select * from product_size where product_id=?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, product_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Size(rs.getString(1), rs.getString(2)));
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
+
+    public List<Color> getColorByID(String product_id) {
+        List<Color> list = new ArrayList<>();
+        String sql = "select * from product_color where product_id=?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, product_id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Color(rs.getString(1), rs.getString(2)));
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
+
+    public List<Product> getProductBySize(String sizeName) {
+        List<Product> productList = new ArrayList<>();
+        String sql = "SELECT p.product_id, p.product_name, p.product_price, p.product_describe, p.quantity, p.img "
+                + "FROM product p "
+                + "JOIN product_size ps ON p.product_id = ps.product_id "
+                + "WHERE ps.size = ?"; // Filter by size name
+
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, sizeName);  // Use size name to filter
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String product_id = rs.getString("product_id");
+                String product_name = rs.getString("product_name");
+                Float product_price = rs.getFloat("product_price");
+                String product_describe = rs.getString("product_describe");
+                int quantity = rs.getInt("quantity");
+                String img = rs.getString("img");
+
+                Product product = new Product(product_id, product_name, product_price, product_describe, quantity, img);
+
+                // Retrieve associated sizes for the product
+                List<Size> sizes = getSizesByProductId(product_id);
+                product.setSize(sizes);
+
+                productList.add(product);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return productList;
+    }
+
+    public List<Size> getSizesByProductId(String productId) {
+        List<Size> sizes = new ArrayList<>();
+        String sql = "SELECT size FROM product_size WHERE product_id = ?";
+
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, productId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String size = rs.getString("size");
+                sizes.add(new Size(productId, size));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return sizes;
+    }
+
+    public List<Size> getAllSizes() {
+    List<Size> sizeList = new ArrayList<>();
+    String sql = "SELECT DISTINCT size FROM product_size";  // Get all unique sizes
+
+    try {
+        conn = new DBContext().getConnection();
+        ps = conn.prepareStatement(sql);
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            String sizeName = rs.getString("size").trim();  // Trim to remove leading/trailing whitespace
+
+            // Only add non-empty sizes to the list
+            if (!sizeName.isEmpty()) {  // Ignore empty or invalid sizes
+                Size size = new Size();
+                size.setSize(sizeName); // Set the size name
+                sizeList.add(size);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return sizeList;
+}
+
 
     public static void main(String[] args) {
         // Tạo đối tượng của DAO
