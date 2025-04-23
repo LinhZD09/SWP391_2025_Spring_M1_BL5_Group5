@@ -95,6 +95,10 @@ public class ChangePasswordServlet extends HttpServlet {
         // Kiểm tra mật khẩu cũ có khớp không
         if (!oldPassword.equals(currentUser.getUser_pass())) {
             session.setAttribute("error_pass", "Mật khẩu cũ không chính xác");
+            session.setAttribute("oldPassword", oldPassword);
+            session.setAttribute("newPassword", newPassword);
+            session.setAttribute("confirmNewPassword", confirmNewPassword);
+            session.setAttribute("selectedTab", "changePassword"); 
             response.sendRedirect("my-account.jsp");  // Quay lại trang tài khoản
             return;
         }
@@ -102,12 +106,20 @@ public class ChangePasswordServlet extends HttpServlet {
         // Kiểm tra mật khẩu mới và xác nhận mật khẩu mới có khớp không
         if (!newPassword.equals(confirmNewPassword)) {
             session.setAttribute("error_pass", "Mật khẩu mới và xác nhận mật khẩu không khớp");
+            session.setAttribute("oldPassword", oldPassword);
+            session.setAttribute("newPassword", newPassword);
+            session.setAttribute("confirmNewPassword", confirmNewPassword);
+            session.setAttribute("selectedTab", "changePassword"); 
             response.sendRedirect("my-account.jsp");  // Quay lại trang tài khoản
             return;
         }
         // Kiểm tra mật khẩu mới có hợp lệ không (điều kiện: bắt đầu bằng chữ in hoa, không có ký tự đặc biệt, độ dài <= 20)
         if (!isValidPassword(newPassword)) {
             session.setAttribute("error_pass", "Mật khẩu phải có ít nhất 6 ký tự, bao gồm ít nhất một chữ cái viết hoa và một chữ số");
+            session.setAttribute("oldPassword", oldPassword);
+            session.setAttribute("newPassword", newPassword);
+            session.setAttribute("confirmNewPassword", confirmNewPassword);
+            session.setAttribute("selectedTab", "changePassword"); 
             response.sendRedirect("my-account.jsp");  // Quay lại trang tài khoản
             return;
         }
@@ -122,6 +134,10 @@ public class ChangePasswordServlet extends HttpServlet {
             if (isUpdated) {
                 session.setAttribute("updateMessage", "Đổi mật khẩu thành công");
             } else {
+                session.setAttribute("oldPassword", oldPassword);
+                session.setAttribute("newPassword", newPassword);
+                session.setAttribute("confirmNewPassword", confirmNewPassword);
+                session.setAttribute("selectedTab", "changePassword"); 
                 session.setAttribute("error_pass", "Đã có lỗi xảy ra khi cập nhật mật khẩu");
             }
         } catch (SQLException e) {

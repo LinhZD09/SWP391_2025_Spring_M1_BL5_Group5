@@ -4,8 +4,6 @@ package Controller.Admin;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
-
 import dal.UserDAO;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -23,7 +21,7 @@ import model.User;
  *
  * @author truon
  */
-@WebServlet(urlPatterns={"/customermanager"})
+@WebServlet(urlPatterns = {"/customermanager"})
 public class CustomerManager extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -49,6 +47,12 @@ public class CustomerManager extends HttpServlet {
 
                 } else if (action.equals("update")) {
                     int id = Integer.parseInt(request.getParameter("user_id"));
+                    if (user.getUser_id() == id) {
+                        // Nếu là admin và cố gắng thay đổi quyền của chính mình, không cho phép
+                        session.setAttribute("error_message", "Admin không thể thay đổi quyền của bản thân.");
+                        response.sendRedirect("customermanager");  // Quay lại trang quản lý khách hàng
+                        return;
+                    }
                     dao.setAdmin(id,
                             request.getParameter("permission"),
                             request.getParameter("storeStaffPermission"),
@@ -97,4 +101,3 @@ public class CustomerManager extends HttpServlet {
         processRequest(request, response);
     }
 }
-

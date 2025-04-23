@@ -47,7 +47,42 @@ public class Dashboard extends HttpServlet {
                 productDAO dao = new productDAO();
                 billDAO bdao = new billDAO();
                 categoryDAO cdao = new categoryDAO();
-             
+                //pie chart
+                List<Category> categoryList = cdao.getCategoryCounts();
+                request.setAttribute("categoryList", categoryList);
+                List<Bill> billbyday = bdao.getBillByDay();
+                List<Double> paidList = new ArrayList<>();
+                List<Double> unpaidList = new ArrayList<>();
+                List<Date> dateList = new ArrayList<>();
+
+                for (Bill bill : billbyday) {
+                    double totalPaid = bdao.getTotalPaidByDate(bill.getDate());
+                    double totalUnpaid = bdao.getTotalUnpaidByDate(bill.getDate());
+                    paidList.add(totalPaid);
+                    unpaidList.add(totalUnpaid);
+                    dateList.add(bill.getDate());
+                }
+                String startDate = request.getParameter("startDate");
+                String endDate = request.getParameter("endDate");
+                String message1 = null;
+                String message2 = null;
+                if (startDate != null && endDate != null) {  // Chỉ xử lý khi có tìm kiếm
+                    if (startDate.isEmpty()) {
+                        startDate = "default_start_date";
+                    }
+                    if (endDate.isEmpty()) {
+                        endDate = "default_end_date";
+                    }
+                    List<Bill> bills = bdao.getBillBetweenDates(startDate, endDate);
+                    if (bills != null && !bills.isEmpty()) {
+                        message1 = "Tìm kiếm thành công từ " + startDate + " đến " + endDate;
+                        session.setAttribute("message1", message1);
+                    } else {
+                        message2 = "Không tìm thấy kết quả từ " + startDate + " đến " + endDate;
+                        session.setAttribute("message2", message2);
+                    }
+                    request.setAttribute("bills", bills);
+                }
 
                 int count = dao.CountProduct();
                 int countuser = dao.CountUser();
@@ -58,7 +93,7 @@ public class Dashboard extends HttpServlet {
                 request.setAttribute("user", countuser);
                 request.setAttribute("bill", countbill);
                 request.setAttribute("low", countproductlow);
-              
+                request.setAttribute("billbyday", billbyday);
 
                 List<Object[]> monthlyTotals = bdao.getTotalBillAmountByMonth();
                 request.setAttribute("monthlyTotals", monthlyTotals);

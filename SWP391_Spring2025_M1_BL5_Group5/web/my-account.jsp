@@ -228,13 +228,13 @@
                                             <div class="account_login_form">
                                                 <form action="users?action=changePassword" method="POST">
                                                     <label><b>Mật khẩu cũ</b></label>
-                                                    <input type="password" name="old_password" placeholder="Nhập mật khẩu cũ" required>
+                                                    <input type="password" name="old_password" placeholder="Nhập mật khẩu cũ" required value="${sessionScope.oldPassword}">
 
                                                     <label><b>Mật khẩu mới</b></label>
-                                                    <input type="password" name="new_password" placeholder="Nhập mật khẩu mới" required>
+                                                    <input type="password" name="new_password" placeholder="Nhập mật khẩu mới" required value="${sessionScope.newPassword}">
 
                                                     <label><b>Xác nhận mật khẩu mới</b></label>
-                                                    <input type="password" name="confirm_new_password" placeholder="Xác nhận mật khẩu mới" required>
+                                                    <input type="password" name="confirm_new_password" placeholder="Xác nhận mật khẩu mới" required value="${sessionScope.confirmNewPassword}">
 
                                                     <div class="cart_submit">
                                                         <button type="submit">Lưu</button>
@@ -285,7 +285,7 @@
 
                                                         <!-- Format tiền-->
                                                         <td>
-                                                            
+
                                                             <c:set var="tempFormatted">
                                                                 <fmt:formatNumber value="${b.total}"
                                                                                   type="number"
@@ -293,7 +293,7 @@
                                                                                   minFractionDigits="0"
                                                                                   maxFractionDigits="0" />
                                                             </c:set>
-                                                           
+
                                                             <c:set var="finalPrice" value="${fn:replace(tempFormatted, ',', '.')}" />
                                                             ${finalPrice} VND
                                                         </td>
@@ -423,7 +423,7 @@
             }
 
             // Kiểm tra và hiển thị thông báo khi trang được tải
-          document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function () {
                 var error_dob = "${sessionScope.error_dob}";
                 var error_pass = "${sessionScope.error_pass}";
                 var updateMessage = "${sessionScope.updateMessage}";
@@ -442,6 +442,7 @@
         </script>
         <c:remove var="error_dob" scope="session"/>
         <c:remove var="updateMessage" scope="session"/>
-        </script>
+
+
     </body>
 </html>

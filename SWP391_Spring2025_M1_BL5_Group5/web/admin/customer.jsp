@@ -153,6 +153,12 @@
                                         </span>
                                     </div>
                                 </div>
+                                <c:if test="${not empty sessionScope.error_message}">
+                                    <div class="alert alert-danger">
+                                        ${sessionScope.error_message}
+                                    </div>
+                                </c:if>
+
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label for="exampleSelect1" class="control-label">Quyền quản trị</label>
