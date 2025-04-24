@@ -11,13 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Report;
 
+public class reportDAO extends DBContext {
 
-public class reportDAO extends DBContext{
-    
     Connection conn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    
+
     public void InsertReport(String user_id, String content_report, String subject_report, String user_email) {
         try {
             String sql = "INSERT INTO [dbo].[report]\n"
@@ -26,17 +25,18 @@ public class reportDAO extends DBContext{
                     + "           ,[subject_report]\n"
                     + "           ,[user_email])\n"
                     + "     VALUES (?,?,?,?)";
-              conn = new DBContext().getConnection();
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, user_id); 
-                ps.setString(2,content_report );
-                ps.setString(3, subject_report); 
-                ps.setString(4, user_email); 
-                ps.executeUpdate();
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, user_id);
+            ps.setString(2, content_report);
+            ps.setString(3, subject_report);
+            ps.setString(4, user_email);
+            ps.executeUpdate();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-    
+
     public List<Report> getAll() {
         List<Report> list = new ArrayList<>();
         String sql = "Select r.id_report,r.user_id,r.content_report,r.subject_report,u.user_email From report r INNER JOIN users u On u.user_id=r.user_id";
@@ -53,8 +53,7 @@ public class reportDAO extends DBContext{
         }
         return list;
     }
-    
-    
+
     public void deleteReport(int reportId) {
         try {
             String sql = "DELETE FROM report WHERE id_report = ?";
@@ -66,4 +65,5 @@ public class reportDAO extends DBContext{
             e.printStackTrace();
         }
     }
+
 }
