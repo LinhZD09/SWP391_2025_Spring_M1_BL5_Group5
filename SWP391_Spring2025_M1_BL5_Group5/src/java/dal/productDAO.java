@@ -7,6 +7,7 @@ package dal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Category;
@@ -535,7 +536,255 @@ public class productDAO {
     return sizeList;
 }
 
+public void insertProduct(Product product) {
+        String sql = "insert into product (product_id,category_id,product_name,product_price,product_describe,quantity,img) values(?,?,?,?,?,?,?)";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, product.getProduct_id());
+            ps.setInt(2, product.getCate().getCategory_id());
+            ps.setString(3, product.getProduct_name());
+            ps.setFloat(4, product.getProduct_price());
+            ps.setString(5, product.getProduct_describe());
+            ps.setInt(6, product.getQuantity());
+            ps.setString(7, product.getImg());
+            ps.executeUpdate();
+        } catch (Exception e) {
+        }
+        String sql1 = "INSERT INTO product_size (product_id,size) VALUES(?,?)";
+        try {
+            conn = new DBContext().getConnection();
+            for (Size i : product.getSize()) {
+                ps = conn.prepareStatement(sql1);
+                ps.setString(1, i.getProduct_id());
+                ps.setString(2, i.getSize());
+                ps.executeUpdate();
+            }
+        } catch (Exception e) {
+        }
+        String sql2 = "INSERT INTO product_color (product_id,color) VALUES(?,?)";
+        try {
+            conn = new DBContext().getConnection();
+            for (Color i : product.getColor()) {
+                ps = conn.prepareStatement(sql2);
+                ps.setString(1, i.getProduct_id());
+                ps.setString(2, i.getColor());
+                ps.executeUpdate();
+            }
+        } catch (Exception e) {
 
+        }
+        String sql3 = "INSERT INTO product_active (product_id,active) VALUES(?,?)";
+        try {
+            conn = new DBContext().getConnection();
+            Product_Active i =product.getActive();
+                ps = conn.prepareStatement(sql3);
+                ps.setString(1, product.getProduct_id());
+                ps.setString(2, i.getAcitve());
+                ps.executeUpdate();
+        }catch(Exception e){
+        }
+    }
+
+    
+public void ProductDelete(String product_id) {
+    Connection conn = null;
+    PreparedStatement ps = null;
+
+    try {
+        // Kết nối cơ sở dữ liệu và bắt đầu giao dịch
+        conn = new DBContext().getConnection();
+        conn.setAutoCommit(false); // Tắt auto-commit để thực hiện giao dịch
+
+        // Xóa dữ liệu từ bảng product_comment
+        String sql1 = "DELETE FROM product_comment WHERE product_id=?";
+        ps = conn.prepareStatement(sql1);
+        ps.setString(1, product_id);
+        ps.executeUpdate();
+
+        // Xóa dữ liệu từ bảng product_saleOFF
+        String sql2 = "DELETE FROM product_saleOFF WHERE product_id=?";
+        ps = conn.prepareStatement(sql2);
+        ps.setString(1, product_id);
+        ps.executeUpdate();
+
+        // Xóa dữ liệu từ bảng product_color
+        String sql3 = "DELETE FROM product_color WHERE product_id=?";
+        ps = conn.prepareStatement(sql3);
+        ps.setString(1, product_id);
+        ps.executeUpdate();
+
+        // Xóa dữ liệu từ bảng product_size
+        String sql4 = "DELETE FROM product_size WHERE product_id=?";
+        ps = conn.prepareStatement(sql4);
+        ps.setString(1, product_id);
+        ps.executeUpdate();
+
+        // Xóa dữ liệu từ bảng cart
+        String sql5 = "DELETE FROM cart WHERE product_id=?";
+        ps = conn.prepareStatement(sql5);
+        ps.setString(1, product_id);
+        ps.executeUpdate();
+
+        // Xóa dữ liệu từ bảng product_active
+        String sql6 = "DELETE FROM product_active WHERE product_id=?";
+        ps = conn.prepareStatement(sql6);
+        ps.setString(1, product_id);
+        ps.executeUpdate();
+
+        // Xóa dữ liệu từ bảng bill_detail
+        String sql7 = "DELETE FROM bill_detail WHERE product_id=?";
+        ps = conn.prepareStatement(sql7);
+        ps.setString(1, product_id);
+        ps.executeUpdate();
+
+        // Xóa dữ liệu từ bảng product
+        String sql8 = "DELETE FROM product WHERE product_id=?";
+        ps = conn.prepareStatement(sql8);
+        ps.setString(1, product_id);
+        ps.executeUpdate();
+
+        // Commit giao dịch sau khi tất cả các câu lệnh SQL đã thành công
+        conn.commit();
+    } catch (Exception e) {
+        // Nếu có lỗi, rollback tất cả các thay đổi
+        try {
+            if (conn != null) {
+                conn.rollback();
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        System.out.println("Lỗi xóa sản phẩm: " + e.getMessage());
+    } finally {
+        // Đóng kết nối và chuẩn bị giải phóng tài nguyên
+        try {
+            if (ps != null) ps.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            System.out.println("Lỗi đóng kết nối: " + e.getMessage());
+        }
+    }
+}
+
+
+    public void updateProduct(Product product, int cid, List<Color> listColor, List<Size> listSize) {
+        try {
+            // Update product details
+            String sql = "UPDATE product SET category_id=?, product_name=?, product_price=?, product_describe=?, quantity=?" + (!product.getImg().equalsIgnoreCase("images/") ? ", img=?" : "") + " WHERE product_id=?";
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, cid);
+            ps.setString(2, product.getProduct_name());
+            ps.setFloat(3, product.getProduct_price());
+            ps.setString(4, product.getProduct_describe());
+            ps.setInt(5, product.getQuantity());
+            if (!product.getImg().isEmpty()) {
+                ps.setString(6, product.getImg());
+            }
+            ps.setString(!product.getImg().equalsIgnoreCase("images/") ? 7 : 6, product.getProduct_id());
+            ps.executeUpdate();
+
+            // Delete existing sizes and colors and actives
+            String deleteSizesSQL = "DELETE FROM product_size WHERE product_id=?";
+            ps = conn.prepareStatement(deleteSizesSQL);
+            ps.setString(1, product.getProduct_id());
+            ps.executeUpdate();
+
+            String deleteColorsSQL = "DELETE FROM product_color WHERE product_id=?";
+            ps = conn.prepareStatement(deleteColorsSQL);
+            ps.setString(1, product.getProduct_id());
+            ps.executeUpdate();
+             String deleteActiveSQL = "DELETE FROM product_active WHERE product_id=?";
+            ps = conn.prepareStatement(deleteActiveSQL);
+            ps.setString(1, product.getProduct_id());
+            ps.executeUpdate();
+            // Insert new sizes
+            String insertSizeSQL = "INSERT INTO product_size (product_id, size) VALUES (?, ?)";
+            for (Size size : listSize) {
+                ps = conn.prepareStatement(insertSizeSQL);
+                ps.setString(1, product.getProduct_id());
+                ps.setString(2, size.getSize());
+                ps.executeUpdate();
+            }
+            //Insert new Active
+                String insertActiveSQL = "INSERT INTO product_active (product_id, active) VALUES (?, ?)";
+                ps = conn.prepareStatement(insertActiveSQL);
+                ps.setString(1, product.getProduct_id());
+                ps.setString(2, product.getActive().getAcitve());
+                ps.executeUpdate();
+            
+
+            // Insert new colors
+            String insertColorSQL = "INSERT INTO product_color (product_id, color) VALUES (?, ?)";
+            for (Color color : listColor) {
+                ps = conn.prepareStatement(insertColorSQL);
+                ps.setString(1, product.getProduct_id());
+                ps.setString(2, color.getColor());
+                ps.executeUpdate();
+            }
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+   
+    public List<Size> getSize() {
+        List<Size> list = new ArrayList<>();
+        String sql = "select * from product_size";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Size(rs.getString(1), rs.getString(2)));
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
+
+    public List<Color> getColor() {
+        List<Color> list = new ArrayList<>();
+        String sql = "select * from product_color";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Color(rs.getString(1), rs.getString(2)));
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
+
+
+    public Category getCategoryByName(String name) {
+        String sql = "select * from Category where category_name = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, name);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return new Category(rs.getInt(1), rs.getString(2));
+            }
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    public void insertCategory(String name) {
+        String sql = " insert into Category (category_name) values(?)";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, name);
+            ps.executeUpdate();
+        } catch (Exception e) {
+        }
+    }
     public static void main(String[] args) {
         // Tạo đối tượng của DAO
         productDAO dao = new productDAO();
