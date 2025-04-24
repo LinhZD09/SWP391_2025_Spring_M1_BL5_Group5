@@ -50,8 +50,7 @@ public class User extends HttpServlet {
             } else {
                 session.setAttribute("user", user);
                 session.setAttribute("loginMessage", "Đăng nhập thành công!");
-                session.setAttribute("user_id", user.getUser_id());
-                session.setAttribute("user_email", user.getUser_email());
+
                 Cookie emailCookie = new Cookie("email", user_email);
                 Cookie passCookie = new Cookie("pass", user_pass);
                 Cookie remCookie = new Cookie("remember", remember);
