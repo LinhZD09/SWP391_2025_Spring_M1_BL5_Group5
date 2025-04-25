@@ -2408,22 +2408,22 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 
 /*homr six css here*/
 .header_six .header_middel {
-    padding: 0 30px;
+    padding: 0;
 }
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .header_six .header_middel {
-        padding: 0 30px;
+        padding: 0;
     }
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
     .header_six .header_middel {
-        padding: 0 30px;
+        padding: 0;
     }
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
     .header_six .header_middel {
         padding-top: 0;
-        padding: 0 20px;
+        padding: 0;
     }
 }
 @media only screen and (max-width: 767px) {

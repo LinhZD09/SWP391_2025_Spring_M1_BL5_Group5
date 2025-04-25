@@ -667,6 +667,12 @@
                 opacity: 1;
             }
         }
+        /* Ẩn spinner cho Chrome, Safari, Edge */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
     </style>
 
@@ -796,195 +802,219 @@
 
 
                     </div>
-                </div>
-                <ul class="features-list">
-                    <li>
-                        <div class="icon"><img src="images/freeship.jpg" alt="Freeship toàn quốc từ 399k"></div>
-                        <div class="text">
-                            <strong>Miễn phí vận chuyển</strong>
+                    <ul class="features-list">
+                        <li>
+                            <div class="icon"><img src="images/freeship.jpg" alt="Freeship toàn quốc từ 399k"></div>
+                            <div class="text">
+                                <strong>Miễn phí vận chuyển</strong>
 
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon"><img src="images/box.png" alt="Theo dõi đơn hàng dễ dàng"></div>
-                        <div class="text">
-                            <strong>Theo dõi đơn hàng <br>một cách dễ dàng</strong>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon"><img src="images/returngoods.jpg" alt="Đổi trả tận nơi"></div>
-                        <div class="text">
-                            <strong>Đổi trả linh hoạt</strong>
-                            <p>Với sản phẩm không áp dụng khuyến mãi</p>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon"><img src="images/pay.jpg" alt="Thanh toán dễ dàng"></div>
-                        <div class="text">
-                            <strong>Thanh toán dễ dàng <br>nhiều hình thức</strong>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon"><img src="images/sp.jpg" alt="Hotline hỗ trợ Routine"></div>
-                        <div class="text"><strong>Hotline hỗ trợ</strong>
-                            <h3>0393314726</h3>
-                    </li>
-                </ul>
-            </div>
-            <!--product details end-->
-            <!-- Form for adding rating -->
-
-            <div class="form-container">
-                <form action="search" method="POST">
-                    <input type="hidden" name="action" value="addComment">
-                    <input type="hidden" name="product_id" value="${ProductData.product_id}">
-                    <input type="hidden" name="user_id" value="${user.user_id}">                
-                    <input type="hidden" name="user_name" value="${user.user_name}">  
-                    <h3>Đánh giá sản phẩm</h3>
-                    <select name="rating" id="star-rating">
-
-                        <option value="1">1&#9733;</option>
-                        <option value="2">2&#9733;&#9733;</option>
-                        <option value="3">3&#9733;&#9733;&#9733;</option>
-                        <option value="4">4&#9733;&#9733;&#9733;&#9733;</option>
-                        <option value="5">5&#9733;&#9733;&#9733;&#9733;&#9733;</option>
-                    </select>
-                    <textarea name="comment" rows="4" cols="50" placeholder="Nhập bình luận của bạn"></textarea>
-                    <button type="submit">Gửi bình luận</button>
-                </form>
-            </div>
-
-
-
-            <c:if test="${not empty comments}">
-                <div class="product_reviews">
-                    <h3>Đánh giá và Bình luận</h3>
-                    <h5>Bình luận:</h5>
-                    <c:forEach items="${comments}" var="c">
-                        <div class="comment">
-                            <p>Bởi: ${c.user_name}</p>
-                            <p>Đánh giá: ${c.rating}&#9733</p>
-                            <p>Ngày: <fmt:formatDate value="${c.createdAt}" pattern="dd/MM/yyyy"/></p>
-                            <p>${c.comment}</p>
-                        </div>
-                    </c:forEach>
-                </div>
-            </c:if>
-
-
-
-            <!--product section area start-->
-            <section class="product_section related_product">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="section_title">
-                                <h2>Sản phẩm tương tự</h2>
                             </div>
+                        </li>
+                        <li>
+                            <div class="icon"><img src="images/box.png" alt="Theo dõi đơn hàng dễ dàng"></div>
+                            <div class="text">
+                                <strong>Theo dõi đơn hàng <br>một cách dễ dàng</strong>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="icon"><img src="images/returngoods.jpg" alt="Đổi trả tận nơi"></div>
+                            <div class="text">
+                                <strong>Đổi trả linh hoạt</strong>
+                                <p>Với sản phẩm không áp dụng khuyến mãi</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="icon"><img src="images/pay.jpg" alt="Thanh toán dễ dàng"></div>
+                            <div class="text">
+                                <strong>Thanh toán dễ dàng <br>nhiều hình thức</strong>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="icon"><img src="images/sp.jpg" alt="Hotline hỗ trợ Routine"></div>
+                            <div class="text"><strong>Hotline hỗ trợ</strong>
+                                <h3>0393314726</h3>
+                        </li>
+                    </ul>
+                </div>
+            </div>   
+        </div>
+        <!--product details end-->
+        <!-- Form for adding rating -->
+
+        <div class="form-container">
+            <form action="search" method="POST">
+                <input type="hidden" name="action" value="addComment">
+                <input type="hidden" name="product_id" value="${ProductData.product_id}">
+                <input type="hidden" name="user_id" value="${user.user_id}">                
+                <input type="hidden" name="user_name" value="${user.user_name}">  
+                <h3>Đánh giá sản phẩm</h3>
+                <select name="rating" id="star-rating">
+
+                    <option value="1">1&#9733;</option>
+                    <option value="2">2&#9733;&#9733;</option>
+                    <option value="3">3&#9733;&#9733;&#9733;</option>
+                    <option value="4">4&#9733;&#9733;&#9733;&#9733;</option>
+                    <option value="5">5&#9733;&#9733;&#9733;&#9733;&#9733;</option>
+                </select>
+                <textarea name="comment" rows="4" cols="50" placeholder="Nhập bình luận của bạn"></textarea>
+                <button type="submit">Gửi bình luận</button>
+            </form>
+        </div>
+
+
+
+        <c:if test="${not empty comments}">
+            <div class="product_reviews">
+                <h3>Đánh giá và Bình luận</h3>
+                <h5>Bình luận:</h5>
+                <c:forEach items="${comments}" var="c">
+                    <div class="comment">
+                        <p>Bởi: ${c.user_name}</p>
+                        <p>Đánh giá: ${c.rating}&#9733</p>
+                        <p>Ngày: <fmt:formatDate value="${c.createdAt}" pattern="dd/MM/yyyy"/></p>
+                        <p>${c.comment}</p>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
+
+
+
+        <!--product section area start-->
+        <section class="product_section related_product">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="section_title">
+                            <h2>Sản phẩm tương tự</h2>
                         </div>
                     </div>
-                    <div class="product_area">
-                        <div class="row">
-                            <div class="product_carousel product_three_column4 owl-carousel">
-                                <c:forEach items="${ProductByCategory}" var="pc">
-                                    <div class="col-lg-3">
-                                        <div class="single_product">
-                                            <div class="product_thumb">
-                                                <a class="primary_img" href="product?action=productdetail&product_id=${pc.product_id}"><img src="${pc.img}" alt=""></a>
-                                            </div>
-                                            <div class="product_content">
-                                                <h3><a href="product?action=productdetail&product_id=${pc.product_id}">${pc.product_name}</a></h3>
-                                                <span class="current_price">${pc.product_price} VNĐ</span>
-                                            </div>
+                </div>
+                <div class="product_area">
+                    <div class="row">
+                        <div class="product_carousel product_three_column4 owl-carousel">
+                            <c:forEach items="${ProductByCategory}" var="pc">
+                                <div class="col-lg-3">
+                                    <div class="single_product">
+                                        <div class="product_thumb">
+                                            <a class="primary_img" href="product?action=productdetail&product_id=${pc.product_id}"><img src="${pc.img}" alt=""></a>
+                                        </div>
+                                        <div class="product_content">
+                                            <h3><a href="product?action=productdetail&product_id=${pc.product_id}">${pc.product_name}</a></h3>
+                                            <span class="current_price">${pc.product_price} VNĐ</span>
                                         </div>
                                     </div>
-                                </c:forEach>
-                            </div>
+                                </div>
+                            </c:forEach>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!--product section area end-->
+        <!--product section area end-->
 
-            <!--footer area start-->
-            <jsp:include page="layout/footer.jsp"/>
-            <!--footer area end-->
+        <!--footer area start-->
+        <jsp:include page="layout/footer.jsp"/>
+        <!--footer area end-->
 
-            <!-- Plugins JS -->
-            <script src="assets/js/plugins.js"></script>
-            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-            <!-- Main JS -->
-            <script src="assets/js/main.js"></script>
-            <script>
+        <!-- Plugins JS -->
+        <script src="assets/js/plugins.js"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <!-- Main JS -->
+        <script src="assets/js/main.js"></script>
+        <script>
                                         function setActionAndSubmit(action) {
-                                            document.getElementById('action').value = action;
+                                            document.querySelector('input[name="action"]').value = action;
                                             document.getElementById('productForm').submit();
                                         }
-            </script>
-            <div id="sizeGuideModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <img src="images/size.jpg" alt="Hướng dẫn chọn size">
-                </div>
+
+        </script>
+        <div id="sizeGuideModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <img src="images/size.jpg" alt="Hướng dẫn chọn size">
             </div>
-            <script>
-                // Lấy các phần tử DOM cần thiết
-                const sizeGuideLink = document.getElementById('size-guide-link');
-                const modal = document.getElementById('sizeGuideModal');
-                const closeBtn = document.querySelector('.close');
+        </div>
+        <script>
+            // Lấy các phần tử DOM cần thiết
+            const sizeGuideLink = document.getElementById('size-guide-link');
+            const modal = document.getElementById('sizeGuideModal');
+            const closeBtn = document.querySelector('.close');
 
-                // Khi click vào link hướng dẫn size
-                sizeGuideLink.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    modal.style.display = 'block';
-                });
+            // Khi click vào link hướng dẫn size
+            sizeGuideLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                modal.style.display = 'block';
+            });
 
-                // Khi click vào nút đóng
-                closeBtn.addEventListener('click', function () {
+            // Khi click vào nút đóng
+            closeBtn.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+
+            // Khi click bất kỳ đâu ngoài modal, đóng modal
+            window.addEventListener('click', function (event) {
+                if (event.target == modal) {
                     modal.style.display = 'none';
-                });
-
-                // Khi click bất kỳ đâu ngoài modal, đóng modal
-                window.addEventListener('click', function (event) {
-                    if (event.target == modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-            </script>
-            <script>
-                function showNotification(message, isSuccess) {
-                    Swal.fire({
-                        title: isSuccess ? 'Thành công!' : 'Lỗi!',
-                        text: message,
-                        icon: isSuccess ? 'success' : 'error',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 6000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    });
                 }
-
-                // Kiểm tra và hiển thị thông báo khi trang được tải
-                document.addEventListener('DOMContentLoaded', function () {
-                    var successMessage = "${sessionScope.successMessageAdd}";
-                    var errorMessage = "${sessionScope.errorMessage}";
-
-                    if (successMessage) {
-                        showNotification(successMessage, true);
-                        // Xóa thông báo khỏi session
-                <% session.removeAttribute("successMessageAdd"); %>
-                    } else if (errorMessage) {
-                        showNotification(errorMessage, false);
-                        // Xóa thông báo khỏi session
-                <% session.removeAttribute("errorMessage"); %>
+            });
+        </script>
+        <script>
+            function showNotification(message, isSuccess) {
+                Swal.fire({
+                    title: isSuccess ? 'Thành công!' : 'Lỗi!',
+                    text: message,
+                    icon: isSuccess ? 'success' : 'error',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 6000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
                     }
                 });
-            </script>
+            }
+
+            // Kiểm tra và hiển thị thông báo khi trang được tải
+            document.addEventListener('DOMContentLoaded', function () {
+                var successMessage = "${sessionScope.successMessageAdd}";
+                var errorMessage = "${sessionScope.errorMessage}";
+
+                if (successMessage) {
+                    showNotification(successMessage, true);
+                    // Xóa thông báo khỏi session
+            <% session.removeAttribute("successMessageAdd"); %>
+                } else if (errorMessage) {
+                    showNotification(errorMessage, false);
+                    // Xóa thông báo khỏi session
+            <% session.removeAttribute("errorMessage"); %>
+                }
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const minusBtn = document.querySelector(".qty-btn.minus");
+                const plusBtn = document.querySelector(".qty-btn.plus");
+                const quantityInput = document.querySelector('input[name="quantity"]');
+
+                minusBtn.addEventListener("click", function () {
+                    let current = parseInt(quantityInput.value);
+                    if (current > 1) {
+                        quantityInput.value = current - 1;
+                    }
+                });
+
+                plusBtn.addEventListener("click", function () {
+                    let current = parseInt(quantityInput.value);
+                    let max = parseInt(quantityInput.max) || 99;
+                    if (current < max) {
+                        quantityInput.value = current + 1;
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
