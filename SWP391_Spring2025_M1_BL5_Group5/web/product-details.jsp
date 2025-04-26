@@ -865,26 +865,30 @@
             </c:if>
         </div>
 
-
-
-
-
-
         <c:if test="${not empty comments}">
             <div class="product_reviews">
                 <h3>Đánh giá và Bình luận</h3>
-                <h5>Bình luận:</h5>
                 <c:forEach items="${comments}" var="c">
                     <div class="comment">
-                        <p>Bởi: ${c.user_name}</p>
-                        <p>Đánh giá: ${c.rating}&#9733</p>
-                        <p>Ngày: <fmt:formatDate value="${c.createdAt}" pattern="dd/MM/yyyy"/></p>
-                        <p>${c.comment}</p>
+                        <p><strong>Người dùng:</strong> ${c.user_name}</p>
+                        <p><strong>Đánh giá:</strong> 
+                            <c:forEach begin="1" end="${c.rating}">
+                                <i class="fas fa-star star"></i>
+                            </c:forEach>
+                        </p>
+                        <p><strong>Ngày:</strong> <fmt:formatDate value="${c.createdAt}" pattern="dd/MM/yyyy"/></p>
+                        <p><strong>Bình luận:</strong> ${c.comment}</p>
+
+                        <c:if test="${not empty c.admin_reply}">
+                            <div style="margin-top: 10px; padding: 10px; background-color: #f1f1f1; border-left: 3px solid #007bff;">
+                                <p><strong>Phản hồi từ Admin:</strong> ${c.admin_reply}</p>
+                            </div>
+                        </c:if>
+                        <hr style="margin:20px 0;">
                     </div>
                 </c:forEach>
             </div>
         </c:if>
-
 
 
         <!--product section area start-->

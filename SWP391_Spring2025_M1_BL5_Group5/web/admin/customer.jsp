@@ -139,9 +139,7 @@
                                                 <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal" data-target="#ModalUP${u.user_id}">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button class="btn btn-primary btn-sm trash" type="button" title="Xóa" value="${u.user_id}">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
+                                                
                                             </td>
                                             <td>
                                                 <c:if test="${!u.banned}">
