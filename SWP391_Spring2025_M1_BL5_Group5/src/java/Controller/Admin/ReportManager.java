@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package Controller.Admin;
 
 import dal.reportDAO;
@@ -35,14 +34,24 @@ public class ReportManager extends HttpServlet {
 
             if (user.getIsAdmin().equalsIgnoreCase("true")) {
                 if (action == null) {
+                    // Load tất cả phản hồi
                     session.setAttribute("Reports", new reportDAO().getAll());
-                    request.setAttribute("users", new UserDAO().getUser());
                     page = "admin/report.jsp";
                 } else if ("delete".equalsIgnoreCase(action)) {
+                    // Xóa phản hồi
                     int id = Integer.parseInt(request.getParameter("id_report"));
                     new reportDAO().deleteReport(id);
                     response.sendRedirect("reportmanager");
                     return;
+                } else if ("reply".equalsIgnoreCase(action)) {
+                    int reportId = Integer.parseInt(request.getParameter("id_report"));
+                    String adminReply = request.getParameter("admin_reply");
+                    new reportDAO().replyToReport(reportId, adminReply);
+
+                    // Gửi thông báo và forward lại
+                    session.setAttribute("Reports", new reportDAO().getAll()); // load lại
+                    request.setAttribute("message", "Phản hồi đã được gửi thành công!");
+                    page = "admin/report.jsp";
                 }
             }
         } catch (Exception e) {
@@ -63,10 +72,5 @@ public class ReportManager extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-    }
-
-    @Override
-    public String getServletInfo() {
-        return "Short description";
     }
 }

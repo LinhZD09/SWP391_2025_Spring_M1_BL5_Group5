@@ -211,6 +211,7 @@ CREATE TABLE [dbo].[product_comment](
 	[Rating] [int] NULL,
 	[comment] [nvarchar](255) NULL,
 	[user_name] [nvarchar](255) NULL,
+	[admin_reply][varchar](MAX) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
@@ -255,6 +256,7 @@ CREATE TABLE [dbo].[report](
 	[content_report] [nvarchar](max) NULL,
 	[subject_report] [nvarchar](255) NULL,
 	[user_email] [varchar](255) NULL,
+	[admin_reply][varchar](MAX) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id_report] ASC

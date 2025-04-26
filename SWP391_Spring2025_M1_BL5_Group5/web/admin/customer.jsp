@@ -53,7 +53,29 @@
         </header>
         <!-- Sidebar menu-->
         <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
-
+        <aside class="app-sidebar">
+            <div class="app-sidebar__user">
+                <img class="app-sidebar__user-avatar" src="admin/images/user.png" width="50px" alt="User Image">
+                <div>
+                    <p class="app-sidebar__user-name"><b>${sessionScope.user.user_name}</b></p>
+                    <p class="app-sidebar__user-designation">Chào mừng bạn trở lại</p>
+                </div>
+            </div>
+            <hr>
+            <ul class="app-menu">
+                <li><a class="app-menu__item" href="dashboard"><i class='app-menu__icon bx bx-tachometer'></i><span class="app-menu__label">Bảng thống kê</span></a></li>
+                <li><a class="app-menu__item" href="categorymanager"><i class='app-menu__icon bx bxs-category'></i><span class="app-menu__label">Quản lý danh mục</span></a></li>
+                <li><a class="app-menu__item" href="productmanager"><i class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a></li>
+                <li><a class="app-menu__item" href="ordermanager"><i class='app-menu__icon bx bx-task'></i><span class="app-menu__label">Quản lý đơn hàng</span></a></li>
+                            <c:if test="${sessionScope.user.isAdmin}">
+                    <li><a class="app-menu__item" href="customermanager"><i class='app-menu__icon bx bx-user-voice'></i><span class="app-menu__label">Quản lý khách hàng</span></a></li>
+                    <li><a class="app-menu__item" href="reportmanager"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý phản hồi</span></a></li>
+                    <li><a class="app-menu__item" href="aboutmanager"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý trang giới thiệu</span></a></li>
+                    <li><a class="app-menu__item" href="commentmanager"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý bình luận</span></a></li>
+                    <li><a class="app-menu__item" href="saleoff"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý sale</span></a></li>
+                            </c:if>
+            </ul>
+        </aside>
         <main class="app-content">
             <div class="app-title">
                 <ul class="app-breadcrumb breadcrumb side">
@@ -84,22 +106,25 @@
                                    id="sampleTable">
                                 <thead>
                                     <tr>
+                                        <th>Số thứ tự</th> <!-- Cột số thứ tự -->
                                         <th>ID khách hàng</th>
                                         <th>Tên khách hàng</th>
                                         <th>Email</th>
                                         <th>Quản trị viên</th>
                                         <th>Nhân viên cửa hàng</th>
                                         <th>Ngày sinh</th>
-                                        <th>Địa chỉ</th>                                      
+                                        <th>Địa chỉ</th>
                                         <th>Số điện thoại</th>
                                         <th>Trạng thái</th>
                                         <th>Lý do</th>
                                         <th width="70">Tính năng</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
-                                    <c:forEach items="${user}" var="u">
+                                    <c:forEach items="${user}" var="u" varStatus="status">
                                         <tr>
+                                            <td>${status.index + 1}</td> <!-- Số thứ tự -->
                                             <td>${u.user_id}</td>
                                             <td>${u.user_name}</td>
                                             <td>${u.user_email}</td>
@@ -110,28 +135,30 @@
                                             <td>${u.phoneNumber}</td>
                                             <td>${u.banned ? 'Bị cấm' : 'Hoạt động'}</td>
                                             <td>${u.adminReason}</td>
-                                            <td><button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                                                        data-target="#ModalUP${u.user_id}"><i class="fas fa-edit"></i></button>
-                                                <button class="btn btn-primary btn-sm trash" type="button" title="Xóa" value="${u.user_id}"><i
-                                                        class="fas fa-trash-alt"></i>
-                                            </td>
-
                                             <td>
-
+                                                <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal" data-target="#ModalUP${u.user_id}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-primary btn-sm trash" type="button" title="Xóa" value="${u.user_id}">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </td>
+                                            <td>
                                                 <c:if test="${!u.banned}">
                                                     <button class="btn btn-danger btn-sm ban" type="button" title="Cấm" value="${u.user_id}">
                                                         <i class="fas fa-ban"></i>
                                                     </button>
-
                                                 </c:if>
                                                 <c:if test="${u.banned}">
-                                                    <button class="btn btn-success btn-sm unban" type="button" title="Bỏ cấm" value="${u.user_id}"><i class="fas fa-check"></i></button>
-                                                    </c:if>
+                                                    <button class="btn btn-success btn-sm unban" type="button" title="Bỏ cấm" value="${u.user_id}">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </c:if>
                                             </td>
                                         </tr>
-
                                     </c:forEach>
                                 </tbody>
+
                             </table>
 
                         </div>

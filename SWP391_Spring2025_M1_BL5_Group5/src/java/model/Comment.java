@@ -7,13 +7,15 @@ public class Comment {
     public int userId;
     public String comment;
     public Timestamp createdAt;
-
     public int rating;
     public String user_name;
+    public String admin_reply;
+    
+    
     public Comment() {
     }
 
-    public Comment(int id, String productId, int userId, String comment, Timestamp createdAt, int rating, String user_name) {
+    public Comment(int id, String productId, int userId, String comment, Timestamp createdAt, int rating, String user_name, String admin_reply) {
         this.id = id;
         this.productId = productId;
         this.userId = userId;
@@ -21,6 +23,7 @@ public class Comment {
         this.createdAt = createdAt;
         this.rating = rating;
         this.user_name = user_name;
+        this.admin_reply = admin_reply;
     }
 
     public int getId() {
@@ -79,6 +82,13 @@ public class Comment {
         this.user_name = user_name;
     }
 
-    
+    public String getAdmin_reply() {
+        return admin_reply;
+    }
 
+    public void setAdmin_reply(String admin_reply) {
+        this.admin_reply = admin_reply;
+    }
 }
+
+    

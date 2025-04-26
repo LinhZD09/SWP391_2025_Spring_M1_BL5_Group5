@@ -842,14 +842,13 @@
         <!-- Form for adding rating -->
 
         <div class="form-container">
-            <form action="search" method="POST">
+            <form action="comment" method="POST">
                 <input type="hidden" name="action" value="addComment">
                 <input type="hidden" name="product_id" value="${ProductData.product_id}">
                 <input type="hidden" name="user_id" value="${user.user_id}">                
                 <input type="hidden" name="user_name" value="${user.user_name}">  
                 <h3>Đánh giá sản phẩm</h3>
                 <select name="rating" id="star-rating">
-
                     <option value="1">1&#9733;</option>
                     <option value="2">2&#9733;&#9733;</option>
                     <option value="3">3&#9733;&#9733;&#9733;</option>
@@ -859,7 +858,15 @@
                 <textarea name="comment" rows="4" cols="50" placeholder="Nhập bình luận của bạn"></textarea>
                 <button type="submit">Gửi bình luận</button>
             </form>
+
+            <!-- Hiển thị thông báo nếu có -->
+            <c:if test="${not empty requestScope.message}">
+                <div class="alert alert-success">${requestScope.message}</div>
+            </c:if>
         </div>
+
+
+
 
 
 

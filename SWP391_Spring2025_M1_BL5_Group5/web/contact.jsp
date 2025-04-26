@@ -79,8 +79,7 @@
                     <div class="col-lg-6 col-md-12">
                         <div class="contact_message form">
                             <h3>Gửi thông tin phản hồi</h3>
-
-                            <!-- Thông báo thành công hoặc lỗi -->
+<!-- Thông báo thành công hoặc lỗi -->
                             <c:if test="${not empty contact_msg}">
                                 <div class="alert ${contact_msg_success ? 'alert-success' : 'alert-danger'}">
                                     ${contact_msg}

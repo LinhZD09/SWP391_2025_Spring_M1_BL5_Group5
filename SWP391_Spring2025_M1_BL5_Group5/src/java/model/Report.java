@@ -1,28 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 public class Report {
-
     private int id_report;
     private int user_id;
     private String content_report;
     private String subject_report;
     private String user_email;
+    private String admin_reply;
 
-    public Report() {
-    }
-
-    public Report(int id_report, int user_id, String content_report, String subject_report, String user_email) {
+    // Constructor
+    public Report(int id_report, int user_id, String content_report, String subject_report, String user_email, String admin_reply) {
         this.id_report = id_report;
         this.user_id = user_id;
         this.content_report = content_report;
         this.subject_report = subject_report;
         this.user_email = user_email;
+        this.admin_reply = admin_reply;
     }
 
+    // Getters and Setters
     public int getId_report() {
         return id_report;
     }
@@ -63,4 +59,11 @@ public class Report {
         this.user_email = user_email;
     }
 
+    public String getAdmin_reply() {
+        return admin_reply;
+    }
+
+    public void setAdmin_reply(String admin_reply) {
+        this.admin_reply = admin_reply;
+    }
 }

@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpSession;
 import java.awt.Desktop;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Category;
 import model.Size;
 
@@ -35,7 +37,7 @@ public class Product_Search extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         String action = request.getParameter("action");
         //SearchByPrice
@@ -387,7 +389,11 @@ public class Product_Search extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(Product_Search.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -401,7 +407,11 @@ public class Product_Search extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(Product_Search.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

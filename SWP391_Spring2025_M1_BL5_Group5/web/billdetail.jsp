@@ -1,32 +1,35 @@
-<%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  %>
-<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html class="no-js" lang="en">
+
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>Lịch sử đơn hàng</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Favicon -->
         <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
 
-        <!-- CSS -->
+        <!-- CSS 
+        ========================= -->
+        <!-- Plugins CSS -->
         <link rel="stylesheet" href="assets/css/plugins.css">
+        <!-- Main Style CSS -->
         <link rel="stylesheet" href="assets/css/style.css">
     </head>
 
     <body>
-        <!--Off‑canvas overlay-->
-        <div class="off_canvars_overlay"></div>
 
-        <!-- Menu -->
+        <!-- Main Wrapper Start -->
+        <!--Offcanvas menu area start-->
+        <div class="off_canvars_overlay"></div>
         <jsp:include page="layout/menu.jsp"/>
 
-        <!-- Breadcrumb -->
         <div class="breadcrumbs_area other_bread">
-            <div class="container">
+            <div class="container">   
                 <div class="row">
                     <div class="col-12">
                         <div class="breadcrumb_content">
@@ -38,118 +41,87 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>         
         </div>
 
-        <!-- Lịch sử đơn hàng -->
         <div class="shopping_cart_area">
-            <div class="container">
-
-                <!-- Nút Back -->
-                <div class="row mb-3">
+            <div class="container">  
+                <div class="row">
                     <div class="col-12">
-                        <a href="${pageContext.request.contextPath}/user?action=myaccount#orders"
-                           class="btn"
-                           style="background:#007bff;color:#fff;">
-                            &larr;&nbsp;Quay lại Đơn Hàng
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Thiết lập phân trang -->
-                <c:set var="itemsPerPage" value="3"/>
-                <c:set var="currentPage" value="${param.page != null ? param.page : 1}"/>
-                <c:set var="startIndex"  value="${(currentPage - 1) * itemsPerPage}"/>
-                <c:set var="endIndex"    value="${startIndex + itemsPerPage}"/>
-                <c:if test="${endIndex gt detail.size()}">
-                    <c:set var="endIndex" value="${detail.size()}"/>
-                </c:if>
-
-                <form>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table_desc">
-                                <div class="cart_page table-responsive">
-                                    <table>
-                                        <thead>
+                        <div class="table_desc">
+                            <div class="cart_page table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Ảnh</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Size</th>
+                                            <th>Màu</th>
+                                            <th>Số lượng</th>
+                                            <th>Đơn giá</th>
+                                            <th>Phản hồi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach items="${detail}" var="d">
                                             <tr>
-                                                <th class="product_thumb">Ảnh</th>
-                                                <th class="product-price">Tên sản phẩm</th>
-                                                <th class="product_quantity">Size</th>
-                                                <th class="product-price">Màu</th>
-                                                <th class="product_quantity">Số lượng</th>
-                                                <th class="product_total">Đơn giá</th>
+                                                <td><a href="product?action=productdetail&product_id=${d.product.product_id}"><img src="${d.product.img}" alt="" style="width: 60px;"></a></td>
+                                                <td><a href="product?action=productdetail&product_id=${d.product.product_id}">${d.product.product_name}</a></td>
+                                                <td>${d.size}</td>
+                                                <td>${d.color}</td>
+                                                <td>${d.quantity}</td>
+                                                <td><fmt:formatNumber pattern="###,###" value="${d.price}"/></td>
+                                                <td>
+                                                    <c:if test="${not user.isAdmin eq 'True' and not user.isStoreStaff eq 'True'}">
+                                                        <form method="post" action="report" style="display: flex; flex-direction: column; gap: 8px; width: 200px;">
+                                                            <input type="text" name="subject_report" placeholder="Chủ đề phản hồi" required />
+                                                            <textarea name="content_report" placeholder="Nhập nội dung phản hồi..." required style="resize: none; height: 80px; padding: 6px; border-radius: 4px; border: 1px solid #ccc;"></textarea>
+                                                            <input type="hidden" name="user_id" value="${user.user_id}" />
+                                                            <button type="submit" style="background-color: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Gửi phản hồi</button>
+                                                        </form>
+
+                                                    </c:if>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            <c:forEach items="${detail}" var="d"
-                                                       begin="${startIndex}" end="${endIndex - 1}">
-                                                <tr>
-                                                    <td class="product_thumb">
-                                                        <a href="product?action=productdetail&product_id=${d.product.product_id}">
-                                                            <img src="${d.product.img}" alt="">
-                                                        </a>
-                                                    </td>
-                                                    <td class="product_name">
-                                                        <a href="product?action=productdetail&product_id=${d.product.product_id}">
-                                                            ${d.product.product_name}
-                                                        </a>
-                                                    </td>
-                                                    <td class="product-price">${d.size}</td>
-                                                    <td class="product-price">${d.color}</td>
-                                                    <td class="product_quantity">${d.quantity}</td>
-                                                    <!-- Giá: 398.000 VND -->
-                                                    <td class="product_total">
-                                                        <c:set var="tmp">
-                                                            <fmt:formatNumber value="${d.price}"
-                                                                              type="number"
-                                                                              groupingUsed="true"
-                                                                              minFractionDigits="0"
-                                                                              maxFractionDigits="0"/>
-                                                        </c:set>
-                                                        <c:set var="price" value="${fn:replace(tmp, ',', '.')}"/>
-                                                        ${price}&nbsp;VND
-                                                    </td>
-                                                </tr>
-                                            </c:forEach>
-                                        </tbody>
-                                    </table>
-                                </div><!-- cart_page -->
-                            </div><!-- table_desc -->
+                                        </c:forEach>
+                                        <c:if test="${not empty requestScope.msgc}">
+                                        <div style="margin-top: 10px; color: green; font-weight: bold;">
+                                            ${requestScope.msgc}
+                                        </div>
+                                    </c:if>
+                                    </tbody>
+                                </table>
+                            </div>
+
                         </div>
                     </div>
-                </form>
-
-                <!-- Tính & hiển thị trang -->
-                <c:set var="totalItems"  value="${detail.size()}"/>
-                <c:set var="totalPages"
-                       value="${(totalItems/itemsPerPage) + (totalItems%itemsPerPage==0?0:1)}"/>
-
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center">
-                                <c:forEach var="i" begin="1" end="${totalPages}">
-                                    <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                        <a class="page-link" href="?page=${i}">${i}</a>
-                                    </li>
-                                </c:forEach>
-                            </ul>
-                        </nav>
-                    </div>
                 </div>
+            </div>     
+        </div>
+        <!-- shopping cart area end -->
 
-            </div><!-- container -->
-        </div><!-- shopping_cart_area -->
-
-        <!-- Footer -->
+        <!--footer area start-->
         <jsp:include page="layout/footer.jsp"/>
+        <!--footer area end-->
 
-        <!-- JS -->
-        <script src="assets/js/plugins.js"></script>
-        <script src="assets/js/main.js"></script>
+        <!-- JS
+        ============================================ -->
+
+
+        <!--map js code here-->
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdWLY_Y6FL7QGW5vcO3zajUEsrKfQPNzI"></script>
-        <script src="https://www.google.com/jsapi"></script>
+        <script  src="https://www.google.com/jsapi"></script>
         <script src="assets/js/map.js"></script>
+
+
+        <!-- Plugins JS -->
+        <script src="assets/js/plugins.js"></script>
+
+        <!-- Main JS -->
+        <script src="assets/js/main.js"></script>
+
+
+
     </body>
+
 </html>
