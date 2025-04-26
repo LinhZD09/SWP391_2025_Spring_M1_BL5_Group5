@@ -19,10 +19,10 @@ public class SaleOffServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         String action = request.getParameter("action");
         SaleOffDAO saleOffDAO = new SaleOffDAO();
-        
+
         if (action == null) {
             List<SaleOff> saleOffs = saleOffDAO.getAllSaleOffs();
             request.setAttribute("saleOffs", saleOffs);
@@ -32,10 +32,10 @@ public class SaleOffServlet extends HttpServlet {
             float discountPercentage = Float.parseFloat(request.getParameter("discountPercentage"));
             Date startDate = parseDate(request.getParameter("startDate"));
             Date endDate = parseDate(request.getParameter("endDate"));
-            
+
             SaleOff saleOff = new SaleOff(saleId, null, discountPercentage, startDate, endDate);
             saleOffDAO.updateSaleOff(saleOff);
-            
+
             response.sendRedirect("saleoff");
         } else if (action.equals("insert")) {
             String saleId = request.getParameter("saleId");
@@ -43,10 +43,10 @@ public class SaleOffServlet extends HttpServlet {
             float discountPercentage = Float.parseFloat(request.getParameter("discountPercentage"));
             Date startDate = parseDate(request.getParameter("startDate"));
             Date endDate = parseDate(request.getParameter("endDate"));
-            
+
             SaleOff saleOff = new SaleOff(saleId, productId, discountPercentage, startDate, endDate);
             saleOffDAO.insertSaleOff(saleOff);
-            
+
             response.sendRedirect("saleoff");
         }
     }
@@ -58,12 +58,14 @@ public class SaleOffServlet extends HttpServlet {
             e.printStackTrace();
             return null;
         }
+
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+
     }
 
     @Override
@@ -71,6 +73,7 @@ public class SaleOffServlet extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
+
     @Override
     public String getServletInfo() {
         return "Short description";

@@ -97,49 +97,49 @@
                             <!-- Button to Add Sale Off -->
                             <div class="row mb-3">
                                 <div class="col-md-12 text-right">
+                                    <!-- Nút "Thêm Mới" để mở modal -->
                                     <button class="btn btn-success" data-toggle="modal" data-target="#addSaleModal">
-                                        <i class="fa fa-plus"></i> Thêm Mới 
+                                        <i class="fa fa-plus"></i> Thêm Mới
                                     </button>
+
                                 </div>
                             </div>
                             <!-- Sale Off Table -->
-                            <table class="table table-striped table-hover" id="saleOffTable">
-                                <thead class="thead-dark">
+                            <table border="1">
+                                <tr>
+                                    <th>Sale ID</th>
+                                    <th>Product ID</th>
+                                    <th>Discount Percentage</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Discount percentage | Start Date | End Date</th>
+                                </tr>
+                                <c:forEach var="saleOff" items="${saleOffs}">
                                     <tr>
-                                        <th>Sale ID</th>
-                                        <th>Product ID</th>
-                                        <th>Discount Percentage</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Actions</th>
+                                        <td>${saleOff.sale_id}</td>
+                                        <td>${saleOff.product_id}</td>
+                                        <td>${saleOff.discount_percentage}</td>
+                                        <td>${saleOff.start_date}</td>
+                                        <td>${saleOff.end_date}</td>
+                                        <td>
+                                            <form action="saleoff" method="post">
+                                                <input type="hidden" name="action" value="update">
+                                                <input type="hidden" name="saleId" value="${saleOff.sale_id}">
+                                                <input type="number" name="discountPercentage" value="${saleOff.discount_percentage}" step="0.01" required>
+                                                <input type="date" name="startDate" value="${saleOff.start_date}" required>
+                                                <input type="date" name="endDate" value="${saleOff.end_date}" required>
+                                                <input type="submit" value="Update">
+                                            </form>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <c:forEach var="sale" items="${saleOffs}">
-                                        <tr>
-                                            <td>${sale.sale_id}</td>
-                                            <td>${sale.product_id}</td>
-                                            <td>${sale.discount_percentage}%</td>
-                                            <td>${sale.start_date}</td>
-                                            <td>${sale.end_date}</td>
-                                            <td>
-                                                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editSaleModal"
-                                                        onclick="editSale(${sale.sale_id}, '${sale.product_id}', '${sale.discount_percentage}', '${sale.start_date}', '${sale.end_date}')">
-                                                    <i class="fa fa-edit"></i> Sửa
-                                                </button>
-                                                <button class="btn btn-danger btn-sm" onclick="deleteSale(${sale.sale_id})">
-                                                    <i class="fa fa-trash"></i> Xóa
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
+                                </c:forEach>
+
                         </div>
                     </div>
                 </div>
             </div>
         </main>
+
 </html>
 
 
