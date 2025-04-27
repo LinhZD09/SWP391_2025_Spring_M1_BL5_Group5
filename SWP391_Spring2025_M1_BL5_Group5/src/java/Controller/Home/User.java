@@ -4,15 +4,16 @@ import dal.billDAO;
 import dal.UserDAO;
 import model.BillDetail;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class User extends HttpServlet {
 
@@ -84,8 +85,8 @@ public class User extends HttpServlet {
                     // Lọc theo hình thức giao dịch
                     if (paymentFilter != null && !paymentFilter.isEmpty()) {
                         allBills = allBills.stream()
-                                .filter(bill -> bill.getPayment() != null && bill.getPayment().equalsIgnoreCase(paymentFilter))
-                                .toList();
+                                .filter(b -> b.getPayment() != null && b.getPayment().equalsIgnoreCase(paymentFilter))
+                                .collect(Collectors.toList());
                     }
 
                     // Sắp xếp theo ngày hoặc tổng đơn
@@ -120,12 +121,7 @@ public class User extends HttpServlet {
                             currentPage = 1;
                         }
                     }
-                    if (currentPage < 1) {
-                        currentPage = 1;
-                    }
-                    if (currentPage > totalPages) {
-                        currentPage = totalPages;
-                    }
+                    currentPage = Math.max(1, Math.min(currentPage, totalPages));
 
                     int startIndex = (currentPage - 1) * itemsPerPage;
                     int endIndex = Math.min(startIndex + itemsPerPage, totalItems);
@@ -178,8 +174,7 @@ public class User extends HttpServlet {
                             request.getRequestDispatcher("user?action=myaccount").forward(request, response);
                             return;
                         }
-                    } catch (Exception e) {
-                    }
+                    } catch (Exception ex) {}
 
                     boolean isValidPassword = false;
                     if (user_pass != null && !user_pass.isEmpty()) {
@@ -190,8 +185,8 @@ public class User extends HttpServlet {
 
                     if (isValidPassword) {
                         int user_id = user.getUser_id();
-                        UserDAO dao = new UserDAO();
-                        dao.updateUser(user_id, user_name, user_pass, dateOfBirth, address, phoneNumber);
+                        UserDAO dao2 = new UserDAO();
+                        dao2.updateUser(user_id, user_name, user_pass, dateOfBirth, address, phoneNumber);
                         model.User user1 = new model.User(user.getUser_id(), user_name, user.getUser_email(), user_pass, user.getIsAdmin(), dateOfBirth, address, phoneNumber, user.isBanned(), user.getAdminReason(), user.getIsStoreStaff());
                         session.setAttribute("user", user1);
                         session.setAttribute("updateMessage", "Cập nhật thông tin thành công!");
@@ -203,7 +198,7 @@ public class User extends HttpServlet {
                 } else {
                     response.sendRedirect("user?action=login");
                 }
-            } catch (Exception e) {
+            } catch (Exception ex) {
                 response.sendRedirect("user?action=login");
             }
         } else if (action.equals("signup")) {

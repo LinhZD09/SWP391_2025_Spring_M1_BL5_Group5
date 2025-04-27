@@ -274,47 +274,31 @@
                                         </div>
                                     </form>
 
-                                    <!-- Bảng đơn hàng -->
                                     <div class="table-responsive">
-                                        <c:set var="itemsPerPage" value="5" />
-                                        <c:set var="currentPage" value="${param.page != null ? param.page : 1}" />
-                                        <c:set var="startIndex" value="${(currentPage - 1) * itemsPerPage}" />
-                                        <c:set var="endIndex" value="${startIndex + itemsPerPage}" />
-
-                                        <c:if test="${startIndex lt 0}">
-                                            <c:set var="startIndex" value="0" />
-                                        </c:if>
-                                        <c:if test="${endIndex gt bill.size()}">
-                                            <c:set var="endIndex" value="${bill.size()}" />
-                                        </c:if>
-
-                                        <table class="table">
+                                        <table class="table orders-table">
                                             <thead>
                                                 <tr>
-                                                    <th>TT</th>
-                                                    <th>Mã đơn hàng</th>
-                                                    <th>Ngày khởi tạo</th>
+                                                    <th class="tt">TT</th>
+                                                    <th>Mã đơn</th>
+                                                    <th>Ngày</th>
                                                     <th>Hình thức GD</th>
                                                     <th>Địa chỉ</th>
-                                                    <th>Tổng đơn</th>
-                                                    <th>Actions</th>
+                                                    <th>Tổng</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:set var="stt" value="${(currentPage - 1) * itemsPerPage}" />
+                                                <c:set var="stt" value="${(currentPage-1)*itemsPerPage}"/>
                                                 <c:forEach items="${bill}" var="b" varStatus="loop">
                                                     <tr>
-                                                        <td>${stt + loop.index + 1}</td>
+                                                        <td class="tt">${stt + loop.index + 1}</td>
                                                         <td>${b.bill_id}</td>
                                                         <td>${b.date}</td>
                                                         <td><span class="success">${b.payment}</span></td>
                                                         <td>${b.address}</td>
                                                         <td>
-                                                            <c:set var="tempFormatted">
-                                                                <fmt:formatNumber value="${b.total}" type="number" groupingUsed="true" minFractionDigits="0" maxFractionDigits="0" />
-                                                            </c:set>
-                                                            <c:set var="finalPrice" value="${fn:replace(tempFormatted, ',', '.')}" />
-                                                            ${finalPrice} VND
+                                                            <fmt:formatNumber value="${b.total}" type="number" groupingUsed="true"
+                                                                              minFractionDigits="0" maxFractionDigits="0"/> VND
                                                         </td>
                                                         <td>
                                                             <a href="user?action=showdetail&bill_id=${b.bill_id}" class="view">view</a>
@@ -325,17 +309,29 @@
                                         </table>
                                     </div>
 
-                                    <!-- Phân trang -->
-                                    <c:set var="totalItems" value="${bill.size()}" />
-                                    <c:set var="totalPages" value="${(totalItems div itemsPerPage) + (totalItems mod itemsPerPage == 0 ? 0 : 1)}" />
-
+                                    <!-- Phân trang với Prev/Next -->
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination justify-content-center">
+                                            <!-- Prev -->
+                                            <li class="page-item ${currentPage<=1?'disabled':''}">
+                                                <a class="page-link"
+                                                   href="user?action=myaccount&tab=orders&page=${currentPage-1}&paymentFilter=${param.paymentFilter}&sortBy=${param.sortBy}"
+                                                   >« Prev</a>
+                                            </li>
+                                            <!-- Số trang -->
                                             <c:forEach var="i" begin="1" end="${totalPages}">
-                                                <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                                    <a class="page-link" href="user?action=myaccount&page=${i}&tab=orders&paymentFilter=${param.paymentFilter}&sortBy=${param.sortBy}">${i}</a>
+                                                <li class="page-item ${i==currentPage?'active':''}">
+                                                    <a class="page-link"
+                                                       href="user?action=myaccount&tab=orders&page=${i}&paymentFilter=${param.paymentFilter}&sortBy=${param.sortBy}"
+                                                       >${i}</a>
                                                 </li>
                                             </c:forEach>
+                                            <!-- Next -->
+                                            <li class="page-item ${currentPage>=totalPages?'disabled':''}">
+                                                <a class="page-link"
+                                                   href="user?action=myaccount&tab=orders&page=${currentPage+1}&paymentFilter=${param.paymentFilter}&sortBy=${param.sortBy}"
+                                                   >Next »</a>
+                                            </li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -392,7 +388,7 @@
         <script src="assets/js/main.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-                                                    function showNotification(message, isSuccess) {
+                                                    function z`showNotification(message, isSuccess) {
                                                         Swal.fire({
                                                             title: isSuccess ? 'Thành công!' : 'Lỗi!',
                                                             text: message,
