@@ -34,9 +34,7 @@ public class commentRatingDAO extends DBContext {
         }
     }
 
-    
-
-public void updateAdminReply(int commentId, String adminReply) throws Exception {
+    public void updateAdminReply(int commentId, String adminReply) throws Exception {
         String sql = "UPDATE product_comment SET admin_reply = ? WHERE id = ?";
         try {
             conn = new DBContext().getConnection();
@@ -68,28 +66,23 @@ public void updateAdminReply(int commentId, String adminReply) throws Exception 
     // Lấy danh sách bình luận theo productId
     public List<Comment> getCommentsByProductId(String productId) throws Exception {
         List<Comment> comments = new ArrayList<>();
-        String sql = "SELECT c.id, c.product_id, c.user_id, c.comment, c.created_at, c.rating, u.user_name "
-                + "FROM product_comment c "
-                + "JOIN users u ON c.user_id = u.user_id "
-                + "INNER JOIN bill b ON b.user_id = c.user_id "
-                + "INNER JOIN bill_detail bi ON bi.bill_id = b.bill_id AND bi.product_id = c.product_id "
-                + "WHERE c.product_id = ? "
-                + "ORDER BY c.created_at DESC";
+        String sql = "SELECT * FROM product_comment WHERE product_id = ? ORDER BY created_at DESC";
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, productId);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Comment comment = new Comment();
-                comment.setId(rs.getInt("id"));
-                comment.setProductId(rs.getString("product_id"));
-                comment.setUserId(rs.getInt("user_id"));
-                comment.setComment(rs.getString("comment"));
-                comment.setCreatedAt(rs.getTimestamp("created_at"));
-                comment.setRating(rs.getInt("rating"));
-                comment.setUser_name(rs.getString("user_name"));
-                comments.add(comment);
+                comments.add(new Comment(
+                        rs.getInt("id"),
+                        rs.getString("product_id"),
+                        rs.getInt("user_id"),
+                        rs.getString("comment"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("rating"),
+                        rs.getString("user_name"),
+                        rs.getString("admin_reply")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
