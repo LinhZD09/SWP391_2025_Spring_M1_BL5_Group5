@@ -105,37 +105,47 @@
                                 </div>
                             </div>
                             <!-- Sale Off Table -->
-                            <table border="1">
-                                <tr>
-                                    <th>Sale ID</th>
-                                    <th>Product ID</th>
-                                    <th>Discount Percentage</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Discount percentage | Start Date | End Date</th>
-                                </tr>
-                                <c:forEach var="saleOff" items="${saleOffs}">
+                            <form action="saleoff" method="get">
+                                <table border="1">
                                     <tr>
-                                        <td>${saleOff.sale_id}</td>
-                                        <td>${saleOff.product_id}</td>
-                                        <td>${saleOff.discount_percentage}</td>
-                                        <td>${saleOff.start_date}</td>
-                                        <td>${saleOff.end_date}</td>
-                                        <td>
-                                            <form action="saleoff" method="post">
-                                                <input type="hidden" name="action" value="update">
-                                                <input type="hidden" name="saleId" value="${saleOff.sale_id}">
-                                                <input type="number" name="discountPercentage" value="${saleOff.discount_percentage}" step="0.01" required>
-                                                <input type="date" name="startDate" value="${saleOff.start_date}" required>
-                                                <input type="date" name="endDate" value="${saleOff.end_date}" required>
-                                                <input type="submit" value="Update">
-                                            </form>
-                                        </td>
+                                        <th>Số thứ tự </th>
+                                        <th>Sale ID</th>
+                                        <th>Sale Code</th>
+                                        <th>Discount Type</th>
+                                        <th>Discount Value</th>
+                                        <th>Max Discount</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Quantity</th>
+                                        <th>Action</th>
                                     </tr>
-                                </c:forEach>
+                                    <c:forEach var="saleOff" items="${saleOffs}" varStatus="status">
+                                        <tr>
+                                            <td>${status.index + 1}</td>
+                                            <td>${saleOff.saleId}</td>
+                                            <td>${saleOff.saleCode}</td>
+                                            <td>${saleOff.discountType}</td>
+                                            <td>${saleOff.discountValue}</td>
+                                            <td>${saleOff.maxDiscount}</td>
+                                            <td>${saleOff.start_date}</td>
+                                            <td>${saleOff.end_date}</td>
+                                            <td>${saleOff.quantity}</td>
+                                            <td>
+                                                <!-- Nút sửa, chuyển đến servlet editSale với saleId -->
+                                                <a href="editSale?saleId=${saleOff.saleId}" class="btn btn-primary btn-sm">Sửa</a>
+
+                                                <!-- Nút xoá, chuyển đến servlet deleteSale với saleId -->
+                                                <a href="deleteSale?saleId=${saleOff.saleId}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xoá?')">Xoá</a>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+
+                            </form>
 
                         </div>
                     </div>
+
                 </div>
             </div>
         </main>

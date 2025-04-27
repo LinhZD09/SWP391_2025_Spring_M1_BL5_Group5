@@ -15,44 +15,67 @@ package model;
 import java.util.Date;
 
 public class SaleOff {
-    private String sale_id;
-    private String product_id;
-    private float discount_percentage;
+    private int saleId;
+    private String saleCode;
+    private String discountType;
+    private double discountValue;
+    private double maxDiscount;
     private Date start_date;
     private Date end_date;
+    private int quantity;
 
-    public SaleOff() {}
+    public SaleOff() {
+    }
 
-    public SaleOff(String sale_id, String product_id, float discount_percentage, Date start_date, Date end_date) {
-        this.sale_id = sale_id;
-        this.product_id = product_id;
-        this.discount_percentage = discount_percentage;
+    public SaleOff(int saleId, String saleCode, String discountType, double discountValue, double maxDiscount, Date start_date, Date end_date, int quantity) {
+        this.saleId = saleId;
+        this.saleCode = saleCode;
+        this.discountType = discountType;
+        this.discountValue = discountValue;
+        this.maxDiscount = maxDiscount;
         this.start_date = start_date;
         this.end_date = end_date;
+        this.quantity = quantity;
     }
 
-    public String getSale_id() {
-        return sale_id;
+    public int getSaleId() {
+        return saleId;
     }
 
-    public void setSale_id(String sale_id) {
-        this.sale_id = sale_id;
+    public void setSaleId(int saleId) {
+        this.saleId = saleId;
     }
 
-    public String getProduct_id() {
-        return product_id;
+    public String getSaleCode() {
+        return saleCode;
     }
 
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
+    public void setSaleCode(String saleCode) {
+        this.saleCode = saleCode;
     }
 
-    public float getDiscount_percentage() {
-        return discount_percentage;
+    public String getDiscountType() {
+        return discountType;
     }
 
-    public void setDiscount_percentage(float discount_percentage) {
-        this.discount_percentage = discount_percentage;
+    public void setDiscountType(String discountType) {
+        this.discountType = discountType;
+    }
+
+    public double getDiscountValue() {
+        return discountValue;
+    }
+
+    public void setDiscountValue(double discountValue) {
+        this.discountValue = discountValue;
+    }
+
+    public double getMaxDiscount() {
+        return maxDiscount;
+    }
+
+    public void setMaxDiscount(double maxDiscount) {
+        this.maxDiscount = maxDiscount;
     }
 
     public Date getStart_date() {
@@ -71,8 +94,14 @@ public class SaleOff {
         this.end_date = end_date;
     }
 
-    @Override
-    public String toString() {
-        return "SaleOff{" + "sale_id=" + sale_id + ", product_id=" + product_id + ", discount_percentage=" + discount_percentage + ", start_date=" + start_date + ", end_date=" + end_date + '}';
+    public int getQuantity() {
+        return quantity;
     }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+    
+    
+            
 }
