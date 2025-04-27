@@ -1,7 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>        
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>   
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>  
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!doctype html>
 <html class="no-js" lang="en">
 
@@ -206,7 +207,7 @@
             <div class="container">   
                 <div class="account_dashboard">
                     <div class="row">
-                        <div class="col-sm-12 col-md-3 col-lg-3">
+                        <div class="col-sm-12 col-md-2 col-lg-2">
                             <!-- Nav tabs -->
                             <div class="dashboard_tab_button">
                                 <ul role="tablist" class="nav flex-column dashboard-list">
@@ -217,7 +218,7 @@
                                 </ul>
                             </div>    
                         </div>
-                        <div class="col-sm-12 col-md-9 col-lg-9">
+                        <div class="col-sm-12 col-md-10 col-lg-10">
                             <!-- Tab panes -->
                             <div class="tab-content dashboard_content">
                                 <!-- Tab ĐỔI MẬT KHẨU -->
@@ -228,13 +229,13 @@
                                             <div class="account_login_form">
                                                 <form action="users?action=changePassword" method="POST">
                                                     <label><b>Mật khẩu cũ</b></label>
-                                                    <input type="password" name="old_password" placeholder="Nhập mật khẩu cũ" required value="${sessionScope.oldPassword}">
+                                                    <input type="password" name="old_password" placeholder="Nhập mật khẩu cũ" required>
 
                                                     <label><b>Mật khẩu mới</b></label>
-                                                    <input type="password" name="new_password" placeholder="Nhập mật khẩu mới" required value="${sessionScope.newPassword}">
+                                                    <input type="password" name="new_password" placeholder="Nhập mật khẩu mới" required>
 
                                                     <label><b>Xác nhận mật khẩu mới</b></label>
-                                                    <input type="password" name="confirm_new_password" placeholder="Xác nhận mật khẩu mới" required value="${sessionScope.confirmNewPassword}">
+                                                    <input type="password" name="confirm_new_password" placeholder="Xác nhận mật khẩu mới" required>
 
                                                     <div class="cart_submit">
                                                         <button type="submit">Lưu</button>
@@ -246,15 +247,40 @@
                                 </div>
 
                                 <!-- Tab ĐƠN HÀNG -->
-                                <div class="tab-pane fade" id="orders">
+                                <div class="tab-pane fade ${param.tab == 'orders' ? 'show active' : ''}" id="orders">
                                     <h3>Đơn hàng</h3>
-                                    <div class="table-responsive">                                       
+
+                                    <!-- Bộ lọc -->
+                                    <form method="get" action="user" style="margin-bottom: 20px;">
+                                        <input type="hidden" name="action" value="myaccount"/>
+                                        <input type="hidden" name="tab" value="orders"/>
+                                        <div class="row g-2">
+                                            <div class="col-md-3">
+                                                <select class="form-select" name="paymentFilter" onchange="this.form.submit()">
+                                                    <option value="">-- Tất cả --</option>
+                                                    <option value="COD" ${param.paymentFilter == 'COD' ? 'selected' : ''}>COD</option>
+                                                    <option value="VNPay" ${param.paymentFilter == 'VNPay' ? 'selected' : ''}>VNPay</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <select class="form-select" name="sortBy" onchange="this.form.submit()">
+                                                    <option value="">-- Sắp xếp --</option>
+                                                    <option value="date_asc" ${param.sortBy == 'date_asc' ? 'selected' : ''}>Ngày tăng dần</option>
+                                                    <option value="date_desc" ${param.sortBy == 'date_desc' ? 'selected' : ''}>Ngày giảm dần</option>
+                                                    <option value="total_asc" ${param.sortBy == 'total_asc' ? 'selected' : ''}>Tổng đơn tăng dần</option>
+                                                    <option value="total_desc" ${param.sortBy == 'total_desc' ? 'selected' : ''}>Tổng đơn giảm dần</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <!-- Bảng đơn hàng -->
+                                    <div class="table-responsive">
                                         <c:set var="itemsPerPage" value="5" />
                                         <c:set var="currentPage" value="${param.page != null ? param.page : 1}" />
                                         <c:set var="startIndex" value="${(currentPage - 1) * itemsPerPage}" />
                                         <c:set var="endIndex" value="${startIndex + itemsPerPage}" />
 
-                                        <!-- Không out kích thước list -->
                                         <c:if test="${startIndex lt 0}">
                                             <c:set var="startIndex" value="0" />
                                         </c:if>
@@ -265,39 +291,31 @@
                                         <table class="table">
                                             <thead>
                                                 <tr>
+                                                    <th>TT</th>
                                                     <th>Mã đơn hàng</th>
                                                     <th>Ngày khởi tạo</th>
                                                     <th>Hình thức GD</th>
                                                     <th>Địa chỉ</th>
                                                     <th>Tổng đơn</th>
-                                                    <th>Actions</th>	 	 	 	
+                                                    <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- 5 record / trang -->
-                                                <c:forEach items="${bill}" var="b" 
-                                                           begin="${startIndex}" end="${endIndex - 1}">
+                                                <c:set var="stt" value="${(currentPage - 1) * itemsPerPage}" />
+                                                <c:forEach items="${bill}" var="b" varStatus="loop">
                                                     <tr>
+                                                        <td>${stt + loop.index + 1}</td>
                                                         <td>${b.bill_id}</td>
                                                         <td>${b.date}</td>
                                                         <td><span class="success">${b.payment}</span></td>
                                                         <td>${b.address}</td>
-
-                                                        <!-- Format tiền-->
                                                         <td>
-
                                                             <c:set var="tempFormatted">
-                                                                <fmt:formatNumber value="${b.total}"
-                                                                                  type="number"
-                                                                                  groupingUsed="true"
-                                                                                  minFractionDigits="0"
-                                                                                  maxFractionDigits="0" />
+                                                                <fmt:formatNumber value="${b.total}" type="number" groupingUsed="true" minFractionDigits="0" maxFractionDigits="0" />
                                                             </c:set>
-
                                                             <c:set var="finalPrice" value="${fn:replace(tempFormatted, ',', '.')}" />
                                                             ${finalPrice} VND
                                                         </td>
-
                                                         <td>
                                                             <a href="user?action=showdetail&bill_id=${b.bill_id}" class="view">view</a>
                                                         </td>
@@ -307,72 +325,41 @@
                                         </table>
                                     </div>
 
-                                    <!-- Tính tổng trang -->
+                                    <!-- Phân trang -->
                                     <c:set var="totalItems" value="${bill.size()}" />
-                                    <c:set var="totalPages" 
-                                           value="${(totalItems / itemsPerPage) + (totalItems % itemsPerPage == 0 ? 0 : 1)}" />
+                                    <c:set var="totalPages" value="${(totalItems div itemsPerPage) + (totalItems mod itemsPerPage == 0 ? 0 : 1)}" />
 
-                                    <!-- nút phân trang -->
                                     <nav aria-label="Page navigation">
-                                        <ul class="pagination">
+                                        <ul class="pagination justify-content-center">
                                             <c:forEach var="i" begin="1" end="${totalPages}">
                                                 <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                                    <a class="page-link" href="?page=${i}">${i}</a>
+                                                    <a class="page-link" href="user?action=myaccount&page=${i}&tab=orders&paymentFilter=${param.paymentFilter}&sortBy=${param.sortBy}">${i}</a>
                                                 </li>
                                             </c:forEach>
                                         </ul>
                                     </nav>
                                 </div>
-
                                 <!-- Tab TÀI KHOẢN CỦA TÔI -->
-                                <div class="tab-pane fade show active" id="account-details">
-                                    <h3>Tài khoản của tôi</h3>
+                                <div class="tab-pane fade ${param.tab == null || param.tab != 'orders' ? 'show active' : ''}" id="account-details">
+                                    <h3>Tài khoản của tôi </h3>
                                     <div class="login">
                                         <div class="login_form_container">
                                             <div class="account_login_form">
                                                 <form action="user?action=updateinfo" method="POST">
                                                     <label><b>Tên người dùng</b></label>
-                                                    <input type="text" name="user_name"
-                                                           value="${sessionScope.user.user_name}"
-                                                           placeholder="Nhập tên người dùng">
-                                                    <c:if test="${not empty sessionScope.error_userName}">
-                                                        <div class="text-danger" style="margin-top:5px;">
-                                                            ${sessionScope.error_userName}
-                                                        </div>
-                                                        <c:remove var="error_userName" scope="session"/>
-                                                    </c:if>
+                                                    <input type="text" name="user_name" value="${sessionScope.user.user_name}" placeholder="Nhập tên người dùng">
 
                                                     <label><b>Email</b></label>
-                                                    <input type="text" readonly name="user_email"
-                                                           value="${sessionScope.user.user_email}">
+                                                    <input type="text" readonly name="user_email" value="${sessionScope.user.user_email}">
 
                                                     <label><b>Ngày sinh</b></label>
-                                                    <input type="date" name="dateOfBirth"
-                                                           value="${sessionScope.user.dateOfBirth}"
-                                                           placeholder="Nhập ngày sinh (ngày/tháng/năm)">
-                                                    <!-- error_dob sẽ show bằng toast phía dưới -->
+                                                    <input type="date" name="dateOfBirth" value="${sessionScope.user.dateOfBirth}" placeholder="Nhập ngày sinh(ngày/tháng/năm)">
 
                                                     <label><b>Địa chỉ</b></label>
-                                                    <input type="text" name="address"
-                                                           value="${sessionScope.user.address}"
-                                                           placeholder="Nhập địa chỉ (Xã,Huyện,Tỉnh)">
-                                                    <c:if test="${not empty sessionScope.error_address}">
-                                                        <div class="text-danger" style="margin-top:5px;">
-                                                            ${sessionScope.error_address}
-                                                        </div>
-                                                        <c:remove var="error_address" scope="session"/>
-                                                    </c:if>
+                                                    <input type="text" name="address" value="${sessionScope.user.address}" placeholder="Nhập địa chỉ (Xã,Huyện,Tỉnh)">
 
                                                     <label><b>Số điện thoại</b></label>
-                                                    <input type="text" name="phoneNumber"
-                                                           value="${sessionScope.user.phoneNumber}"
-                                                           placeholder="Nhập số điện thoại (10 số)">
-                                                    <c:if test="${not empty sessionScope.error_phoneNumber}">
-                                                        <div class="text-danger" style="margin-top:5px;">
-                                                            ${sessionScope.error_phoneNumber}
-                                                        </div>
-                                                        <c:remove var="error_phoneNumber" scope="session"/>
-                                                    </c:if>
+                                                    <input type="text" name="phoneNumber" value="${sessionScope.user.phoneNumber}" placeholder="Nhập số điện thoại (10 số)">
 
                                                     <div class="cart_submit">
                                                         <button type="submit">Lưu</button>
@@ -405,44 +392,40 @@
         <script src="assets/js/main.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            function showNotification(message, isSuccess) {
-                Swal.fire({
-                    title: isSuccess ? 'Thành công!' : 'Lỗi!',
-                    text: message,
-                    icon: isSuccess ? 'success' : 'error',
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-            }
+                                                    function showNotification(message, isSuccess) {
+                                                        Swal.fire({
+                                                            title: isSuccess ? 'Thành công!' : 'Lỗi!',
+                                                            text: message,
+                                                            icon: isSuccess ? 'success' : 'error',
+                                                            toast: true,
+                                                            position: 'top-end',
+                                                            showConfirmButton: false,
+                                                            timer: 3000,
+                                                            timerProgressBar: true,
+                                                            didOpen: (toast) => {
+                                                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                                            }
+                                                        });
+                                                    }
 
-            // Kiểm tra và hiển thị thông báo khi trang được tải
-            document.addEventListener('DOMContentLoaded', function () {
-                var error_dob = "${sessionScope.error_dob}";
-                var error_pass = "${sessionScope.error_pass}";
-                var updateMessage = "${sessionScope.updateMessage}";
-                if (error_dob) {
-                    showNotification(error_dob, false);
+                                                    // Kiểm tra và hiển thị thông báo khi trang được tải
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        var error_dob = "${sessionScope.error_dob}";
+                                                        var error_pass = "${sessionScope.error_pass}";
+                                                        var updateMessage = "${sessionScope.updateMessage}";
+                                                        if (error_dob) {
+                                                            showNotification(error_dob, false);
             <% session.removeAttribute("error_dob"); %>
-                }
-                if (updateMessage) {
-                    showNotification(updateMessage, true);
+                                                        }
+                                                        if (updateMessage) {
+                                                            showNotification(updateMessage, true);
             <% session.removeAttribute("updateMessage"); %>
-                } else if (error_pass) {
-                    showNotification(error_pass, false);
+                                                        } else if (error_pass) {
+                                                            showNotification(error_pass, false);
             <% session.removeAttribute("error_pass"); %>
-                }
-            });
+                                                        }
+                                                    });
         </script>
-        <c:remove var="error_dob" scope="session"/>
-        <c:remove var="updateMessage" scope="session"/>
-
-
     </body>
 </html>
