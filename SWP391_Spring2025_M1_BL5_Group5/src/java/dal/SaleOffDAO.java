@@ -4,6 +4,8 @@ import model.SaleOff;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 public class SaleOffDAO extends DBContext {
 
@@ -31,30 +33,89 @@ public class SaleOffDAO extends DBContext {
         return saleOffs;
     }
 
-    public static void main(String[] args) {
-        // Tạo đối tượng SaleOffDAO để gọi phương thức getAllSaleOffs
-        SaleOffDAO saleOffDAO = new SaleOffDAO();
+    public boolean updateSaleOff(SaleOff saleOff) throws Exception {
+        String sql = "UPDATE sale_off SET sale_off_code = ?, discount_type = ?, discount_value = ?, max_discount = ?, start_date = ?, end_date = ?, quantity = ? WHERE sale_off_id = ?";
 
-        // Lấy tất cả mã giảm giá từ cơ sở dữ liệu
-        List<SaleOff> saleOffs = saleOffDAO.getAllSaleOffs();
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        // Kiểm tra nếu danh sách không rỗng, và hiển thị các mã giảm giá
-        if (saleOffs != null && !saleOffs.isEmpty()) {
-            System.out.println("Danh sách mã giảm giá:");
-            for (SaleOff saleOff : saleOffs) {
-                // Hiển thị thông tin của từng mã giảm giá
-                System.out.println("SaleOff ID: " + saleOff.getSaleId());
-                System.out.println("SaleOff Code: " + saleOff.getSaleCode());
-                System.out.println("Discount Type: " + saleOff.getDiscountType());
-                System.out.println("Discount Value: " + saleOff.getDiscountValue());
-                System.out.println("Max Discount: " + saleOff.getMaxDiscount());
-                System.out.println("Start Date: " + saleOff.getStart_date());
-                System.out.println("End Date: " + saleOff.getEnd_date());
-                System.out.println("Quantity: " + saleOff.getQuantity());
-                System.out.println("------------------------------------");
-            }
-        } else {
-            System.out.println("Không có mã giảm giá nào.");
+            // Cài đặt các tham số trong câu lệnh SQL
+            ps.setString(1, saleOff.getSaleCode());
+            ps.setString(2, saleOff.getDiscountType());
+            ps.setDouble(3, saleOff.getDiscountValue());
+            ps.setDouble(4, saleOff.getMaxDiscount());
+            ps.setDate(5, new Date(saleOff.getStart_date().getTime()));
+            ps.setDate(6, new Date(saleOff.getEnd_date().getTime()));
+            ps.setInt(7, saleOff.getQuantity());
+            ps.setInt(8, saleOff.getSaleId());
+
+            // Thực thi câu lệnh update
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Trả về true nếu có ít nhất một dòng bị ảnh hưởng
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Trả về false nếu có lỗi xảy ra
         }
     }
+
+    public List<SaleOff> searchSaleOffs(String saleCode, String discountType, String sortDiscountValue) {
+        List<SaleOff> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = getConnection();
+            StringBuilder sql = new StringBuilder("SELECT * FROM sale_off  WHERE 1=1");
+
+            if (saleCode != null && !saleCode.trim().isEmpty()) {
+                sql.append(" AND sale_off_code LIKE ?");
+            }
+            if (discountType != null && !discountType.trim().isEmpty()) {
+                sql.append(" AND discount_type = ?");
+            }
+            if (sortDiscountValue != null && !sortDiscountValue.trim().isEmpty()) {
+                sql.append(" ORDER BY discount_value ").append(sortDiscountValue.equalsIgnoreCase("asc") ? "ASC" : "DESC");
+            }
+
+            ps = conn.prepareStatement(sql.toString());
+
+            int index = 1;
+            if (saleCode != null && !saleCode.trim().isEmpty()) {
+                ps.setString(index++, "%" + saleCode + "%");
+            }
+            if (discountType != null && !discountType.trim().isEmpty()) {
+                ps.setString(index++, discountType);
+            }
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                SaleOff saleOff = new SaleOff();
+                saleOff.setSaleId(rs.getInt("sale_off_id"));
+                saleOff.setSaleCode(rs.getString("sale_off_code"));
+                saleOff.setDiscountType(rs.getString("discount_type"));
+                saleOff.setDiscountValue(rs.getDouble("discount_value"));
+                saleOff.setStart_date(rs.getDate("start_date"));
+                saleOff.setEnd_date(rs.getDate("end_date"));
+                list.add(saleOff);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
 }

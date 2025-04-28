@@ -27,6 +27,17 @@ public class SaleOff {
     public SaleOff() {
     }
 
+    public SaleOff(String saleCode, String discountType, double discountValue, double maxDiscount, Date start_date, Date end_date, int quantity) {
+        this.saleCode = saleCode;
+        this.discountType = discountType;
+        this.discountValue = discountValue;
+        this.maxDiscount = maxDiscount;
+        this.start_date = start_date;
+        this.end_date = end_date;
+        this.quantity = quantity;
+    }
+    
+    
     public SaleOff(int saleId, String saleCode, String discountType, double discountValue, double maxDiscount, Date start_date, Date end_date, int quantity) {
         this.saleId = saleId;
         this.saleCode = saleCode;
