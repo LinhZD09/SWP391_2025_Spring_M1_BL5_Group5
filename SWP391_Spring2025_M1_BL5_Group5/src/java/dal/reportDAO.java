@@ -73,6 +73,32 @@ public class reportDAO extends DBContext {
         return list;
     }
 
+    public List<Report> getReportsByUserId(int userId) {
+        List<Report> list = new ArrayList<>();
+        String sql = "SELECT r.id_report, r.user_id, r.content_report, r.subject_report, u.user_email, r.admin_reply "
+                + "FROM report r "
+                + "INNER JOIN users u ON u.user_id = r.user_id "
+                + "WHERE r.user_id = ?";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Report(
+                        rs.getInt("id_report"),
+                        rs.getInt("user_id"),
+                        rs.getString("content_report"),
+                        rs.getString("subject_report"),
+                        rs.getString("user_email"),
+                        rs.getString("admin_reply")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     // Phương thức xóa phản hồi
     public void deleteReport(int reportId) {
         try {
