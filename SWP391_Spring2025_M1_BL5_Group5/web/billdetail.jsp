@@ -100,6 +100,7 @@
                                             <table>
                                                 <thead>
                                                     <tr>
+                                                        <th>STT</th> <!-- Thêm cột STT -->
                                                         <th>Chủ đề phản hồi</th>
                                                         <th>Nội dung</th>
                                                         <th>Email người gửi</th>
@@ -107,8 +108,9 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <c:forEach items="${reports}" var="r">
+                                                    <c:forEach items="${reports}" var="r" varStatus="status">
                                                         <tr>
+                                                            <td>${status.index + 1}</td> <!-- Hiển thị STT -->
                                                             <td>${r.subject_report}</td>
                                                             <td>${r.content_report}</td>
                                                             <td>${r.user_email}</td>
@@ -129,6 +131,7 @@
                                         </div>
                                     </div>
                                 </div>
+
 
                             </div>
 
