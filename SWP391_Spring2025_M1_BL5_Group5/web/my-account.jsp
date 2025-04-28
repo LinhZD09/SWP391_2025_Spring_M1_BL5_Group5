@@ -301,7 +301,7 @@
                                                                               minFractionDigits="0" maxFractionDigits="0"/> VND
                                                         </td>
                                                         <td>
-                                                            <a href="user?action=showdetail&bill_id=${b.bill_id}" class="view">view</a>
+                                                            <a href="report?action=viewReport" class="view">view</a>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>

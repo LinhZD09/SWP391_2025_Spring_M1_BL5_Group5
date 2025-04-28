@@ -90,7 +90,46 @@
                                         </div>
                                     </c:if>
                                     </tbody>
+
                                 </table>
+                                <!-- Bảng danh sách phản hồi -->
+                                <div style="margin-top: 30px;">
+                                    <h3>Danh sách phản hồi</h3>
+                                    <div class="table_desc">
+                                        <div class="cart_page table-responsive">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Chủ đề phản hồi</th>
+                                                        <th>Nội dung</th>
+                                                        <th>Email người gửi</th>
+                                                        <th>Phản hồi từ Admin</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:forEach items="${reports}" var="r">
+                                                        <tr>
+                                                            <td>${r.subject_report}</td>
+                                                            <td>${r.content_report}</td>
+                                                            <td>${r.user_email}</td>
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${not empty r.admin_reply}">
+                                                                        ${r.admin_reply}
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <i>Chưa phản hồi</i>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
 
                         </div>
