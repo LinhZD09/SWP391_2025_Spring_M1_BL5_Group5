@@ -100,7 +100,8 @@
                                         <th>Product_ID</th>
                                         <th>User Name</th>
                                         <th>Đánh giá</th>
-                                        <th>Bình luận</th>
+                                        <th>Nội dung bình luận</th>
+                                        <th>Nội dung trả lời bình luận</th>
                                         <th>Ngày</th>
                                         <th width="150">Tính năng</th>
                                     </tr>
@@ -115,6 +116,17 @@
                                             <td>${c.user_name}</td>
                                             <td>${c.rating}</td>
                                             <td>${c.comment}</td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${empty c.admin_reply}">
+                                                        <span style="color: gray;">Chưa có phản hồi</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        ${c.admin_reply}
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+
                                             <td><fmt:formatDate value="${c.createdAt}" pattern="dd/MM/yyyy"/></td>
                                             <td>
                                                 <!-- Xóa bình luận -->

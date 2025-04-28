@@ -90,6 +90,7 @@
                                     <th>Email khách hàng</th>
                                     <th>Tiêu đề phản hồi</th>
                                     <th>Nội dung phản hồi</th>
+                                    <th>Nội dung đã phản hồi</th>
                                     <th>Chức năng</th>
                                 </tr>
                             </thead>
@@ -103,6 +104,17 @@
                                         <td>${u.user_email}</td>
                                         <td>${u.subject_report}</td>
                                         <td>${u.content_report}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${empty u.admin_reply}">
+                                                    <i style="color: gray;">Chưa phản hồi</i>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    ${u.admin_reply}
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+
                                         <td>
                                             <button class="btn btn-primary btn-sm trash" type="button" title="Xóa" value="${u.id_report}">
                                                 <i class="fas fa-trash-alt"></i>
