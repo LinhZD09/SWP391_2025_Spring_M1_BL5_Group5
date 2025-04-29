@@ -219,22 +219,16 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 GO
 
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[product_saleOFF](
-	[sale_id] [int] NOT NULL,
-	[product_id] [varchar](100) NULL,
-	[discount_percentage] [decimal](5, 2) NULL,
-	[start_date] [date] NULL,
-	[end_date] [date] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[sale_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
+CREATE TABLE sale_off (
+    sale_off_id INT IDENTITY PRIMARY KEY,               -- sale_off_id là kiểu int và là khóa chính
+    sale_off_code NVARCHAR(50) NOT NULL,       -- sale_off_code là kiểu NVARCHAR(50) và không được null
+    discount_type NVARCHAR(20) NOT NULL,       -- discount_type là kiểu NVARCHAR(20) và không được null
+    discount_value DECIMAL(10, 2) NOT NULL,    -- discount_value là kiểu DECIMAL với 10 chữ số và 2 chữ số thập phân
+    max_discount DECIMAL(10, 2) NULL,          -- max_discount là kiểu DECIMAL và có thể null
+    start_date DATE NOT NULL,                  -- start_date là kiểu DATE và không được null
+    end_date DATE NOT NULL,                    -- end_date là kiểu DATE và không được null
+    quantity INT NOT NULL                      -- quantity là kiểu INT và không được null
+);
 
 SET ANSI_NULLS ON
 GO
@@ -293,36 +287,36 @@ SET IDENTITY_INSERT [dbo].[About] OFF
 GO
 SET IDENTITY_INSERT [dbo].[bill] ON 
 
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (45, 5, 648000.0000, N'MOMO', N'Tiền Hải,Thái Bình', CAST(N'2024-05-04' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (46, 5, 298000.0000, N'MOMO', N'Thái Bình', CAST(N'2024-06-04' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (45, 5, 648000.0000, N'COD', N'Tiền Hải,Thái Bình', CAST(N'2024-05-04' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (46, 5, 298000.0000, N'CODE', N'Thái Bình', CAST(N'2024-06-04' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (47, 5, 378000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-04' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (48, 5, 270000.0000, N'Chua thanh toán (VNPAY)', N'Thái Bình', CAST(N'2024-06-04' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (49, 5, 417000.0000, N'Chua thanh toán (VNPAY)', N'Thái Bình', CAST(N'2024-06-04' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (48, 5, 270000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-04' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (49, 5, 417000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-04' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (50, 5, 567000.0000, N'COD', N'Thái Bình', CAST(N'2024-06-04' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (51, 5, 278000.0000, N'COD', N'Thái Bình', CAST(N'2024-06-04' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (52, 5, 189000.0000, N'COD', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (53, 5, 259000.0000, N'MOMO', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (53, 5, 259000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (54, 5, 270000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (55, 5, 259000.0000, N'MOMO', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (55, 5, 259000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (56, 5, 810000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (57, 5, 149000.0000, N'MOMO', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (57, 5, 149000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (58, 5, 417000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (59, 5, 149000.0000, N'COD', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (60, 5, 517000.0000, N'MOMO', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (60, 5, 517000.0000, N'COD', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (61, 5, 139000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (62, 13, 2750000.0000, N'MOMO', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (62, 13, 2750000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (63, 13, 2880000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (64, 1, 240000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (65, 1, 169000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (66, 1, 210000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (67, 1, 1450000.0000, N'VNPAY', N'Thái Bình', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (68, 16, 600000.0000, N'COD', N'Thái Bình', CAST(N'2024-06-05' AS Date), 98272722)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (69, 1, 150000.0000, N'MOMO', N'daihocfpt', CAST(N'2024-06-05' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (70, 17, 298000.0000, N'MOMO', N'daihocfpt', CAST(N'2024-06-05' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (69, 1, 150000.0000, N'VNPAY', N'daihocfpt', CAST(N'2024-06-05' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (70, 17, 298000.0000, N'VNPAY', N'daihocfpt', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (71, 17, 1240000.0000, N'COD', N'daihocfpt', CAST(N'2024-06-05' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (73, 17, 100000.0000, N'COD', N'Ha Noi', CAST(N'2024-05-05' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (74, 14, 120000.0000, N'MOMO', N'Thai Binh', CAST(N'2024-06-14' AS Date), 348956373)
-INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (75, 5, 150000.0000, N'MOMO', N'Thai Binh', CAST(N'2024-06-14' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (74, 14, 120000.0000, N'VNPAY', N'Thai Binh', CAST(N'2024-06-14' AS Date), 348956373)
+INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (75, 5, 150000.0000, N'VNPAY', N'Thai Binh', CAST(N'2024-06-14' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (76, 5, 60000.0000, N'COD', N'Thai Binh', CAST(N'2024-06-14' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (77, 8, 398000.0000, N'COD', N'Thai Binh', CAST(N'2024-06-19' AS Date), 348956373)
 INSERT [dbo].[bill] ([bill_id], [user_id], [total], [payment], [address], [date], [phone]) VALUES (78, 1, 25000.0000, N'COD', N'Thai Binh', CAST(N'2024-06-22' AS Date), 348956373)
@@ -944,6 +938,66 @@ INSERT [dbo].[users] ([user_id], [user_name], [user_email], [user_pass], [isAdmi
 INSERT [dbo].[users] ([user_id], [user_name], [user_email], [user_pass], [isAdmin], [dateOfBirth], [address], [phoneNumber], [banned], [adminReason], [isStoreStaff]) VALUES (12, N'DucAnh', N'DucAnh@gmail.com', N'Ducanh123', N'TRUE', N'2003-04-03', N'Nam Dinh', N'0999999999', 0, N'chăm chỉ', N'FALSE')
 SET IDENTITY_INSERT [dbo].[users] OFF
 GO
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_001', 'fixed', 10000.00, 20000.00, '2025-05-01', '2025-06-01', 100);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_002', 'percentage', 10.00, 5000.00, '2025-05-10', '2025-07-01', 150);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_003', 'fixed', 15000.00, 30000.00, '2025-06-01', '2025-07-15', 200);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_004', 'percentage', 20.00, 10000.00, '2025-06-10', '2025-07-20', 250);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_005', 'fixed', 12000.00, 25000.00, '2025-07-01', '2025-08-01', 300);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_006', 'percentage', 15.00, 8000.00, '2025-05-20', '2025-06-30', 120);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_007', 'fixed', 20000.00, 35000.00, '2025-07-05', '2025-08-10', 150);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_008', 'percentage', 25.00, 12000.00, '2025-06-15', '2025-07-30', 100);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_009', 'fixed', 5000.00, 15000.00, '2025-05-05', '2025-06-15', 180);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_010', 'percentage', 12.00, 7000.00, '2025-06-25', '2025-08-10', 110);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_011', 'fixed', 22000.00, 40000.00, '2025-07-15', '2025-08-25', 250);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_012', 'percentage', 30.00, 15000.00, '2025-07-10', '2025-09-01', 220);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_013', 'fixed', 18000.00, 35000.00, '2025-08-01', '2025-09-01', 170);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_014', 'percentage', 5.00, 4000.00, '2025-05-15', '2025-06-15', 90);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_015', 'fixed', 25000.00, 50000.00, '2025-07-20', '2025-08-15', 130);
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_016', 'percentage', 10.00, 6000.00, '2025-05-25', '2025-06-30', 160);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_017', 'fixed', 20000.00, 40000.00, '2025-06-20', '2025-08-05', 140);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_018', 'percentage', 8.00, 3500.00, '2025-06-05', '2025-07-15', 130);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_019', 'fixed', 13000.00, 25000.00, '2025-07-01', '2025-08-15', 110);
+
+INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity)
+VALUES ('SALE_020', 'percentage', 18.00, 9000.00, '2025-08-01', '2025-09-01', 120);
+
 ALTER TABLE [dbo].[product_comment] ADD  DEFAULT (getdate()) FOR [created_at]
 GO
 ALTER TABLE [dbo].[users] ADD  DEFAULT ((0)) FOR [banned]
