@@ -14,7 +14,6 @@ import java.util.List;
 import model.About;
 import model.User;
 
-
 @WebServlet(name = "AboutManager", urlPatterns = {"/aboutmanager"})
 public class AboutManager extends HttpServlet {
 
@@ -65,7 +64,7 @@ public class AboutManager extends HttpServlet {
                     String aboutcontent = request.getParameter("about_content");
 
                     String aboutimg = "images/" + request.getParameter("about_img");
-                    dao.addAbout(abouttitle,  aboutimg,aboutcontent);
+                    dao.addAbout(abouttitle, aboutimg, aboutcontent);
                     session.setAttribute("successMessageInsert", "Thêm bài viết mới thành công!");
                     response.sendRedirect("aboutmanager");
                     return;
@@ -81,7 +80,7 @@ public class AboutManager extends HttpServlet {
                     about.setContent(aboutcontent);
                     about.setImg(aboutimg);
                     dao.UpdateAbout(about);
-                    session.setAttribute("successMessageUpdate", "Cập nhật thông tin bài viết thành công!");
+                    session.setAttribute("successMessageUpdate", "Cập nhật bài viết thành công!");
                     response.sendRedirect("aboutmanager");
                     return;
                 }

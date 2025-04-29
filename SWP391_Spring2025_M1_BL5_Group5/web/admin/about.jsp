@@ -1,3 +1,5 @@
+
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -294,5 +296,11 @@
             </c:if>
             });
         </script>
+        <div class="modal-body">
+            <c:if test="${not empty sessionScope.successMessageInsert}">
+                ${sessionScope.successMessageInsert}
+                <c:remove var="successMessageInsert" scope="session"/>
+            </c:if>
+        </div>
 
 </html>
