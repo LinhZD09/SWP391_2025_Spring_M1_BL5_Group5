@@ -127,9 +127,13 @@
                                                     <th>Phí ship</th>
                                                     <td><strong>0</strong></td>
                                                 </tr>
+                                                 <tr>
+                                                    <th>Mã Giảm</th>
+                                                    <td><strong>${discountCode}</strong></td>
+                                                </tr>
                                                 <tr class="order_total">
                                                     <th>Tổng đơn</th>
-                                                    <td><strong><fmt:formatNumber value="${sessionScope.total + 0}" 
+                                                    <td><strong><fmt:formatNumber value="${sessionScope.finalTotal + 0}" 
                                                                       type="number" 
                                                                       groupingUsed="true" 
                                                                       minFractionDigits="0"

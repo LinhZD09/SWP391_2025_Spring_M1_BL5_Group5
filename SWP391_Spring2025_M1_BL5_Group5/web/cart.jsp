@@ -181,10 +181,49 @@
                                                         <p>Phí vận chuyển </p>
                                                         <p class="cart_amount" id="shipping">0 VNĐ</p>
                                                     </div>
-                                                    <div class="cart_subtotal">
-                                                        <p>Tổng tiền</p>
-                                                        <p class="cart_amount" id="total"><fmt:formatNumber pattern="##########" value="${sessionScope.total + 0}" /> VNĐ</p>
+                                                    <!-- Form nhập mã giảm giá -->
+                                                    <form action="applyDiscount" method="post">
+                                                        <div class="cart_subtotal" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                                            <p style="margin: 0;">Mã Giảm Giá</p>
+                                                            <div style="display: flex; gap: 8px;">
+                                                                <input type="text" name="discountCode"
+                                                                       placeholder="Nhập mã giảm giá"
+                                                                       value="${not empty discountCode ? discountCode : sessionScope.discountCode}"
+                                                                       style="width: 160px; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px;">
+
+                                                                <!-- Nút áp dụng -->
+                                                                <button type="submit" name="action" value="apply"
+                                                                        style="padding: 6px 14px; background-color: #000; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                                                    Xác Nhận
+                                                                </button>
+
+                                                                <!-- Nút hủy mã -->
+                                                                <!-- Chỉ hiển thị đoạn bên trong nếu trong session đang có discountCode (tức là mã giảm giá đã được áp dụng). -->
+                                                                <c:if test="${not empty sessionScope.discountCode}">
+                                                                    <button type="submit" name="action" value="remove"
+                                                                            style="padding: 6px 14px; background-color: #888; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                                                        HỦY MÃ
+                                                                    </button>
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    <!-- Thông báo lỗi -->             
+                                                    <c:if test="${not empty error}">
+                                                        <div style="color: white; background-color: #dc3545; padding: 10px 15px; border-radius: 5px; margin-top: 10px; font-weight: bold;">
+                                                            ${error}
+                                                        </div>
+                                                    </c:if>
+                                                    <br/>
+
+                                                    <div class="cart_subtotal" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                                        <p style="margin: 0;">Tổng tiền</p>
+                                                        <p style="margin: 0;">
+                                                            <fmt:formatNumber pattern="###,###"
+                                                                              value="${sessionScope.finalTotal != null ? sessionScope.finalTotal : sessionScope.total}" /> VNĐ
+                                                        </p>
                                                     </div>
+
                                                     <div class="checkout_btn">
                                                         <a href="checkout">Thanh toán</a>
                                                     </div>

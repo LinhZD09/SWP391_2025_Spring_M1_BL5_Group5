@@ -141,7 +141,7 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="amount" class="form-label">Số tiền</label>
-                                    <input type="number" class="form-control" id="amount" name="amount" value="${requestScope.total}" readonly>
+                                    <input type="number" class="form-control" id="amount" name="amount" value="${sessionScope.finalTotal}" readonly>
                                 </div>
 <!--
                                 <h4 class="mb-3">Chọn phương thức thanh toán</h4>

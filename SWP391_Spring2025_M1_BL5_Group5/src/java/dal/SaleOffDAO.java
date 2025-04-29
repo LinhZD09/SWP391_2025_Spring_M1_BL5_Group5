@@ -5,7 +5,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
+
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 
 public class SaleOffDAO extends DBContext {
 
@@ -118,4 +120,65 @@ public class SaleOffDAO extends DBContext {
         return list;
     }
 
+    public SaleOff getValidSaleOff(String code, Date today) {
+        String sql = "SELECT * FROM sale_off WHERE sale_off_code = ? AND start_date <= ? AND end_date >= ? AND quantity > 0";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, code);
+            ps.setDate(2, today);
+            ps.setDate(3, today);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new SaleOff(
+                        rs.getInt("sale_off_id"),
+                        rs.getString("sale_off_code"),
+                        rs.getString("discount_type"),
+                        rs.getDouble("discount_value"),
+                        rs.getDouble("max_discount"),
+                        rs.getDate("start_date"),
+                        rs.getDate("end_date"),
+                        rs.getInt("quantity")
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void reduceQuantity(int id) {
+        String sql = "UPDATE sale_off SET quantity = quantity - 1 WHERE sale_off_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        SaleOffDAO dao = new SaleOffDAO();
+
+        // Mã giảm giá cần test
+        String testCode = "SALE_014";
+
+        // Ngày hiện tại theo server
+        Date today = Date.valueOf(LocalDate.now());
+
+        // Gọi DAO kiểm tra mã giảm giá
+        SaleOff saleOff = dao.getValidSaleOff(testCode, today);
+
+        if (saleOff != null) {
+            System.out.println("✅ Mã giảm giá hợp lệ!");
+            System.out.println("Mã: " + saleOff.getSaleCode());
+            System.out.println("Loại: " + saleOff.getDiscountType());
+            System.out.println("Giá trị: " + saleOff.getDiscountValue());
+            System.out.println("Giảm tối đa: " + saleOff.getMaxDiscount());
+            System.out.println("Ngày bắt đầu: " + saleOff.getStart_date());
+            System.out.println("Ngày kết thúc: " + saleOff.getEnd_date());
+            System.out.println("Số lượng còn: " + saleOff.getQuantity());
+        } else {
+            System.out.println("❌ Mã không hợp lệ, hết hạn hoặc hết lượt dùng.");
+        }
+    }
 }
