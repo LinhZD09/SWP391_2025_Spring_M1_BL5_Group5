@@ -86,12 +86,13 @@
                         </div>
                         <div>
                             <label for="paymentFilter">Phương thức thanh toán:</label>
-                            <select id="paymentFilter" onchange="filterTable()">
-                                <option value="">Tất cả</option>
-                                <option value="COD">COD</option>
-                                <option value="VNPAY">VNPAY</option>
-                                <!-- Add more options as needed -->
+                            <select id="paymentFilter" onchange="location.href = 'ordermanager?paymentFilter=' + this.value">
+                                <option value="" ${param.paymentFilter == null || param.paymentFilter == '' ? 'selected' : ''}>Tất cả</option>
+                                <option value="COD" ${param.paymentFilter == 'COD' ? 'selected' : ''}>COD</option>
+                                <option value="VNPAY" ${param.paymentFilter == 'VNPAY' ? 'selected' : ''}>VNPAY</option>
                             </select>
+
+
                         </div>
                         <table class="table table-hover table-bordered" id="sampleTable">
                             <thead>

@@ -76,24 +76,28 @@ public class billDAO extends DBContext {
 
     public List<Bill> getBillInfo(String paymentMethod) {
         List<Bill> list = new ArrayList<>();
+
+        // Chỉ cho phép 2 phương thức này
         String sql = "SELECT b.bill_id, u.user_name, b.phone, b.address, b.date, b.total, b.payment "
                 + "FROM bill b INNER JOIN users u ON b.user_id = u.user_id "
-                + "WHERE LOWER(LTRIM(RTRIM(b.payment))) NOT LIKE '%momo%' "
-                + "AND LOWER(LTRIM(RTRIM(b.payment))) NOT LIKE '%chua thanh toán%'";
+                + "WHERE TRIM(b.payment) IN ('COD', 'VNPAY')";
 
-        if (paymentMethod != null && !paymentMethod.isEmpty()) {
-            sql += " AND LOWER(b.payment) LIKE ?";
+        // Nếu lọc thêm theo payment
+        if (paymentMethod != null && !paymentMethod.trim().isEmpty()) {
+            sql += " AND TRIM(b.payment) = ?";
         }
 
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
-            if (paymentMethod != null && !paymentMethod.isEmpty()) {
-                ps.setString(1, "%" + paymentMethod.toLowerCase() + "%");
+
+            if (paymentMethod != null && !paymentMethod.trim().isEmpty()) {
+                ps.setString(1, paymentMethod.trim());
             }
+
             rs = ps.executeQuery();
             while (rs.next()) {
-                System.out.println(">>> Payment: " + rs.getString(7)); // debug
+                System.out.println(">>> Payment: [" + rs.getString(7) + "]");
                 User u = new User(rs.getString(2));
                 list.add(new Bill(
                         rs.getInt(1), u, rs.getFloat(6), rs.getString(7),
@@ -103,6 +107,7 @@ public class billDAO extends DBContext {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return list;
     }
 
