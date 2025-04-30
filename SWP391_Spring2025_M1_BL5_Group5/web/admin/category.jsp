@@ -124,7 +124,7 @@
                             <table id="sampleTable" class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>TT</th>
+                                        <th>TTaaaaaa</th>
                                         <th>ID danh mục</th>
                                         <th>Tên danh mục</th>
                                         <th>Chức năng</th>
