@@ -32,6 +32,12 @@
             <div class="container">   
                 <div class="row">
                     <div class="col-12">
+                        <!-- Nút Quay lại -->
+                        <div style="margin-bottom: 10px;">
+                            <button onclick="history.back()" style="background-color: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer;">
+                                ← Quay lại
+                            </button>
+                        </div>
                         <div class="breadcrumb_content">
                             <ul>
                                 <li><a href="home">Trang chủ</a></li>
@@ -117,10 +123,10 @@
                                                             <td>
                                                                 <c:choose>
                                                                     <c:when test="${not empty r.admin_reply}">
-                                                                        ${r.admin_reply}
+                                                                        <span style="color: green; font-weight: bold;">${r.admin_reply}</span>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <i>Chưa phản hồi</i>
+                                                                        <span style="color: red; font-weight: bold;">Chưa có phản hồi</span>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </td>

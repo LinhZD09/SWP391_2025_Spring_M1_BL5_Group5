@@ -1,11 +1,12 @@
+
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Danh sách danh mục sản phẩm | Quản trị Admin</title>
+        <title>Danh sách đơn hàng | Quản trị Admin</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +22,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+
     </head>
+
     <body onload="time()" class="app sidebar-mini rtl">
         <!-- Navbar-->
         <header class="app-header">
@@ -29,15 +32,19 @@
                                             aria-label="Hide Sidebar"></a>
             <!-- Navbar Right Menu-->
             <ul class="app-nav">
+
+
                 <!-- User Menu-->
-                <li><a class="app-nav__item" href="dashboard"><i class='bx bx-log-out bx-rotate-180'></i> </a></li>
+                <li><a class="app-nav__item" href="dashboard"><i class='bx bx-log-out bx-rotate-180'></i> </a>
+
+                </li>
             </ul>
         </header>
         <!-- Sidebar menu-->
         <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
         <aside class="app-sidebar">
-            <div class="app-sidebar__user">
-                <img class="app-sidebar__user-avatar" src="admin/images/user.png" width="50px" alt="User Image">
+            <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="admin/images/user.png" width="50px"
+                                                alt="User Image">
                 <div>
                     <p class="app-sidebar__user-name"><b>${sessionScope.user.user_name}</b></p>
                     <p class="app-sidebar__user-designation">Chào mừng bạn trở lại</p>
@@ -49,7 +56,9 @@
                 <li><a class="app-menu__item" href="categorymanager"><i class='app-menu__icon bx bxs-category'></i><span class="app-menu__label">Quản lý danh mục</span></a></li>
                 <li><a class="app-menu__item" href="productmanager"><i class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a></li>
                 <li><a class="app-menu__item" href="ordermanager"><i class='app-menu__icon bx bx-task'></i><span class="app-menu__label">Quản lý đơn hàng</span></a></li>
-                            <c:if test="${sessionScope.user.isAdmin}">
+
+                <!-- Conditionally Display Menu Items -->
+                <c:if test="${sessionScope.user.isAdmin}">
                     <li><a class="app-menu__item" href="customermanager"><i class='app-menu__icon bx bx-user-voice'></i><span class="app-menu__label">Quản lý khách hàng</span></a></li>
                     <li><a class="app-menu__item" href="reportmanager"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý phản hồi</span></a></li>
                     <li><a class="app-menu__item" href="aboutmanager"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý trang giới thiệu</span></a></li>
@@ -61,94 +70,71 @@
         <main class="app-content">
             <div class="app-title">
                 <ul class="app-breadcrumb breadcrumb side">
-                    <li class="breadcrumb-item active"><a href="#"><b>Danh sách phản hồi</b></a></li>
+                    <li class="breadcrumb-item active"><a href="#"><b>Danh sách đơn hàng</b></a></li>
                 </ul>
                 <div id="clock"></div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="tile">
-                        <!-- Hiển thị thông báo thành công -->
-                        <!-- Hiển thị thông báo thành công -->
-                        <c:if test="${not empty message}">
-                            <script>
-                                swal({
-                                    title: "Thông báo",
-                                    text: "${message}",
-                                    icon: "success",
-                                    button: "Đóng"
-                                });
-                            </script>
-                        </c:if>
-
-
-                        <table class="table table-hover table-bordered js-copytextarea" cellpadding="0" cellspacing="0" border="0" id="sampleTable">
+                        <div class="tile-body">
+                            <div class="row element-button"
+                                 <div class="col-sm-2">
+                                <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i
+                                        class="fas fa-print"></i> In dữ liệu</a>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="paymentFilter">Phương thức thanh toán:</label>
+                            <select id="paymentFilter" onchange="filterTable()">
+                                <option value="">Tất cả</option>
+                                <option value="COD">COD</option>
+                                <option value="VNPAY">VNPAY</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                        </div>
+                        <table class="table table-hover table-bordered" id="sampleTable">
                             <thead>
                                 <tr>
-                                    <th>Số thứ tự</th> <!-- Cột số thứ tự -->
-                                    
-                                    <th>Email khách hàng</th>
-                                    <th>Tiêu đề phản hồi</th>
-                                    <th>Nội dung phản hồi</th>
-                                    <th>Nội dung đã phản hồi</th>
+                                    <th>STT</th> <!-- Cột số thứ tự mới -->
+                                    <th>ID đơn hàng</th>
+                                    <th>Khách hàng</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Địa chỉ</th>
+                                    <th>Ngày mua</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Thanh Toán</th>
                                     <th>Chức năng</th>
                                 </tr>
                             </thead>
 
-                            <!-- Bảng danh sách phản hồi -->
                             <tbody>
-                                <c:forEach items="${sessionScope.Reports}" var="u" varStatus="status">
-                                    <tr>
-                                        <td>${status.index + 1}</td> <!-- Cột số thứ tự -->
-                                       
-                                        <td>${u.user_email}</td>
-                                        <td>${u.subject_report}</td>
-                                        <td>${u.content_report}</td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${empty u.admin_reply}">
-                                                    <span style="color: red; font-weight: bold;">Chưa có phản hồi</span>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span style="color: green; font-weight: bold;">${u.admin_reply}</span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-
-                                        <td>
-                                            <button class="btn btn-primary btn-sm trash" type="button" title="Xóa" value="${u.id_report}">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                            <button class="btn btn-success btn-sm reply-btn" type="button" title="Trả lời" data-id="${u.id_report}">
-                                                Trả Lời
-                                            </button>
-                                            <!-- Form trả lời admin -->
-                                            <div class="reply-form" id="reply-form-${u.id_report}" style="display:none; margin-top:10px;">
-                                                <form action="reportmanager" method="post">
-                                                    <input type="hidden" name="action" value="reply" />
-                                                    <input type="hidden" name="id_report" value="${u.id_report}" />
-                                                    <textarea name="admin_reply" class="form-control" rows="2" placeholder="Nhập nội dung phản hồi..."></textarea>
-                                                    <button type="submit" class="btn btn-info btn-sm mt-2">Gửi phản hồi</button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                <c:forEach items="${bill}" var="b" varStatus="loop">
+                                    <c:if test="${b.payment ne 'MOMO' and b.payment ne 'Chưa thanh toán (VNPay)'}">
+                                        <tr>
+                                            <td>${loop.index + 1}</td>
+                                            <td>${b.bill_id}</td>
+                                            <td>${b.user.user_name}</td>
+                                            <td>(+84)${b.phone}</td>
+                                            <td>${b.address}</td>
+                                            <td>${b.date}</td>
+                                            <td>${b.total}</td>
+                                            <td><span class="badge bg-success">${b.payment}</span></td>
+                                            <td><a style="color: white; background-color: #28a745; padding: 5px; border-radius: 5px;"
+                                                   href="ordermanager?action=showdetail&bill_id=${b.bill_id}">Hiển thị đơn hàng</a></td>
+                                        </tr>
+                                    </c:if>
                                 </c:forEach>
-                                <c:if test="${not empty requestScope.msgc}">
-                                <div style="margin-top: 10px; color: green; font-weight: bold;">
-                                    ${requestScope.msgc}
-                                </div>
-                            </c:if>
+
+
+
                             </tbody>
-
-
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
     <!-- Essential javascripts for application to work-->
     <script src="admin/js/jquery-3.2.1.min.js"></script>
     <script src="admin/js/popper.min.js"></script>
@@ -164,25 +150,6 @@
     <script type="text/javascript" src="admin/js/plugins/dataTables.bootstrap.min.js"></script>
     <script type="text/javascript">$('#sampleTable').DataTable();</script>
     <script>
-        jQuery(document).ready(function () {
-            // Event delegation for delete buttons
-            jQuery(document).on('click', '.trash', function () {
-                var reportId = $(this).attr("value");
-                swal({
-                    title: "Cảnh báo",
-                    text: "Bạn có chắc chắn là muốn xóa phản hồi này?",
-                    buttons: ["Hủy bỏ", "Đồng ý"],
-                }).then((willDelete) => {
-                    if (willDelete) {
-                        window.location = "reportmanager?action=delete&id_report=" + reportId;
-                        swal("Đã xóa thành công!", {
-                            icon: "success",
-                        });
-                    }
-                });
-            });
-        });
-
         //Thời Gian
         function time() {
             var today = new Date();
@@ -223,16 +190,39 @@
                 return i;
             }
         }
-
+        //In dữ liệu
+        var myApp = new function () {
+            this.printTable = function () {
+                var tab = document.getElementById('sampleTable');
+                var win = window.open('', '', 'height=700,width=700');
+                win.document.write(tab.outerHTML);
+                win.document.close();
+                win.print();
+            }
+        }
     </script>
     <script>
-        $(document).ready(function () {
-            $(".reply-btn").click(function () {
-                var id = $(this).data("id");
-                $("#reply-form-" + id).toggle();
-            });
-        });
+        function filterTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("paymentFilter");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("sampleTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[6]; // Index of the payment column
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
     </script>
 
 </body>
+
 </html>

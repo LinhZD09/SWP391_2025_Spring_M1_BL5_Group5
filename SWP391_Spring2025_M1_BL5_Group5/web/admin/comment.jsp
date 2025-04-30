@@ -96,7 +96,7 @@
                                 <thead>
                                     <tr>
                                         <th>Số thứ tự</th> <!-- Added the serial number column -->
-                                        <th>ID</th>
+
                                         <th>Product_ID</th>
                                         <th>User Name</th>
                                         <th>Đánh giá</th>
@@ -111,7 +111,7 @@
                                         <tr>
                                             <!-- Display serial number -->
                                             <td>${status.index + 1}</td> <!-- Serial number column -->
-                                            <td>${c.id}</td>
+
                                             <td>${c.productId}</td>
                                             <td>${c.user_name}</td>
                                             <td>${c.rating}</td>
@@ -119,10 +119,10 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${empty c.admin_reply}">
-                                                        <span style="color: gray;">Chưa có phản hồi</span>
+                                                        <span style="color: red; font-weight: bold;">Chưa có phản hồi</span>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        ${c.admin_reply}
+                                                        <span style="color: green; font-weight: bold;">${c.admin_reply}</span>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>

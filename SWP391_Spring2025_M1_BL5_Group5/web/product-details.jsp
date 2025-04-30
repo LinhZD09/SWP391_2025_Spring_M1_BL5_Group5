@@ -876,7 +876,8 @@
                                 <i class="fas fa-star star"></i>
                             </c:forEach>
                         </p>
-                        <p><strong>Ngày:</strong> <fmt:formatDate value="${c.createdAt}" pattern="dd/MM/yyyy"/></p>
+                        <p><strong>Thời gian:</strong> <fmt:formatDate value="${c.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
+
                         <p><strong>Bình luận:</strong> ${c.comment}</p>
 
                         <c:if test="${not empty c.admin_reply}">
