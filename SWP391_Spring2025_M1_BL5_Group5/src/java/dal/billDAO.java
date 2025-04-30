@@ -78,21 +78,27 @@ public class billDAO extends DBContext {
         List<Bill> list = new ArrayList<>();
         String sql = "SELECT b.bill_id, u.user_name, b.phone, b.address, b.date, b.total, b.payment "
                 + "FROM bill b INNER JOIN users u ON b.user_id = u.user_id "
-                + "WHERE b.payment NOT LIKE 'MOMO'";  // <-- Loại MOMO
+                + "WHERE LOWER(LTRIM(RTRIM(b.payment))) NOT LIKE '%momo%' "
+                + "AND LOWER(LTRIM(RTRIM(b.payment))) NOT LIKE '%chua thanh toán%'";
 
         if (paymentMethod != null && !paymentMethod.isEmpty()) {
-            sql += " AND b.payment LIKE ?";
+            sql += " AND LOWER(b.payment) LIKE ?";
         }
+
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
             if (paymentMethod != null && !paymentMethod.isEmpty()) {
-                ps.setString(1, "%" + paymentMethod + "%");
+                ps.setString(1, "%" + paymentMethod.toLowerCase() + "%");
             }
             rs = ps.executeQuery();
             while (rs.next()) {
+                System.out.println(">>> Payment: " + rs.getString(7)); // debug
                 User u = new User(rs.getString(2));
-                list.add(new Bill(rs.getInt(1), u, rs.getFloat(6), rs.getString(7), rs.getString(4), rs.getDate(5), rs.getInt(3)));
+                list.add(new Bill(
+                        rs.getInt(1), u, rs.getFloat(6), rs.getString(7),
+                        rs.getString(4), rs.getDate(5), rs.getInt(3)
+                ));
             }
         } catch (Exception e) {
             e.printStackTrace();
