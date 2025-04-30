@@ -602,12 +602,6 @@ public void ProductDelete(String product_id) {
         ps.setString(1, product_id);
         ps.executeUpdate();
 
-        // Xóa dữ liệu từ bảng product_saleOFF
-        String sql2 = "DELETE FROM product_saleOFF WHERE product_id=?";
-        ps = conn.prepareStatement(sql2);
-        ps.setString(1, product_id);
-        ps.executeUpdate();
-
         // Xóa dữ liệu từ bảng product_color
         String sql3 = "DELETE FROM product_color WHERE product_id=?";
         ps = conn.prepareStatement(sql3);

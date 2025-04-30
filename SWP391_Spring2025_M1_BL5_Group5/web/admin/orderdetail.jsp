@@ -45,7 +45,7 @@
                 </div>
             </div>
             <hr>
-           <ul class="app-menu">
+            <ul class="app-menu">
                 <li><a class="app-menu__item" href="dashboard"><i class='app-menu__icon bx bx-tachometer'></i><span class="app-menu__label">Bảng thống kê</span></a></li>
                 <li><a class="app-menu__item" href="categorymanager"><i class='app-menu__icon bx bxs-category'></i><span class="app-menu__label">Quản lý danh mục</span></a></li>
                 <li><a class="app-menu__item" href="productmanager"><i class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a></li>
@@ -58,7 +58,7 @@
                     <li><a class="app-menu__item" href="aboutmanager"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý trang giới thiệu</span></a></li>
                     <li><a class="app-menu__item" href="commentmanager"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý bình luận</span></a></li>
                     <li><a class="app-menu__item" href="saleoff"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý sale</span></a></li>
-                </c:if>
+                            </c:if>
             </ul>
         </aside>
         <main class="app-content">
@@ -76,6 +76,9 @@
                                 <div class="col-sm-2">
                                     <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i
                                             class="fas fa-print"></i> In dữ liệu</a>
+                                    <a href="ordermanager" class="btn btn-secondary" style="margin-top: 20px;">
+                                        <i class="fas fa-arrow-left"></i> Quay lại danh sách đơn hàng
+                                    </a>
                                 </div>
                             </div>
                             <table class="table table-hover table-bordered" id="sampleTable">
