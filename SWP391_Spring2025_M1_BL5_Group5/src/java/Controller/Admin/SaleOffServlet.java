@@ -89,6 +89,30 @@ public class SaleOffServlet extends HttpServlet {
                     request.setAttribute("saleCode", saleCode);
                     request.setAttribute("discountType", discountType);
                     request.setAttribute("sortDiscountValue", sortDiscountValue);
+                    HttpSession s = request.getSession();
+                    List<String> errors = (List<String>) s.getAttribute("errors");
+                    Integer editId = (Integer) s.getAttribute("editId");
+
+                    Boolean addFail = (Boolean) session.getAttribute("addFail");
+                    String successMessage = (String) session.getAttribute("successMessage");
+
+                    if (errors != null) {
+                        request.setAttribute("errors", errors);
+                        session.removeAttribute("errors");
+                    }
+                    if (editId != null) {
+                        request.setAttribute("editId", editId);
+                        session.removeAttribute("editId");
+                    }
+                    if (addFail != null) {
+                        request.setAttribute("addFail", addFail);
+                        session.removeAttribute("addFail");
+                    }
+                    if (successMessage != null) {
+                        request.setAttribute("successMessage", successMessage);
+                        session.removeAttribute("successMessage");
+                    }
+
                     request.setAttribute("saleOffs", saleOffList);
                     request.getRequestDispatcher("admin/saleoff.jsp").forward(request, response);
                 }
@@ -132,70 +156,279 @@ public class SaleOffServlet extends HttpServlet {
         return "Short description";
     }// 
 
-    private void addSaleOff(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    private void updateSaleOff(HttpServletRequest request, HttpServletResponse response) {
+    private void addSaleOff(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            // Lấy các tham số từ request
             String saleCode = request.getParameter("saleCode");
             String discountType = request.getParameter("discountType");
-            Double discountValue = Double.valueOf(request.getParameter("discountValue"));
-            Double maxDiscount = Double.valueOf(request.getParameter("maxDiscount"));
+            String discountValueStr = request.getParameter("discountValue").replace(",", ".");
+            String maxDiscountStr = request.getParameter("maxDiscount").replace(",", ".");
             String startDateStr = request.getParameter("startDate");
             String endDateStr = request.getParameter("endDate");
-            int quantity = Integer.parseInt(request.getParameter("quantity"));
-            int saleId = Integer.parseInt(request.getParameter("saleId"));
+            String quantityStr = request.getParameter("quantity");
 
-            // Chuyển đổi startDate và endDate từ String sang Date
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date startDate = null;
-            Date endDate = null;
+            List<String> errors = new ArrayList<>();
 
+            if (saleCode == null || saleCode.trim().isEmpty()) {
+                errors.add("Mã giảm giá không được để trống");
+            }
+            if (saleCode != null && saleCode.length() > 10) {
+                errors.add("Mã giảm giá không được vượt quá 10 ký tự.");
+            }
+
+            if (!"Percentage".equalsIgnoreCase(discountType) && !"Fixed".equalsIgnoreCase(discountType)) {
+                errors.add("Loại giảm giá không hợp lệ.");
+            }
+
+            double discountValue = 0;
+            try {
+                discountValue = Double.parseDouble(discountValueStr);
+                if (discountValue <= 0) {
+                    errors.add("Giá trị giảm phải lớn hơn 0.");
+                }
+                if ("Percentage".equalsIgnoreCase(discountType) && discountValue > 100) {
+                    errors.add("Phần trăm giảm giá không được vượt quá 100%.");
+                }
+            } catch (NumberFormatException e) {
+                errors.add("Giá trị giảm giá không hợp lệ.");
+            }
+
+            double maxDiscount = 0;
+            try {
+                maxDiscount = Double.parseDouble(maxDiscountStr);
+                if (maxDiscount <= 0) {
+                    errors.add("Giảm tối đa phải lớn hơn 0.");
+                }
+            } catch (NumberFormatException e) {
+                errors.add("Giảm tối đa không hợp lệ.");
+            }
+
+            int quantity = 0;
+            try {
+                quantity = Integer.parseInt(quantityStr);
+                if (quantity <= 0) {
+                    errors.add("Số lượng phải lớn hơn 0.");
+                }
+            } catch (NumberFormatException e) {
+                errors.add("Số lượng không hợp lệ.");
+            }
+
+            Date startDate = null, endDate = null;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 if (startDateStr != null && !startDateStr.isEmpty()) {
-                    startDate = dateFormat.parse(startDateStr);
+                    startDate = sdf.parse(startDateStr);
                 }
                 if (endDateStr != null && !endDateStr.isEmpty()) {
-                    endDate = dateFormat.parse(endDateStr);
+                    endDate = sdf.parse(endDateStr);
+                }
+                if (startDate != null && endDate != null && startDate.after(endDate)) {
+                    errors.add("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.");
                 }
             } catch (ParseException e) {
-                e.printStackTrace();
-                // Bạn có thể thêm một thông báo lỗi ở đây để người dùng biết
+                errors.add("Định dạng ngày không hợp lệ.");
             }
 
-            // Tạo đối tượng SaleOff để cập nhật
-            SaleOff updatedSaleOff = new SaleOff(saleId, saleCode, discountType, discountValue, maxDiscount, startDate, endDate, quantity);
+            // Kiểm tra ngày bắt đầu không ở quá khứ
+            Date today = new Date();
+            if (startDate != null && startDate.before(today)) {
+                errors.add("Ngày bắt đầu không được là ngày trong quá khứ.");
+            }
 
-            // Cập nhật vào cơ sở dữ liệu
-            SaleOffDAO saleOffDAO = new SaleOffDAO();
-            boolean updateSuccess = saleOffDAO.updateSaleOff(updatedSaleOff);
+            // Kiểm tra mối quan hệ discountValue và maxDiscount theo loại
+            if ("Percentage".equalsIgnoreCase(discountType) && maxDiscount > discountValue) {
+                errors.add("Giảm tối đa không được lớn hơn phần trăm giảm.");
+            } else if ("Fixed".equalsIgnoreCase(discountType) && maxDiscount > discountValue) {
+                errors.add("Giảm tối đa không được lớn hơn số tiền giảm.");
+            }
 
-            // Kiểm tra kết quả cập nhật
-            if (updateSuccess) {
-                // Nếu thành công, redirect về danh sách
+            // Nếu có lỗi -> lưu lỗi vào session, redirect về saleoff
+            if (!errors.isEmpty()) {
+                HttpSession session = request.getSession();
+                session.setAttribute("errors", errors);
+                session.setAttribute("addFail", true);
                 response.sendRedirect("saleoff");
-            } else {
-                // Nếu không thành công, chuyển hướng đến trang lỗi hoặc hiển thị thông báo lỗi
-                request.setAttribute("errorMessage", "Cập nhật thất bại. Vui lòng thử lại.");
-                request.getRequestDispatcher("admin/saleoff.jsp").forward(request, response);
+                return;
             }
+
+            // Nếu hợp lệ -> thêm vào DB
+            SaleOff newSale = new SaleOff(saleCode, discountType, discountValue, maxDiscount, startDate, endDate, quantity);
+            SaleOffDAO dao = new SaleOffDAO();
+            boolean success = dao.addSaleOff(newSale);
+
+            HttpSession session = request.getSession();
+            if (success) {
+                session.setAttribute("successMessage", "Thêm mã giảm giá thành công!");
+            } else {
+                session.setAttribute("errors", List.of("Thêm thất bại. Vui lòng thử lại."));
+                session.setAttribute("addFail", true);
+            }
+            response.sendRedirect("saleoff");
 
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                // Nếu có lỗi xảy ra, chuyển hướng đến trang lỗi
                 response.sendRedirect("404.jsp");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
+    }
 
+    private void updateSaleOff(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            String saleIdStr = request.getParameter("saleId");
+            String saleCode = request.getParameter("saleCode");
+            String discountType = request.getParameter("discountType");
+            String discountValueStr = request.getParameter("discountValue").replace(",", ".");
+            String maxDiscountStr = request.getParameter("maxDiscount").replace(",", ".");
+            String startDateStr = request.getParameter("startDate");
+            String endDateStr = request.getParameter("endDate");
+            String quantityStr = request.getParameter("quantity");
+
+            List<String> errors = new ArrayList<>();
+            int saleId = 0;
+            try {
+                saleId = Integer.parseInt(saleIdStr);
+            } catch (NumberFormatException e) {
+                errors.add("Mã giảm giá không hợp lệ (phải là số).");
+            }
+
+            if (saleCode == null || saleCode.trim().isEmpty()) {
+                errors.add("Mã giảm giá không được để trống");
+            }
+            if (saleCode != null && saleCode.length() > 10) {
+                errors.add("Mã giảm giá không được vượt quá 10 ký tự.");
+            }
+
+            if (!"Percentage".equalsIgnoreCase(discountType) && !"Fixed".equalsIgnoreCase(discountType)) {
+                errors.add("Loại giảm giá không hợp lệ.");
+            }
+
+            double discountValue = 0;
+            try {
+                discountValue = Double.parseDouble(discountValueStr);
+                if (discountValue <= 0) {
+                    errors.add("Giá trị giảm phải lớn hơn 0.");
+                }
+                if ("Percentage".equalsIgnoreCase(discountType) && discountValue > 100) {
+                    errors.add("Phần trăm giảm giá không được vượt quá 100%.");
+                }
+            } catch (NumberFormatException e) {
+                errors.add("Giá trị giảm giá không hợp lệ.");
+            }
+
+            double maxDiscount = 0;
+            try {
+                maxDiscount = Double.parseDouble(maxDiscountStr);
+                if (maxDiscount <= 0) {
+                    errors.add("Giảm tối đa phải lớn hơn 0.");
+                }
+            } catch (NumberFormatException e) {
+                errors.add("Giảm tối đa không hợp lệ.");
+            }
+
+            int quantity = 0;
+            try {
+                quantity = Integer.parseInt(quantityStr);
+                if (quantity <= 0) {
+                    errors.add("Số lượng phải lớn hơn 0.");
+                }
+            } catch (NumberFormatException e) {
+                errors.add("Số lượng không hợp lệ.");
+            }
+
+            Date startDate = null, endDate = null;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                if (startDateStr != null && !startDateStr.isEmpty()) {
+                    startDate = sdf.parse(startDateStr);
+                }
+                if (endDateStr != null && !endDateStr.isEmpty()) {
+                    endDate = sdf.parse(endDateStr);
+                }
+                if (startDate != null && endDate != null && startDate.after(endDate)) {
+                    errors.add("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.");
+                }
+            } catch (ParseException e) {
+                errors.add("Định dạng ngày không hợp lệ.");
+            }
+
+            // Kiểm tra ngày bắt đầu không ở quá khứ
+            Date today = new Date();
+            if (startDate != null && startDate.before(today)) {
+                errors.add("Ngày bắt đầu không được là ngày trong quá khứ.");
+            }
+
+            // Kiểm tra mối quan hệ discountValue và maxDiscount theo loại
+            if ("Percentage".equalsIgnoreCase(discountType) && maxDiscount > discountValue) {
+                errors.add("Giảm tối đa không được lớn hơn phần trăm giảm.");
+            } else if ("Fixed".equalsIgnoreCase(discountType) && maxDiscount > discountValue) {
+                errors.add("Giảm tối đa không được lớn hơn số tiền giảm.");
+            }
+            try {
+                if (startDateStr != null && !startDateStr.isEmpty()) {
+                    startDate = sdf.parse(startDateStr);
+                }
+                if (endDateStr != null && !endDateStr.isEmpty()) {
+                    endDate = sdf.parse(endDateStr);
+                }
+                if (startDate != null && endDate != null && startDate.after(endDate)) {
+                    errors.add("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.");
+                }
+            } catch (ParseException e) {
+                errors.add("Định dạng ngày không hợp lệ.");
+            }
+
+            // Nếu có lỗi -> lưu lỗi vào session, redirect về servlet chính
+            if (!errors.isEmpty()) {
+                HttpSession session = request.getSession();
+                session.setAttribute("errors", errors);
+                session.setAttribute("editId", saleId);
+                response.sendRedirect("saleoff");
+                return;
+            }
+
+            // Nếu hợp lệ, cập nhật dữ liệu
+            SaleOff updatedSale = new SaleOff(saleId, saleCode, discountType, discountValue, maxDiscount, startDate, endDate, quantity);
+            SaleOffDAO dao = new SaleOffDAO();
+            boolean success = dao.updateSaleOff(updatedSale);
+
+            if (success) {
+                HttpSession session = request.getSession();
+                session.setAttribute("successMessage", "Cập nhật thành công!");
+                response.sendRedirect("saleoff");
+            } else {
+                HttpSession session = request.getSession();
+                session.setAttribute("errors", List.of("Cập nhật thất bại. Vui lòng thử lại."));
+                session.setAttribute("editId", saleId);
+                response.sendRedirect("saleoff");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("404.jsp");
+        }
     }
 
     private void deleteSaleOff(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            int saleId = Integer.parseInt(request.getParameter("saleId"));
+            SaleOffDAO dao = new SaleOffDAO();
+            dao.deleteSaleOff(saleId);
+
+            HttpSession session = request.getSession();
+            session.setAttribute("successMessage", "Xóa thành công!");
+            response.sendRedirect("saleoff");
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                HttpSession session = request.getSession();
+                session.setAttribute("errors", List.of("Xóa thất bại. Vui lòng thử lại."));
+                response.sendRedirect("saleoff");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
 }

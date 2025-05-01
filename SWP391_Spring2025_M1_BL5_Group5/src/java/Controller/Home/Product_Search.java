@@ -21,10 +21,7 @@ import java.util.logging.Logger;
 import model.Category;
 import model.Size;
 
-/**
- *
- * @author MSI
- */
+
 public class Product_Search extends HttpServlet {
 
     /**

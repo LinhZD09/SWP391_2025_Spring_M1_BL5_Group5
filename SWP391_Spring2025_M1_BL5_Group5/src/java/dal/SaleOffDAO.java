@@ -156,29 +156,30 @@ public class SaleOffDAO extends DBContext {
         }
     }
 
-    public static void main(String[] args) {
-        SaleOffDAO dao = new SaleOffDAO();
+    public boolean addSaleOff(SaleOff newSale) {
+        String sql = "INSERT INTO sale_off (sale_off_code, discount_type, discount_value, max_discount, start_date, end_date, quantity) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newSale.getSaleCode());
+            ps.setString(2, newSale.getDiscountType());
+            ps.setDouble(3, newSale.getDiscountValue());
+            ps.setDouble(4, newSale.getMaxDiscount());
+            ps.setDate(5, new java.sql.Date(newSale.getStart_date().getTime()));
+            ps.setDate(6, new java.sql.Date(newSale.getEnd_date().getTime()));
+            ps.setInt(7, newSale.getQuantity());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-        // Mã giảm giá cần test
-        String testCode = "SALE_014";
-
-        // Ngày hiện tại theo server
-        Date today = Date.valueOf(LocalDate.now());
-
-        // Gọi DAO kiểm tra mã giảm giá
-        SaleOff saleOff = dao.getValidSaleOff(testCode, today);
-
-        if (saleOff != null) {
-            System.out.println("✅ Mã giảm giá hợp lệ!");
-            System.out.println("Mã: " + saleOff.getSaleCode());
-            System.out.println("Loại: " + saleOff.getDiscountType());
-            System.out.println("Giá trị: " + saleOff.getDiscountValue());
-            System.out.println("Giảm tối đa: " + saleOff.getMaxDiscount());
-            System.out.println("Ngày bắt đầu: " + saleOff.getStart_date());
-            System.out.println("Ngày kết thúc: " + saleOff.getEnd_date());
-            System.out.println("Số lượng còn: " + saleOff.getQuantity());
-        } else {
-            System.out.println("❌ Mã không hợp lệ, hết hạn hoặc hết lượt dùng.");
+    public void deleteSaleOff(int saleId) {
+        String sql = "DELETE FROM sale_off WHERE sale_off_id = ?";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, saleId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -114,9 +114,14 @@
                                         BillRubish bill = (BillRubish) request.getSession().getAttribute("pendingBill");
                                         billDAO dao = new billDAO();
                                         if (bill != null) {
-                                            dao.addOrder(bill.getUser(), bill.getCart(), bill.getPayment(), bill.getAddress(), Integer.parseInt(bill.getPhone()));
+                                        Double finalTotal = (Double) session.getAttribute("finalTotal");
+                                        double totalPrice = (finalTotal != null) ? finalTotal : bill.getCart().getTotalMoney();
+                                            dao.addOrder(bill.getUser(), bill.getCart(), bill.getPayment(), bill.getAddress(), Integer.parseInt(bill.getPhone()), totalPrice);
                                             request.getSession().removeAttribute("cart");
                                             request.getSession().removeAttribute("pendingBill");
+                                            request.getSession().removeAttribute("finalTotal");
+                                            request.getSession().removeAttribute("discountCode");
+                                            request.getSession().removeAttribute("discountAmount");
                                             request.getSession().setAttribute("size", 0);
                                         }
                                     } catch (Exception e) {

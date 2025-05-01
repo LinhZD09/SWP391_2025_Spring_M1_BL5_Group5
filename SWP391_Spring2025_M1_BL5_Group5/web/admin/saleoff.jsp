@@ -1,14 +1,3 @@
-<%-- 
-    Document   : customer
-    Created on : 16 thg 4, 2025, 15:34:18
-    Author     : truon
---%>
-
-
-
-
-
-
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -36,7 +25,7 @@
 
     </head>
 
-    <body onload="time()" class="app sidebar-mini rtl">
+    <body class="app sidebar-mini rtl">
         <!-- Navbar-->nload="time()" class="app sidebar-mini rtl"
         <!-- Navbar-->
         <header class="app-header">
@@ -85,11 +74,10 @@
         <main class="app-content">
             <div class="app-title">
                 <ul class="app-breadcrumb breadcrumb side">
-                    <li class="breadcrumb-item active"><a href="#"><b>Quản Lý Sale Off</b></a></li>
+                    <li class="breadcrumb-item active"><a href="#"><b>Quản Lý mã giảm giá</b></a></li>
                 </ul>
                 <div id="clock"></div>
             </div>
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="tile">
@@ -110,27 +98,32 @@
                             <form action="saleoff" method="get">
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="control-label">Sale Code</label>
+                                        <label class="control-label">Mã sale</label>
                                         <input class="form-control" type="text" name="saleCode" value="${param.saleCode}">
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="control-label">Discount Type</label>
+                                        <label class="control-label">Loại giảm giá</label>
                                         <select class="form-control" name="discountType">
-                                            <option value="">Select Discount Type</option>
-                                            <option value="Percentage" ${param.discountType == 'Percentage' ? 'selected' : ''}>Percentage</option>
-                                            <option value="Fixed" ${param.discountType == 'Fixed' ? 'selected' : ''}>Fixed</option>
+                                            <option value="">Chọn Loại Giảm Giá</option>
+                                            <option value="Percentage" ${param.discountType == 'Percentage' ? 'selected' : ''}>Phần Trăm(%)</option>
+                                            <option value="Fixed" ${param.discountType == 'Fixed' ? 'selected' : ''}>Giá Tiền Cố Định(vnd) </option>
                                         </select>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="control-label">Sort by Discount Value</label>
+                                        <label class="control-label">sắp xếp giá trị giảm giá</label>
                                         <select class="form-control" name="sortDiscountValue">
-                                            <option value="">Select Sorting Order</option>
-                                            <option value="desc" ${param.sortDiscountValue == 'desc' ? 'selected' : ''}>High to Low</option>
-                                            <option value="asc" ${param.sortDiscountValue == 'asc' ? 'selected' : ''}>Low to High</option>
+                                            <option value="">Sắp Xếp Giá Trị Giảm Giá Theo Thứ Tự</option>
+                                            <option value="desc" ${param.sortDiscountValue == 'desc' ? 'selected' : ''}>Cao đến thấp</option>
+                                            <option value="asc" ${param.sortDiscountValue == 'asc' ? 'selected' : ''}>Thấp Đến Cao</option>
                                         </select>
                                     </div>
                                 </div>
                                 <button class="btn btn-primary" type="submit">Search</button>
+                                <div>Note:</div>
+
+                                <div>Percentage: giảm giá theo phần trăm(%)</div>
+
+                                <div>Fixed: Giảm giá theo giá tiền cố định(vnd)</div>
                             </form>
                             <!-- tìm kiếm -->
                             <nav aria-label="Page navigation" style="margin-top: 20px; text-align: center;">
@@ -152,14 +145,14 @@
                                 <tr>
                                     <th>Số thứ tự </th>
                                     <th>Sale ID</th>
-                                    <th>Sale Code</th>
-                                    <th>Discount Type</th>
-                                    <th>Discount Value</th>
-                                    <th>Max Discount</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Quantity</th>
-                                    <th>Action</th>
+                                    <th>Mã Giảm Giá</th>
+                                    <th>loại Mã Giảm Giá  </th>
+                                    <th>Số Tiền Giảm Giá </th>
+                                    <th>Số Tiền Giảm Giá Tối Đa</th>
+                                    <th>bắt đầu </th>
+                                    <th>Kết Thúc</th>
+                                    <th>Số Lượng</th>
+                                    <th>Hành Động</th>
                                 </tr>
                                 <c:forEach var="saleOff" items="${saleOffs}" varStatus="status">
                                     <tr>
@@ -167,31 +160,44 @@
                                         <td>${saleOff.saleId}</td>
                                         <td>${saleOff.saleCode}</td>
                                         <td>${saleOff.discountType}</td>
-                                        <td>${saleOff.discountValue}</td>
-                                        <td>${saleOff.maxDiscount}</td>
+                                        <td>
+                                            ${saleOff.discountValue}
+                                            <c:choose>
+                                                <c:when test="${saleOff.discountType == 'Percentage' || saleOff.discountType == 'percentage'}">%</c:when>
+                                                <c:otherwise> VND</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            ${saleOff.maxDiscount}
+                                            <c:choose>
+                                                <c:when test="${saleOff.discountType == 'Percentage' || saleOff.discountType == 'percentage'}">%</c:when>
+                                                <c:otherwise> VND</c:otherwise>
+                                            </c:choose>
+                                        </td>
+
                                         <td>${saleOff.start_date}</td>
                                         <td>${saleOff.end_date}</td>
                                         <td>${saleOff.quantity}</td>
                                         <td>
-                                            <!-- Nút sửa, chuyển đến servlet editSale với saleId -->
+                                            <!-- Nút sửa -->
                                             <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" 
                                                     id="show-emp" data-toggle="modal" 
                                                     data-target="#ModalUP${saleOff.saleId}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <!-- Nút xoá, chuyển đến servlet deleteSale với saleId -->
-                                            <!-- Nút xoá, chuyển đến servlet deleteSale với saleId -->
-                                            <form action="saleoff" method="post" style="display:inline;">
-                                                <input type="hidden" name="action" value="delete">
-                                                <input type="hidden" name="saleId" value="${saleOff.saleId}">
-                                                <button class="btn btn-danger btn-sm" type="submit" title="Delete">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
+
+                                            <!-- Nút xoá-->
+                                            <button type="button"
+                                                    class="btn btn-danger btn-sm delete-btn"
+                                                    data-id="${saleOff.saleId}"
+                                                    data-code="${saleOff.saleCode}">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
                                         </td>
                                     </tr>                                  
                                 </c:forEach>
                             </table>
+                            <!-- MODAL giảm giá -->
                             <c:forEach var="saleOff" items="${saleOffs}" varStatus="status">
                                 <div class="modal fade" id="ModalUP${saleOff.saleId}" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
                                      data-keyboard="false">
@@ -199,6 +205,17 @@
                                         <div class="modal-content">
                                             <div class="modal-body">
                                                 <form action="saleoff" method="post">
+                                                    <c:if test="${editId eq saleOff.saleId}">
+                                                        <c:if test="${not empty errors}">
+                                                            <div class="alert alert-danger mt-2">
+                                                                <ul>
+                                                                    <c:forEach var="error" items="${errors}">
+                                                                        <li style="color: red">${error}</li>
+                                                                        </c:forEach>
+                                                                </ul>
+                                                            </div>
+                                                        </c:if>
+                                                    </c:if>
                                                     <input type="hidden" name="action" value="update">
                                                     <input type="hidden" name="saleId" value="${saleOff.saleId}">
                                                     <div class="row">
@@ -208,36 +225,37 @@
                                                             </span>
                                                         </div>
                                                     </div>
+
                                                     <div class="row">
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Sale id</label>
                                                             <input class="form-control" type="text" readonly name="saleId" value="${saleOff.saleId}">
                                                         </div>
                                                         <div class="form-group col-md-6">   
-                                                            <label class="control-label">Sale COde</label>
+                                                            <label class="control-label">Mã Giảm Giá</label>
                                                             <input class="form-control" type="text"  name="saleCode" value="${saleOff.saleCode}">
                                                         </div>
                                                         <div class="form-group col-md-6">
-                                                            <label class="control-label">Discount Type</label>
+                                                            <label class="control-label">Loại Giảm Giá</label>
                                                             <select class="form-control" name="discountType">
-                                                                <option value="Percentage" ${saleOff.discountType == 'Percentage' ? 'selected' : ''}>Percentage</option>
-                                                                <option value="Fixed" ${saleOff.discountType == 'Fixed' ? 'selected' : ''}>Fixed</option>
+                                                                <option value="Percentage" ${saleOff.discountType == 'Percentage' ? 'selected' : ''}>Theo Phần Trăm(%)  </option>
+                                                                <option value="Fixed" ${saleOff.discountType == 'Fixed' ? 'selected' : ''}>Giảm Theo Số Tiền Cố Định(vnd)</option>
                                                             </select>
                                                         </div>
                                                         <div class="form-group col-md-6">
-                                                            <label class="control-label">Discount value</label>
+                                                            <label class="control-label">Số Tiền Giảm Giá</label>
                                                             <input class="form-control" type="number"  name="discountValue" value="${saleOff.discountValue}">
                                                         </div>
                                                         <div class="form-group col-md-6">
-                                                            <label class="control-label">Max Discount</label>
+                                                            <label class="control-label">Số Tiền Giảm Giá Tối Đa</label>
                                                             <input class="form-control" type="number"  name="maxDiscount" value="${saleOff.maxDiscount}">
                                                         </div>
                                                         <div class="form-group col-md-6">
-                                                            <label class="control-label">Start Date</label>
+                                                            <label class="control-label">Bắt Đầu</label>
                                                             <input class="form-control" type="Date"  name="startDate" value="${saleOff.start_date}">
                                                         </div>
                                                         <div class="form-group col-md-6">
-                                                            <label class="control-label">End Date</label>
+                                                            <label class="control-label">Kết Thúc</label>
                                                             <input class="form-control" type="Date"  name="endDate" value="${saleOff.end_date}">
                                                         </div>
                                                         <div class="form-group col-md-6">
@@ -255,6 +273,7 @@
                                     </div>
                                 </div>
                             </c:forEach>
+
                             <c:forEach var="saleOff" items="${saleOffs}" varStatus="status">
                                 <!--
                                MODAL add
@@ -264,58 +283,67 @@
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-body">
-                                                <form action="saleoff" method="post"></form>
-                                                <input type="hidden" name="action" value="add">
+                                                <form action="saleoff" method="post">
+                                                    <c:if test="${addFail}">
+                                                        <c:if test="${not empty errors}">
+                                                            <div class="alert alert-danger mt-2">
+                                                                <ul style="color: red">
+                                                                    <c:forEach var="error" items="${errors}">
+                                                                        <li>${error}</li>
+                                                                        </c:forEach>
+                                                                </ul>
+                                                            </div>
+                                                        </c:if>
+                                                    </c:if>
+                                                    <input type="hidden" name="action" value="add">
 
-                                                <div class="row">
-                                                    <div class="form-group  col-md-12">
-                                                        <span class="thong-tin-thanh-toan">
-                                                            <h5>Thêm giảm giá</h5>
-                                                        </span>
+                                                    <div class="row">
+                                                        <div class="form-group  col-md-12">
+                                                            <span class="thong-tin-thanh-toan">
+                                                                <h5>Thêm giảm giá</h5>
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="form-group col-md-6">
-                                                        <label class="control-label">Sale id</label>
-                                                        <input class="form-control" type="text" readonly name="saleId" >
+                                                    <div class="row">
+
+                                                        <div class="form-group col-md-6">
+                                                            <label class="control-label">Mã Giảm Giá</label>
+                                                            <input class="form-control" type="text"  name="saleCode" >
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label class="control-label">Loại Giảm Giá</label>
+                                                            <select class="form-control" name="discountType">
+                                                                <option value="Percentage" ${saleOff.discountType == 'Percentage' ? 'selected' : ''}>Giảm Theo Phần Trăm(%)</option>
+                                                                <option value="Fixed" ${saleOff.discountType == 'Fixed' ? 'selected' : ''}>Giảm Theo Số Tiền Cố Định(vnd)</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label class="control-label">Số Tiền Giảm Giá</label>
+                                                            <input class="form-control" type="text"  name="discountValue" >
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label class="control-label">Số Tiền Giảm Giá Tối Đa</label>
+                                                            <input class="form-control" type="text"  name="maxDiscount" >
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label class="control-label">Bắt Đầu</label>
+                                                            <input class="form-control" type="Date"  name="startDate" >
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label class="control-label">Kết Thúc</label>
+                                                            <input class="form-control" type="Date"  name="endDate">
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label class="control-label">Số lượng</label>
+                                                            <input class="form-control" type="text" min="1" name="quantity" >
+                                                        </div>
                                                     </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label class="control-label">Sale Code</label>
-                                                        <input class="form-control" type="text"  name="saleCode" >
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label class="control-label">Discount Type id</label>
-                                                        <input class="form-control" type="text"  name="discountType" >
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label class="control-label">Discount value</label>
-                                                        <input class="form-control" type="text"  name="discountValue" >
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label class="control-label">Max Discount</label>
-                                                        <input class="form-control" type="text"  name="maxDiscount" >
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label class="control-label">Start Date</label>
-                                                        <input class="form-control" type="Date"  name="startDate" >
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label class="control-label">End Date</label>
-                                                        <input class="form-control" type="Date"  name="endDate">
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label class="control-label">Số lượng</label>
-                                                        <input class="form-control" type="text" min="1" name="quantity" >
-                                                    </div>
-                                                </div>
+                                                    <BR>
+                                                    <button class="btn btn-save" type="submit">Lưu lại</button>
+                                                    <a class="btn btn-cancel" data-dismiss="modal" href="saleoff">Hủy bỏ</a>
+                                                    <BR>
+                                                </form> 
                                             </div>
-
-                                            <BR>
-                                            <button class="btn btn-save" type="submit">Lưu lại</button>
-                                            <a class="btn btn-cancel" data-dismiss="modal" href="saleoff">Hủy bỏ</a>
-                                            <BR>
-                                            </form>        
-
                                         </div>
                                     </div>
                                 </div>
@@ -345,49 +373,14 @@
         <!-- Data table plugin-->
         <script type="text/javascript" src="admin/js/plugins/jquery.dataTables.min.js"></script>
         <script type="text/javascript" src="admin/js/plugins/dataTables.bootstrap.min.js"></script>
-        <script type="text/javascript">
-        $('#sampleTable').DataTable();
-        //Thời Gian
-        function time() {
-            var today = new Date();
-            var weekday = new Array(7);
-            weekday[0] = "Chủ Nhật";
-            weekday[1] = "Thứ Hai";
-            weekday[2] = "Thứ Ba";
-            weekday[3] = "Thứ Tư";
-            weekday[4] = "Thứ Năm";
-            weekday[5] = "Thứ Sáu";
-            weekday[6] = "Thứ Bảy";
-            var day = weekday[today.getDay()];
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1;
-            var yyyy = today.getFullYear();
-            var h = today.getHours();
-            var m = today.getMinutes();
-            var s = today.getSeconds();
-            m = checkTime(m);
-            s = checkTime(s);
-            nowTime = h + " giờ " + m + " phút " + s + " giây";
-            if (dd < 10) {
-                dd = '0' + dd
-            }
-            if (mm < 10) {
-                mm = '0' + mm
-            }
-            today = day + ', ' + dd + '/' + mm + '/' + yyyy;
-            tmp = '<span class="date"> ' + today + ' - ' + nowTime +
-                    '</span>';
-            document.getElementById("clock").innerHTML = tmp;
-            clocktime = setTimeout("time()", "1000", "Javascript");
+        <!-- ✅ jQuery phải trước -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-            function checkTime(i) {
-                if (i < 10) {
-                    i = "0" + i;
-                }
-                return i;
-            }
-        }
-        </script>
+        <!-- ✅ Bootstrap JS sau jQuery -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <!-- ✅ (các script riêng của bạn để sau cùng) -->
+        <script src="admin/js/main.js"></script>
         <script>
 
             $(document).ready(jQuery(function () {
@@ -408,6 +401,7 @@
                 });
             }));
         </script>
+
         <script>
             var myApp = new function () {
                 this.printTable = function () {
@@ -418,7 +412,74 @@
                     win.print();
                 }
             }
+
         </script>
+
+        <c:if test="${not empty editId}">
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const modalId = '#ModalUP${editId}';
+                    console.log("Auto open modal:", modalId);
+                    $(modalId).modal('show');
+                });
+            </script>
+        </c:if>
+
+
+        <!-- Script thông báo cập nhật thành công -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <c:if test="${not empty successMessage}">
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: '${successMessage}',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            </script>
+        </c:if>
+
+        <!-- Script thông báo thêm lỗi -->
+        <c:if test="${addFail}">
+            <script>
+                $(document).ready(function () {
+                    $('#addSaleModal').modal('show');
+                });
+            </script>
+        </c:if>
+
+        <!-- Script confirm   xoá -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+                $(document).on('click', '.delete-btn', function () {
+                    const saleId = $(this).data('id');
+                    const saleCode = $(this).data('code');
+                    Swal.fire({
+                        title: `Bạn có chắc chắn muốn xóa mã ?`,
+                        text: "Hành động này không thể hoàn tác!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Xóa',
+                        cancelButtonText: 'Hủy'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const form = $('<form>', {
+                                method: 'POST',
+                                action: 'saleoff'
+                            }).append(
+                                    $('<input>', {type: 'hidden', name: 'action', value: 'delete'}),
+                                    $('<input>', {type: 'hidden', name: 'saleId', value: saleId})
+                                    );
+                            $('body').append(form);
+                            form.submit();
+                        }
+                    });
+                });
+        </script>
+
     </body>
 </html>
 

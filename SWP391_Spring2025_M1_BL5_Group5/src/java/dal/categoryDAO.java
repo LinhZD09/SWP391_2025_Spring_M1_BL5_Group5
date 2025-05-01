@@ -13,10 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Category;
 
-/**
- *
- * @author ZZ
- */
+
 public class categoryDAO extends DBContext {
 
     Connection conn = null;

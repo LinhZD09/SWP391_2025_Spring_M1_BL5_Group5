@@ -20,10 +20,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- *
- * @author Admin
- */
 @WebServlet(name = "ChangePasswordServlet", urlPatterns = {"/users"})
 public class ChangePasswordServlet extends HttpServlet {
 

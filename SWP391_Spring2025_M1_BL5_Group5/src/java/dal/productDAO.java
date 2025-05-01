@@ -16,10 +16,7 @@ import model.Product;
 import model.Product_Active;
 import model.Size;
 
-/**
- *
- * @author MSI
- */
+
 public class productDAO {
 
     Connection conn = null;

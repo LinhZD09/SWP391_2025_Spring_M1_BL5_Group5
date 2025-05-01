@@ -4,10 +4,7 @@
  */
 package model;
 
-/**
- *
- * @author MSI
- */
+
 public class Color {
     String product_id;
     String color;

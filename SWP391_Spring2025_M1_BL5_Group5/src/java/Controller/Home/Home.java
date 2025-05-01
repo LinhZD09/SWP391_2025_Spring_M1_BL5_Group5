@@ -14,10 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
-/**
- *
- * @author MSI
- */
+
 public class Home extends HttpServlet {
    
     /** 

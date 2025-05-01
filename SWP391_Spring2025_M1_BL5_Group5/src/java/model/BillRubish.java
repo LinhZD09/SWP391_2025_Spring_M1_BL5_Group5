@@ -5,10 +5,7 @@
  */
 package model;
 
-/**
- *
- * @author Thanh
- */
+
 public class BillRubish {
     User user;
     Cart cart;

@@ -7,10 +7,6 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author MSI
- */
 public class Product {
     Category cate;
     String product_id;

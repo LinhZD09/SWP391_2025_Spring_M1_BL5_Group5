@@ -6,10 +6,7 @@ package model;
 
 import java.util.ArrayList;
 
-/**
- *
- * @author MSI
- */
+
 public class Category {
     int category_id;
     String category_name;

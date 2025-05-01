@@ -181,49 +181,39 @@
                                                         <p>Phí vận chuyển </p>
                                                         <p class="cart_amount" id="shipping">0 VNĐ</p>
                                                     </div>
-                                                    <!-- Form nhập mã giảm giá -->
-                                                    <form action="applyDiscount" method="post">
-                                                        <div class="cart_subtotal" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                                            <p style="margin: 0;">Mã Giảm Giá</p>
-                                                            <div style="display: flex; gap: 8px;">
-                                                                <input type="text" name="discountCode"
-                                                                       placeholder="Nhập mã giảm giá"
-                                                                       value="${not empty discountCode ? discountCode : sessionScope.discountCode}"
-                                                                       style="width: 160px; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px;">
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <div class="coupon_code left">
+                                                            <h3>Mã giảm giá</h3>
+                                                            <div class="coupon_inner">
+                                                                <form action="cart" method="post">
+                                                                    <input type="hidden" name="action" value="applydiscount"/>
+                                                                    <input type="text" name="discountCode" placeholder="Nhập mã giảm giá..." value="${sessionScope.discountCode}" />
+                                                                    <button type="submit">Áp dụng</button>
+                                                                </form>
 
-                                                                <!-- Nút áp dụng -->
-                                                                <button type="submit" name="action" value="apply"
-                                                                        style="padding: 6px 14px; background-color: #000; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                                                                    Xác Nhận
-                                                                </button>
-
-                                                                <!-- Nút hủy mã -->
-                                                                <!-- Chỉ hiển thị đoạn bên trong nếu trong session đang có discountCode (tức là mã giảm giá đã được áp dụng). -->
                                                                 <c:if test="${not empty sessionScope.discountCode}">
-                                                                    <button type="submit" name="action" value="remove"
-                                                                            style="padding: 6px 14px; background-color: #888; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                                                                        HỦY MÃ
-                                                                    </button>
+                                                                    <form action="cart" method="post" style="margin-top: 10px;">
+                                                                        <input type="hidden" name="action" value="removediscount"/>
+                                                                        <button type="submit" style="background-color: #f44336;">Hủy mã giảm giá</button>
+                                                                    </form>
+                                                                </c:if>
+
+                                                                <c:if test="${not empty sessionScope.error}">
+                                                                    <p style="color: red;">${sessionScope.error}</p>
+                                                                    <% session.removeAttribute("error"); %>
                                                                 </c:if>
                                                             </div>
                                                         </div>
-                                                    </form>
-                                                    <!-- Thông báo lỗi -->             
-                                                    <c:if test="${not empty error}">
-                                                        <div style="color: white; background-color: #dc3545; padding: 10px 15px; border-radius: 5px; margin-top: 10px; font-weight: bold;">
-                                                            ${error}
-                                                        </div>
-                                                    </c:if>
-                                                    <br/>
-
-                                                    <div class="cart_subtotal" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                                                        <p style="margin: 0;">Tổng tiền</p>
-                                                        <p style="margin: 0;">
-                                                            <fmt:formatNumber pattern="###,###"
-                                                                              value="${sessionScope.finalTotal != null ? sessionScope.finalTotal : sessionScope.total}" /> VNĐ
+                                                    </div>
+                                                    <div class="cart_subtotal">
+                                                        <p>Tổng tiền</p>
+                                                        <p class="cart_amount">
+                                                            <span id="total">
+                                                                <fmt:formatNumber pattern="###,###"
+                                                                                  value="${sessionScope.finalTotal != null ? sessionScope.finalTotal : sessionScope.total}" />
+                                                            </span> VNĐ
                                                         </p>
                                                     </div>
-
                                                     <div class="checkout_btn">
                                                         <a href="checkout">Thanh toán</a>
                                                     </div>
@@ -291,29 +281,7 @@
             </script>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script>
-                                                                    function updateQuantity(productId, newQuantity, price) {
-                                                                        // Cập nhật tổng tiền cho sản phẩm
-                                                                        var newTotal = newQuantity * price;
-                                                                        $('#total_' + productId).text(newTotal.toLocaleString() + ' VNĐ');
 
-                                                                        // Gửi yêu cầu AJAX để cập nhật server
-                                                                        $.ajax({
-                                                                            url: 'cart',
-                                                                            type: 'POST',
-                                                                            data: {
-                                                                                action: 'update',
-                                                                                product_id: productId,
-                                                                                quantity: newQuantity
-                                                                            },
-                                                                            success: function (response) {
-                                                                                // Cập nhật tổng tiền giỏ hàng
-                                                                                $('#total_amount').text(response.total.toLocaleString() + ' VNĐ');
-                                                                            },
-                                                                            error: function () {
-                                                                                alert('Có lỗi xảy ra khi cập nhật giỏ hàng');
-                                                                            }
-                                                                        });
-                                                                    }
             </script><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script>
                                                                     let cartTotal = ${sessionScope.total}; // Lưu tổng tiền ban đầu
@@ -334,7 +302,8 @@
                                                                             },
                                                                             success: function (response) {
                                                                                 // Cập nhật tổng tiền giỏ hàng
-                                                                                cartTotal = response.total;
+                                                                                console.log("Final Total Received:", response.finalTotal);
+                                                                                cartTotal = response.finalTotal || response.total;
                                                                                 updateInvoice();
                                                                             },
                                                                             error: function () {
@@ -347,10 +316,10 @@
                                                                         // Cập nhật tổng đơn hàng
                                                                         $('#subtotal').text(cartTotal.toLocaleString() + ' VNĐ');
 
-                                                                        // Cập nhật tổng tiền (giả sử phí vận chuyển là 0)
+                                                                        // Cập nhật tổng tiền cuối (sau giảm giá)
                                                                         $('#total').text(cartTotal.toLocaleString() + ' VNĐ');
 
-                                                                        // Cập nhật tổng tiền ở phần trên của giỏ hàng nếu có
+                                                                        // Nếu có ô tổng tiền ở header hoặc nơi khác, cập nhật luôn
                                                                         $('#total_amount').text(cartTotal.toLocaleString() + ' VNĐ');
                                                                     }
             </script>

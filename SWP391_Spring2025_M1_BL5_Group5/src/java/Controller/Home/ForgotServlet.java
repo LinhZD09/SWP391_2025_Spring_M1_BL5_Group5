@@ -15,10 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.User;
 
-/**
- *
- * @author Phung An
- */
+
 @WebServlet(name = "ForgotServlet", urlPatterns = {"/fpass"})
 public class ForgotServlet extends HttpServlet {
 

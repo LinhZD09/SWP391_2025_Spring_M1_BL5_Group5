@@ -6,12 +6,6 @@ package model;
 
 
 
-/**
- *
- * @author ZZ
- */
-
-
 import java.util.Date;
 
 public class SaleOff {

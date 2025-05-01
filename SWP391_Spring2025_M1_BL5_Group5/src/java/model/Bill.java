@@ -4,10 +4,7 @@
  * and open the template in the editor.
  */
 package model;
-/**
- *
- * @author Doanh
- */
+
 
 import java.sql.Date;
 

@@ -19,10 +19,7 @@ import java.util.List;
 import model.Category;
 import model.User;
 
-/**
- *
- * @author ZZ
- */
+
 @WebServlet(name = "CategoryManager", urlPatterns = {"/categorymanager"})
 public class CategoryManager extends HttpServlet {
 

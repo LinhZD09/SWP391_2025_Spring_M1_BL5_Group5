@@ -12,10 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.About;
 
-/**
- *
- * @author Phung An
- */
+
 public class aboutDAO extends DBContext {
 
     Connection conn = null;

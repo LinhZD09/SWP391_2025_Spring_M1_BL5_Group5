@@ -17,10 +17,6 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.User;
 
-/**
- *
- * @author truon
- */
 @WebServlet(urlPatterns = {"/customermanager"})
 public class CustomerManager extends HttpServlet {
 

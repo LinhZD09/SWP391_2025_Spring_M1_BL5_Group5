@@ -1,14 +1,3 @@
-<%-- 
-    Document   : customer
-    Created on : 16 thg 4, 2025, 15:34:18
-    Author     : truon
---%>
-
-
-
-
-
-
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

@@ -25,7 +25,7 @@ public class billDAO extends DBContext {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    public void addOrder(User u, Cart cart, String payment, String address, int phone) {
+    public void addOrder(User u, Cart cart, String payment, String address, int phone, double totalPrice) {
         LocalDate curDate = java.time.LocalDate.now();
         String date = curDate.toString();
 
@@ -34,7 +34,7 @@ public class billDAO extends DBContext {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, u.getUser_id());
-            ps.setDouble(2, cart.getTotalMoney());
+            ps.setDouble(2, totalPrice);
             ps.setString(3, payment);
             ps.setString(4, address);
             ps.setString(5, date);
@@ -76,38 +76,27 @@ public class billDAO extends DBContext {
 
     public List<Bill> getBillInfo(String paymentMethod) {
         List<Bill> list = new ArrayList<>();
-
-        // Chỉ cho phép 2 phương thức này
         String sql = "SELECT b.bill_id, u.user_name, b.phone, b.address, b.date, b.total, b.payment "
                 + "FROM bill b INNER JOIN users u ON b.user_id = u.user_id "
-                + "WHERE TRIM(b.payment) IN ('COD', 'VNPAY')";
+                + "WHERE b.payment NOT LIKE 'MOMO'";  // <-- Loại MOMO
 
-        // Nếu lọc thêm theo payment
-        if (paymentMethod != null && !paymentMethod.trim().isEmpty()) {
-            sql += " AND TRIM(b.payment) = ?";
+        if (paymentMethod != null && !paymentMethod.isEmpty()) {
+            sql += " AND b.payment LIKE ?";
         }
-
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
-
-            if (paymentMethod != null && !paymentMethod.trim().isEmpty()) {
-                ps.setString(1, paymentMethod.trim());
+            if (paymentMethod != null && !paymentMethod.isEmpty()) {
+                ps.setString(1, "%" + paymentMethod + "%");
             }
-
             rs = ps.executeQuery();
             while (rs.next()) {
-                System.out.println(">>> Payment: [" + rs.getString(7) + "]");
                 User u = new User(rs.getString(2));
-                list.add(new Bill(
-                        rs.getInt(1), u, rs.getFloat(6), rs.getString(7),
-                        rs.getString(4), rs.getDate(5), rs.getInt(3)
-                ));
+                list.add(new Bill(rs.getInt(1), u, rs.getFloat(6), rs.getString(7), rs.getString(4), rs.getDate(5), rs.getInt(3)));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return list;
     }
 

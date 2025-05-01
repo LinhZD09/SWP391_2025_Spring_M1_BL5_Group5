@@ -104,7 +104,12 @@ public class Checkout extends HttpServlet {
             BillRubish bill = createBillRubish(acc, cart, payment, address, phone);
 
             if ("cod".equals(payment_method)) {
-                dao.addOrder(acc, cart, payment, address, phonenumber);
+
+//                dao.addOrder(acc, cart, payment, address, phonenumber);
+                Double finalTotal = (Double) session.getAttribute("finalTotal");
+                double totalPrice = (finalTotal != null) ? finalTotal : cart.getTotalMoney();
+
+                dao.addOrder(acc, cart, payment, address, phonenumber, totalPrice);
                 session.removeAttribute("cart");
                 session.setAttribute("size", 0);
                 session.setAttribute("orderSuccessMessage", "Đơn hàng của bạn đã được đặt thành công!");
@@ -113,7 +118,14 @@ public class Checkout extends HttpServlet {
             }
 
             if ("vnpay".equals(payment_method)) {
-                int total = (int) Math.round(bill.getCart().getTotalMoney());
+                // ✅ Lấy finalTotal từ session nếu có mã giảm giá
+                Double finalTotal = (Double) session.getAttribute("finalTotal");
+                double totalPrice = (finalTotal != null) ? finalTotal : bill.getCart().getTotalMoney();
+                // ✅ Nếu không có thì fallback về tổng tiền gốc
+                double rawTotal = (finalTotal != null) ? finalTotal : bill.getCart().getTotalMoney();
+
+                int total = (int) Math.round(totalPrice);
+
                 session.setAttribute("pendingBill", bill);
                 request.setAttribute("total", total);
                 request.setAttribute("bill", bill);

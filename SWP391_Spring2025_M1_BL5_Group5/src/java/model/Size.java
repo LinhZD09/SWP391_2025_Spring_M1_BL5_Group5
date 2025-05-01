@@ -4,10 +4,7 @@
  */
 package model;
 
-/**
- *
- * @author MSI
- */
+
 public class Size {
     String product_id;
     String size;

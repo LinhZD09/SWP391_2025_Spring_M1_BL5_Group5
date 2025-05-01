@@ -15,10 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import model.Category;
 
-/**
- *
- * @author MSI
- */
+
 public class Product extends HttpServlet {
    
     /** 

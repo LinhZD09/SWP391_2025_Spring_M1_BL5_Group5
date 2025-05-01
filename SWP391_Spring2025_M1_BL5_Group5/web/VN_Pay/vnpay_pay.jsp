@@ -1,4 +1,4 @@
-    <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -139,42 +139,43 @@
                                     <label for="billId" class="form-label">Mã đơn hàng</label>
                                     <input type="text" class="form-control" id="billId" value="${requestScope.billId}" name="billId" readonly>
                                 </div>
+                               
                                 <div class="mb-4">
                                     <label for="amount" class="form-label">Số tiền</label>
-                                    <input type="number" class="form-control" id="amount" name="amount" value="${sessionScope.finalTotal}" readonly>
+                                    <input type="number" class="form-control" id="amount" name="amount" value="${requestScope.total}" readonly>
                                 </div>
-<!--
-                                <h4 class="mb-3">Chọn phương thức thanh toán</h4>
-                                <div class="mb-4">
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="bankCode" id="vnpayqr" value="" checked>
-                                        <label class="form-check-label" for="vnpayqr">Cổng thanh toán VNPAYQR</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="bankCode" id="vnpayqr_app" value="VNPAYQR">
-                                        <label class="form-check-label" for="vnpayqr_app">Thanh toán bằng ứng dụng hỗ trợ VNPAYQR</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="bankCode" id="vnbank" value="VNBANK">
-                                        <label class="form-check-label" for="vnbank">Thanh toán qua thẻ ATM/Tài khoản nội địa</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="bankCode" id="intcard" value="INTCARD">
-                                        <label class="form-check-label" for="intcard">Thanh toán qua thẻ quốc tế</label>
-                                    </div>
-                                </div>
-
-                                <h4 class="mb-3">Chọn ngôn ngữ giao diện thanh toán</h4>
-                                <div class="mb-4">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="language" id="lang_vn" value="vn" checked>
-                                        <label class="form-check-label" for="lang_vn">Tiếng Việt</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="language" id="lang_en" value="en">
-                                        <label class="form-check-label" for="lang_en">Tiếng Anh</label>
-                                    </div>
-                                </div>-->
+                                <!--
+                                                                <h4 class="mb-3">Chọn phương thức thanh toán</h4>
+                                                                <div class="mb-4">
+                                                                    <div class="form-check mb-2">
+                                                                        <input class="form-check-input" type="radio" name="bankCode" id="vnpayqr" value="" checked>
+                                                                        <label class="form-check-label" for="vnpayqr">Cổng thanh toán VNPAYQR</label>
+                                                                    </div>
+                                                                    <div class="form-check mb-2">
+                                                                        <input class="form-check-input" type="radio" name="bankCode" id="vnpayqr_app" value="VNPAYQR">
+                                                                        <label class="form-check-label" for="vnpayqr_app">Thanh toán bằng ứng dụng hỗ trợ VNPAYQR</label>
+                                                                    </div>
+                                                                    <div class="form-check mb-2">
+                                                                        <input class="form-check-input" type="radio" name="bankCode" id="vnbank" value="VNBANK">
+                                                                        <label class="form-check-label" for="vnbank">Thanh toán qua thẻ ATM/Tài khoản nội địa</label>
+                                                                    </div>
+                                                                    <div class="form-check mb-2">
+                                                                        <input class="form-check-input" type="radio" name="bankCode" id="intcard" value="INTCARD">
+                                                                        <label class="form-check-label" for="intcard">Thanh toán qua thẻ quốc tế</label>
+                                                                    </div>
+                                                                </div>
+                                
+                                                                <h4 class="mb-3">Chọn ngôn ngữ giao diện thanh toán</h4>
+                                                                <div class="mb-4">
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" name="language" id="lang_vn" value="vn" checked>
+                                                                        <label class="form-check-label" for="lang_vn">Tiếng Việt</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" name="language" id="lang_en" value="en">
+                                                                        <label class="form-check-label" for="lang_en">Tiếng Anh</label>
+                                                                    </div>
+                                                                </div>-->
 
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary btn-lg">

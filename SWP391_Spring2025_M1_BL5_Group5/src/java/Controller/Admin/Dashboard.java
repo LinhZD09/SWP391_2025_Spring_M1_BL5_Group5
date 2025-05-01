@@ -21,10 +21,6 @@ import model.Bill;
 import model.Category;
 import model.User;
 
-/**
- *
- * @author Admin
- */
 public class Dashboard extends HttpServlet {
 
     /**
