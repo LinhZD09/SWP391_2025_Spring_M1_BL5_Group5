@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -140,73 +141,74 @@
                         <h2 class="mt-4"><i class="fas fa-money-bill mr-2"></i>Giá</h2>
                         <form action="search?action=searchByPrice" method="POST">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="price" value="0" id="price1">
-                                <label class="form-check-label" for="price1">Dưới 50.000Vnđ</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="price" value="1" id="price2">
-                                <label class="form-check-label" for="price2">Từ 50.000Vnđ - 200.000Vnđ</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="price" value="2" id="price3">
-                                <label class="form-check-label" for="price3">Từ 200.000Vnđ - 500.000Vnđ</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="price" value="3" id="price4">
-                                <label class="form-check-label" for="price4">Từ 500.000 Vnđ - 1.000.000 Vnđ</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="price" value="4" id="price5">
-                                <label class="form-check-label" for="price5">1 triệu Vnđ trở lên</label>
+                                <input class="form-check-input" type="checkbox" name="price" value="0" id="price1"
+                                       <c:if test="${sessionScope.selectedPrices != null && fn:contains(fn:join(sessionScope.selectedPrices, ','), '0')}">checked</c:if>>
+                                       <label class="form-check-label" for="price1">Dưới 50.000 VNĐ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="price" value="1" id="price2"
+                                    <c:if test="${sessionScope.selectedPrices != null && fn:contains(fn:join(sessionScope.selectedPrices, ','), '1')}">checked</c:if>>
+                                    <label class="form-check-label" for="price2">50.000 - 200.000 VNĐ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="price" value="2" id="price3"
+                                    <c:if test="${sessionScope.selectedPrices != null && fn:contains(fn:join(sessionScope.selectedPrices, ','), '2')}">checked</c:if>>
+                                    <label class="form-check-label" for="price3">200.000 - 500.000 VNĐ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="price" value="3" id="price4"
+                                    <c:if test="${sessionScope.selectedPrices != null && fn:contains(fn:join(sessionScope.selectedPrices, ','), '3')}">checked</c:if>>
+                                    <label class="form-check-label" for="price4">500.000 - 1.000.000 VNĐ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="price" value="4" id="price5"
+                                    <c:if test="${sessionScope.selectedPrices != null && fn:contains(fn:join(sessionScope.selectedPrices, ','), '4')}">checked</c:if>>
+                                    <label class="form-check-label" for="price5">Trên 1.000.000 VNĐ</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm mt-3">Tìm kiếm</button>
+                            </form>
+
+
+                            <h2 class="mt-4"><i class="fas fa-palette mr-2"></i>Màu Sắc</h2>
+                            <form action="search?action=SearchByColor" method="POST">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="colors" value="0" id="color1"
+                                    <c:if test="${sessionScope.selectedColors != null && fn:contains(fn:join(sessionScope.selectedColors, ','), '0')}">checked</c:if>>
+                                    <label class="form-check-label" for="color1">Đỏ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="colors" value="1" id="color2"
+                                    <c:if test="${sessionScope.selectedColors != null && fn:contains(fn:join(sessionScope.selectedColors, ','), '1')}">checked</c:if>>
+                                    <label class="form-check-label" for="color2">Xanh</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="colors" value="2" id="color3"
+                                    <c:if test="${sessionScope.selectedColors != null && fn:contains(fn:join(sessionScope.selectedColors, ','), '2')}">checked</c:if>>
+                                    <label class="form-check-label" for="color3">Trắng</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="colors" value="3" id="color4"
+                                    <c:if test="${sessionScope.selectedColors != null && fn:contains(fn:join(sessionScope.selectedColors, ','), '3')}">checked</c:if>>
+                                    <label class="form-check-label" for="color4">Đen</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm mt-3">Lọc</button>
+                            </form>
+
+
+                            <h2 class="mt-4"><i class="fas fa-cogs mr-2"></i>Kích Cỡ</h2>
+                            <form action="search?action=searchproductbysize" method="POST">
+                                <div class="form-check">
+                                    <select class="form-control" name="size">
+                                    <c:forEach items="${SizeData}" var="s">
+                                        <option value="${s.size}"
+                                                <c:if test="${sessionScope.selectedSize == s.size}">selected</c:if>>
+                                            ${s.size}
+                                        </option>
+                                    </c:forEach>
+                                </select>
                             </div>
                             <button type="submit" class="btn btn-primary btn-sm mt-3">Tìm kiếm</button>
                         </form>
-
-                        <h2 class="mt-4"><i class="fas fa-palette mr-2"></i>Màu Sắc</h2>
-                        <form action="search?action=SearchByColor" method="POST">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="colors" value="0" id="color1">
-                                <label class="form-check-label" for="color1">Đỏ</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="colors" value="1" id="color2">
-                                <label class="form-check-label" for="color2">Xanh</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="colors" value="2" id="color3">
-                                <label class="form-check-label" for="color3">Trắng</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="colors" value="3" id="color4">
-                                <label class="form-check-label" for="color4">Đen</label>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm mt-3">Lọc</button>
-                        </form>
-
-                        <h2 class="mt-4"><i class="fas fa-cogs mr-2"></i>Kích Cỡ</h2>
-<form action="search?action=searchproductbysize" method="POST">
-    <div class="form-check">
-        <select class="form-control" name="size">
-            <!-- Duyệt qua các kích cỡ và tạo các option -->
-            <c:forEach items="${SizeData}" var="size">
-                <!-- Kiểm tra nếu kích cỡ là 'S' hoặc kích cỡ đã được chọn thì thêm thuộc tính selected -->
-                <option value="${size.size}" 
-                        <c:if test="${size.size == (param.size != null && param.size != '' ? param.size : 'S')}">selected</c:if>>
-                    ${size.size} <!-- Hiển thị tên kích cỡ -->
-                </option>
-            </c:forEach>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary btn-sm mt-3">Tìm kiếm</button>
-</form>
-
-
-
-
-
-
-
-
                     </div>
                 </div>
 
