@@ -19,7 +19,6 @@ import java.util.List;
 import model.Category;
 import model.User;
 
-
 @WebServlet(name = "CategoryManager", urlPatterns = {"/categorymanager"})
 public class CategoryManager extends HttpServlet {
 
@@ -37,7 +36,7 @@ public class CategoryManager extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
-        String page = "";
+        String page = "admin/category.jsp";
         try {
             HttpSession session = request.getSession();
             User user = (User) session.getAttribute("user");
@@ -71,28 +70,30 @@ public class CategoryManager extends HttpServlet {
                 } else if (action.equalsIgnoreCase("updatecategory")) {
                     String category_id = request.getParameter("category_id");
                     String category_name = request.getParameter("category_name");
+                    categoryDAO cdao = new categoryDAO();
+                    category_name = category_name != null ? category_name.trim() : "";
+                    category_id = category_id != null ? category_id.trim() : "";
 
-                    if (category_id != null && category_name != null && !category_id.isEmpty() && !category_name.isEmpty()) {
+                    if (category_id.isEmpty() || category_name.isEmpty()) {
+                        request.setAttribute("error", "ID và Tên danh mục không được để trống.");
+                        request.setAttribute("openEditModalId", category_id); // ⬅️ Ghi nhớ modal cần mở lại
+                    } else {
                         try {
-                            int categoryId = Integer.parseInt(category_id);
-                            categoryDAO dao = new categoryDAO();
-                            dao.updateCategory(categoryId, category_name);
+                            int id = Integer.parseInt(category_id);
+
+                            cdao.updateCategory(id, category_name);
                             response.sendRedirect("categorymanager");
                             return;
                         } catch (NumberFormatException e) {
-                            request.setAttribute("error", "Invalid category ID format.");
+                            request.setAttribute("error", "ID danh mục không hợp lệ.");
+                            request.setAttribute("openEditModalId", category_id);
                         } catch (Exception e) {
-                            request.setAttribute("error", "An error occurred while updating the category.");
+                            request.setAttribute("error", "Có lỗi xảy ra khi cập nhật danh mục.");
+                            request.setAttribute("openEditModalId", category_id);
                         }
-                    } else {
-                        // Handle validation errors or missing parameters
-                        request.setAttribute("error", "Category ID and Name cannot be empty.");
                     }
-                    // Forward back to the category manager page with an error message
-                    page = "admin/category.jsp"; // Set the destination page
-
-                    RequestDispatcher dd = request.getRequestDispatcher(page);
-                    dd.forward(request, response);
+                    List<Category> categories = cdao.getCategory();
+                    request.setAttribute("category", categories);
 
                 } else if (action.equalsIgnoreCase("delete")) {
                     String category_id = request.getParameter("category_id");

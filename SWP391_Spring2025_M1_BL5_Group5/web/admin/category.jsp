@@ -55,43 +55,43 @@
             <hr>
             <ul class="app-menu">
                 <li><a class="app-menu__item" href="dashboard">
-                    <i class='app-menu__icon bx bx-tachometer'></i>
-                    <span class="app-menu__label">Bảng thống kê</span>
-                </a></li>
+                        <i class='app-menu__icon bx bx-tachometer'></i>
+                        <span class="app-menu__label">Bảng thống kê</span>
+                    </a></li>
                 <li><a class="app-menu__item" href="categorymanager">
-                    <i class='app-menu__icon bx bxs-category'></i>
-                    <span class="app-menu__label">Quản lý danh mục</span>
-                </a></li>
+                        <i class='app-menu__icon bx bxs-category'></i>
+                        <span class="app-menu__label">Quản lý danh mục</span>
+                    </a></li>
                 <li><a class="app-menu__item" href="productmanager">
-                    <i class='app-menu__icon bx bx-purchase-tag-alt'></i>
-                    <span class="app-menu__label">Quản lý sản phẩm</span>
-                </a></li>
+                        <i class='app-menu__icon bx bx-purchase-tag-alt'></i>
+                        <span class="app-menu__label">Quản lý sản phẩm</span>
+                    </a></li>
                 <li><a class="app-menu__item" href="ordermanager">
-                    <i class='app-menu__icon bx bx-task'></i>
-                    <span class="app-menu__label">Quản lý đơn hàng</span>
-                </a></li>
-                <c:if test="${sessionScope.user.isAdmin}">
+                        <i class='app-menu__icon bx bx-task'></i>
+                        <span class="app-menu__label">Quản lý đơn hàng</span>
+                    </a></li>
+                    <c:if test="${sessionScope.user.isAdmin}">
                     <li><a class="app-menu__item" href="customermanager">
-                        <i class='app-menu__icon bx bx-user-voice'></i>
-                        <span class="app-menu__label">Quản lý khách hàng</span>
-                    </a></li>
+                            <i class='app-menu__icon bx bx-user-voice'></i>
+                            <span class="app-menu__label">Quản lý khách hàng</span>
+                        </a></li>
                     <li><a class="app-menu__item" href="reportmanager">
-                        <i class='app-menu__icon bx bx-receipt'></i>
-                        <span class="app-menu__label">Quản lý phản hồi</span>
-                    </a></li>
+                            <i class='app-menu__icon bx bx-receipt'></i>
+                            <span class="app-menu__label">Quản lý phản hồi</span>
+                        </a></li>
                     <li><a class="app-menu__item" href="aboutmanager">
-                        <i class='app-menu__icon bx bx-receipt'></i>
-                        <span class="app-menu__label">Quản lý trang giới thiệu</span>
-                    </a></li>
+                            <i class='app-menu__icon bx bx-receipt'></i>
+                            <span class="app-menu__label">Quản lý trang giới thiệu</span>
+                        </a></li>
                     <li><a class="app-menu__item" href="commentmanager">
-                        <i class='app-menu__icon bx bx-receipt'></i>
-                        <span class="app-menu__label">Quản lý bình luận</span>
-                    </a></li>
+                            <i class='app-menu__icon bx bx-receipt'></i>
+                            <span class="app-menu__label">Quản lý bình luận</span>
+                        </a></li>
                     <li><a class="app-menu__item" href="saleoff">
-                        <i class='app-menu__icon bx bx-receipt'></i>
-                        <span class="app-menu__label">Quản lý sale</span>
-                    </a></li>
-                </c:if>
+                            <i class='app-menu__icon bx bx-receipt'></i>
+                            <span class="app-menu__label">Quản lý sale</span>
+                        </a></li>
+                    </c:if>
             </ul>
         </aside>
 
@@ -150,38 +150,43 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                        <div class="modal fade" id="ModalEditCategory${c.category_id}" tabindex="-1"
-                                             role="dialog" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <form action="categorymanager" method="POST">
-                                                            <input type="hidden" name="action" value="updatecategory">
-                                                            <div class="form-group">
-                                                                <h5>Chỉnh sửa danh mục</h5>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label>ID</label>
-                                                                <input class="form-control" type="text" readonly
-                                                                       name="category_id"
-                                                                       value="${c.category_id}">
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label>Tên danh mục</label>
-                                                                <input class="form-control" type="text"
-                                                                       name="category_name"
-                                                                       value="${c.category_name}">
-                                                            </div>
-                                                            <button class="btn btn-save" type="submit">Lưu lại</button>
-                                                            <a class="btn btn-cancel" data-dismiss="modal" href="#">
-                                                                Hủy bỏ
-                                                            </a>
-                                                        </form>
-                                                    </div>
+                                    <div class="modal fade" id="ModalEditCategory${c.category_id}" tabindex="-1"
+                                         role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <form action="categorymanager" method="POST" class="update-category-form">
+                                                        <input type="hidden" name="action" value="updatecategory">
+                                                        <div class="form-group">
+                                                            <h5>Chỉnh sửa danh mục</h5>
+                                                        </div>
+                                                        <c:if test="${not empty requestScope.error && requestScope.openEditModalId == c.category_id}">
+                                                            <p style="color: red; font-weight: bold;">${requestScope.error}</p>
+                                                        </c:if>
+                                                        <div class="form-group">
+                                                            <label>ID</label>
+                                                            <input class="form-control" type="text" readonly
+                                                                   name="category_id"
+                                                                   value="${c.category_id}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Tên danh mục</label>
+                                                            <input class="form-control" type="text"
+                                                                   name="category_name"
+                                                                   value="${c.category_name}">
+                                                        </div>
+                                                        <button class="btn btn-save" type="submit">Lưu lại</button>
+                                                        <a class="btn btn-cancel" data-dismiss="modal" href="#">
+                                                            Hủy bỏ
+                                                        </a>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
-                                    </c:forEach>
+                                    </div>
+
+                                </c:forEach>
+
                                 </tbody>
                             </table>
 
@@ -189,6 +194,7 @@
                     </div>
                 </div>
             </div>
+
         </main>
 
         <!-- Modal thêm danh mục -->
@@ -212,7 +218,7 @@
                             <ul style="padding-left:20px;">
                                 <c:forEach items="${CategoryData1}" var="cat">
                                     <li>${cat.category_name}</li>
-                                </c:forEach>
+                                    </c:forEach>
                             </ul>
                         </div>
                     </div>
@@ -222,73 +228,117 @@
 
         <!-- JS libs -->
         <script src="admin/js/jquery-3.2.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
         <script src="admin/js/popper.min.js"></script>
         <script src="admin/js/bootstrap.min.js"></script>
         <script src="admin/js/main.js"></script>
         <script src="admin/js/plugins/pace.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
         <!-- DataTables plugin -->
         <script src="admin/js/plugins/jquery.dataTables.min.js"></script>
         <script src="admin/js/plugins/dataTables.bootstrap.min.js"></script>
 
         <script>
-          jQuery(document).ready(function () {
-            // Khởi tạo DataTable với TT tự động
-            if (! jQuery.fn.DataTable.isDataTable('#sampleTable')) {
-              jQuery('#sampleTable').DataTable({
-                columnDefs: [
-                  {
-                    targets: 0,
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row, meta) {
-                      return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                  }
-                ],
-                order: [[1, 'asc']]
-              });
-            }
-            // Xóa
-            jQuery(document).on('click', '.trash', function () {
-              var categoryId = jQuery(this).attr("value");
-              swal({
-                title: "Cảnh báo",
-                text: "Bạn có chắc chắn là muốn xóa danh mục này?",
-                buttons: ["Hủy bỏ", "Đồng ý"],
-              }).then((willDelete) => {
-                if (willDelete) {
-                  window.location = "categorymanager?action=delete&category_id=" + categoryId;
-                  swal("Đã xóa thành công!", { icon: "success" });
-                }
-              });
-            });
-          });
-          // Thời gian
-          function time() {
-            var today = new Date();
-            var weekday = ["Chủ Nhật","Thứ Hai","Thứ Ba","Thứ Tư","Thứ Năm","Thứ Sáu","Thứ Bảy"];
-            var day = weekday[today.getDay()];
-            var dd = today.getDate(), mm = today.getMonth()+1, yyyy = today.getFullYear();
-            var h = today.getHours(), m = today.getMinutes(), s = today.getSeconds();
-            m = (m<10?"0"+m:m); s = (s<10?"0"+s:s);
-            if(dd<10) dd='0'+dd; if(mm<10) mm='0'+mm;
-            var nowTime = h+" giờ "+m+" phút "+s+" giây";
-            var dateStr = day+', '+dd+'/'+mm+'/'+yyyy;
-            document.getElementById("clock").innerHTML = '<span class="date"> '+dateStr+' - '+nowTime+'</span>';
-            setTimeout(time,1000);
-          }
-          // In dữ liệu
-          var myApp = new function() {
-            this.printTable = function(){
-              var tab = document.getElementById('sampleTable');
-              var win = window.open('','', 'height=700,width=700');
-              win.document.write(tab.outerHTML);
-              win.document.close();
-              win.print();
-            }
-          }
+                                           jQuery(document).ready(function () {
+                                               // Khởi tạo DataTable với TT tự động
+                                               if (!jQuery.fn.DataTable.isDataTable('#sampleTable')) {
+                                                   jQuery('#sampleTable').DataTable({
+                                                       columnDefs: [
+                                                           {
+                                                               targets: 0,
+                                                               orderable: false,
+                                                               searchable: false,
+                                                               render: function (data, type, row, meta) {
+                                                                   return meta.row + meta.settings._iDisplayStart + 1;
+                                                               }
+                                                           }
+                                                       ],
+                                                       order: [[1, 'asc']]
+                                                   });
+                                               }
+                                               // Xóa
+                                               jQuery(document).on('click', '.trash', function () {
+                                                   var categoryId = jQuery(this).attr("value");
+                                                   swal({
+                                                       title: "Cảnh báo",
+                                                       text: "Bạn có chắc chắn là muốn xóa danh mục này?",
+                                                       buttons: ["Hủy bỏ", "Đồng ý"],
+                                                   }).then((willDelete) => {
+                                                       if (willDelete) {
+                                                           window.location = "categorymanager?action=delete&category_id=" + categoryId;
+                                                           swal("Đã xóa thành công!", {icon: "success"});
+                                                       }
+                                                   });
+                                               });
+                                           });
+                                           // Thời gian
+                                           function time() {
+                                               var today = new Date();
+                                               var weekday = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+                                               var day = weekday[today.getDay()];
+                                               var dd = today.getDate(), mm = today.getMonth() + 1, yyyy = today.getFullYear();
+                                               var h = today.getHours(), m = today.getMinutes(), s = today.getSeconds();
+                                               m = (m < 10 ? "0" + m : m);
+                                               s = (s < 10 ? "0" + s : s);
+                                               if (dd < 10)
+                                                   dd = '0' + dd;
+                                               if (mm < 10)
+                                                   mm = '0' + mm;
+                                               var nowTime = h + " giờ " + m + " phút " + s + " giây";
+                                               var dateStr = day + ', ' + dd + '/' + mm + '/' + yyyy;
+                                               document.getElementById("clock").innerHTML = '<span class="date"> ' + dateStr + ' - ' + nowTime + '</span>';
+                                               setTimeout(time, 1000);
+                                           }
+                                           // In dữ liệu
+                                           var myApp = new function () {
+                                               this.printTable = function () {
+                                                   var tab = document.getElementById('sampleTable');
+                                                   var win = window.open('', '', 'height=700,width=700');
+                                                   win.document.write(tab.outerHTML);
+                                                   win.document.close();
+                                                   win.print();
+                                               }
+                                           }
         </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Validate thêm mới
+                const insertForm = document.querySelector("#adddanhmuc form");
+                if (insertForm) {
+                    insertForm.addEventListener("submit", function (e) {
+                        const nameInput = insertForm.querySelector('input[name="name"]');
+                        if (!nameInput.value.trim()) {
+                            e.preventDefault();
+                            swal("Lỗi", "Vui lòng nhập tên danh mục hợp lệ (không để trống hoặc chỉ khoảng trắng)!", "error");
+                        }
+                    });
+                }
+
+                // Validate cập nhật danh mục
+                const updateForms = document.querySelectorAll('.update-category-form');
+                updateForms.forEach(form => {
+                    form.addEventListener("submit", function (e) {
+                        const input = form.querySelector('input[name="category_name"]');
+                        if (!input.value.trim()) {
+                            e.preventDefault();
+                            swal("Lỗi", "Tên danh mục không được để trống hoặc chỉ chứa khoảng trắng!", "error");
+                        }
+                    });
+                });
+            });
+        </script>
+        <c:if test="${not empty requestScope.openEditModalId}">
+            <script>
+                $(document).ready(function () {
+                    const modalId = "#ModalEditCategory${requestScope.openEditModalId}";
+                    console.log("Mở lại modal:", modalId);
+                    $(modalId).modal('show');
+                });
+            </script>
+        </c:if>
+
     </body>
 </html>
