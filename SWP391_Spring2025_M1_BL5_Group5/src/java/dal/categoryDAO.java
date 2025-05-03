@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Category;
 
-
 public class categoryDAO extends DBContext {
 
     Connection conn = null;
@@ -112,4 +111,35 @@ public class categoryDAO extends DBContext {
         }
         return list;
     }
+
+    public boolean isCategoryNameExists(String name) {
+        String query = "SELECT COUNT(*) FROM Category WHERE LOWER(category_name) = LOWER(?)";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, name.trim());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+  
+
+    public boolean isCategoryNameExistsForUpdate(String name, int id) {
+        String sql = "SELECT 1 FROM category WHERE LOWER(category_name) = LOWER(?) AND category_id != ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // tồn tại tên nhưng khác ID hiện tại
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

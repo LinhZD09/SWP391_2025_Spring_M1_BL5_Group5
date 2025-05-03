@@ -171,76 +171,90 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Tên danh mục</label>
-                                                            <input class="form-control" type="text"
-                                                                   name="category_name"
-                                                                   value="${c.category_name}">
+                                                            <!-- ✅ Cách đúng để giữ lại giá trị nhập nếu lỗi -->
+                                                            <c:choose>
+                                                                <c:when test="${requestScope.openEditModalId == c.category_id && not empty requestScope.inputCategoryName}">
+                                                                    <input class="form-control" type="text"
+                                                                           name="category_name"
+                                                                           value="${requestScope.inputCategoryName}">
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <input class="form-control" type="text"
+                                                                           name="category_name"
+                                                                           value="${c.category_name}">
+                                                                </c:otherwise>
+                                                            </c:choose>
+
                                                         </div>
-                                                        <button class="btn btn-save" type="submit">Lưu lại</button>
-                                                        <a class="btn btn-cancel" data-dismiss="modal" href="#">
-                                                            Hủy bỏ
-                                                        </a>
-                                                    </form>
                                                 </div>
+                                                <button class="btn btn-save" type="submit">Lưu lại</button>
+                                                <a class="btn btn-cancel" data-dismiss="modal" href="#">
+                                                    Hủy bỏ
+                                                </a>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
+                            </div>
 
-                                </c:forEach>
+                        </c:forEach>
 
-                                </tbody>
-                            </table>
+                        </tbody>
+                        </table>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Modal thêm danh mục -->
-        <div class="modal fade" id="adddanhmuc" tabindex="-1" role="dialog"
-             data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <h5>Thêm mới danh mục</h5>
-                        </div>
-                        <h2 style="color:red;">${error}</h2>
-                        <form action="productmanager?action=insertcategory" method="post">
-                            <input class="form-control" type="text" name="name" required>
-                            <br>
-                            <button class="btn btn-save" type="submit">Lưu lại</button>
-                            <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
-                        </form>
-                        <div class="form-group">
-                            <label>Danh mục sản phẩm hiện đang có</label>
-                            <ul style="padding-left:20px;">
-                                <c:forEach items="${CategoryData1}" var="cat">
-                                    <li>${cat.category_name}</li>
-                                    </c:forEach>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- JS libs -->
-        <script src="admin/js/jquery-3.2.1.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </main>
 
-        <script src="admin/js/popper.min.js"></script>
-        <script src="admin/js/bootstrap.min.js"></script>
-        <script src="admin/js/main.js"></script>
-        <script src="admin/js/plugins/pace.min.js"></script>
+    <!-- Modal thêm danh mục -->
+    <div class="modal fade" id="adddanhmuc" tabindex="-1" role="dialog"
+         data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <h5>Thêm mới danh mục</h5>
+                    </div>
+                    <c:if test="${not empty error}">
+                        <h2 style="color:red;">${error}</h2>
+                    </c:if>
+                    <form action="categorymanager?action=insertcategory" method="post">
+                        <input class="form-control" type="text" name="name" required>
+                        <br>
+                        <button class="btn btn-save" type="submit">Lưu lại</button>
+                        <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
+                    </form>
+<!--                    <div class="form-group">
+                        <label>Danh mục sản phẩm hiện đang có</label>
+                        <ul style="padding-left:20px;">
+                            <c:forEach items="${CategoryData1}" var="cat">
+                                <li>${cat.category_name}</li>
+                                </c:forEach>
+                        </ul>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-        <!-- DataTables plugin -->
-        <script src="admin/js/plugins/jquery.dataTables.min.js"></script>
-        <script src="admin/js/plugins/dataTables.bootstrap.min.js"></script>
+    <!-- JS libs -->
+    <script src="admin/js/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        <script>
+    <script src="admin/js/popper.min.js"></script>
+    <script src="admin/js/bootstrap.min.js"></script>
+    <script src="admin/js/main.js"></script>
+    <script src="admin/js/plugins/pace.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <!-- DataTables plugin -->
+    <script src="admin/js/plugins/jquery.dataTables.min.js"></script>
+    <script src="admin/js/plugins/dataTables.bootstrap.min.js"></script>
+
+    <script>
                                            jQuery(document).ready(function () {
                                                // Khởi tạo DataTable với TT tự động
                                                if (!jQuery.fn.DataTable.isDataTable('#sampleTable')) {
@@ -301,44 +315,51 @@
                                                    win.print();
                                                }
                                            }
-        </script>
+    </script>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                // Validate thêm mới
-                const insertForm = document.querySelector("#adddanhmuc form");
-                if (insertForm) {
-                    insertForm.addEventListener("submit", function (e) {
-                        const nameInput = insertForm.querySelector('input[name="name"]');
-                        if (!nameInput.value.trim()) {
-                            e.preventDefault();
-                            swal("Lỗi", "Vui lòng nhập tên danh mục hợp lệ (không để trống hoặc chỉ khoảng trắng)!", "error");
-                        }
-                    });
-                }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Validate thêm mới
+            const insertForm = document.querySelector("#adddanhmuc form");
+            if (insertForm) {
+                insertForm.addEventListener("submit", function (e) {
+                    const nameInput = insertForm.querySelector('input[name="name"]');
+                    if (!nameInput.value.trim()) {
+                        e.preventDefault();
+                        swal("Lỗi", "Vui lòng nhập tên danh mục hợp lệ (không để trống hoặc chỉ khoảng trắng)!", "error");
+                    }
+                });
+            }
 
-                // Validate cập nhật danh mục
-                const updateForms = document.querySelectorAll('.update-category-form');
-                updateForms.forEach(form => {
-                    form.addEventListener("submit", function (e) {
-                        const input = form.querySelector('input[name="category_name"]');
-                        if (!input.value.trim()) {
-                            e.preventDefault();
-                            swal("Lỗi", "Tên danh mục không được để trống hoặc chỉ chứa khoảng trắng!", "error");
-                        }
-                    });
+            // Validate cập nhật danh mục
+            const updateForms = document.querySelectorAll('.update-category-form');
+            updateForms.forEach(form => {
+                form.addEventListener("submit", function (e) {
+                    const input = form.querySelector('input[name="category_name"]');
+                    if (!input.value.trim()) {
+                        e.preventDefault();
+                        swal("Lỗi", "Tên danh mục không được để trống hoặc chỉ chứa khoảng trắng!", "error");
+                    }
                 });
             });
+        });
+    </script>
+    <c:if test="${not empty requestScope.openEditModalId}">
+        <script>
+            $(document).ready(function () {
+                const modalId = "#ModalEditCategory${requestScope.openEditModalId}";
+                console.log("Mở lại modal:", modalId);
+                $(modalId).modal('show');
+            });
         </script>
-        <c:if test="${not empty requestScope.openEditModalId}">
-            <script>
-                $(document).ready(function () {
-                    const modalId = "#ModalEditCategory${requestScope.openEditModalId}";
-                    console.log("Mở lại modal:", modalId);
-                    $(modalId).modal('show');
-                });
-            </script>
-        </c:if>
+    </c:if>
+    <c:if test="${showAddModal == true}">
+        <script>
+            $(document).ready(function () {
+                $('#adddanhmuc').modal('show');
+            });
+        </script>
+    </c:if>
 
-    </body>
+</body>
 </html>
