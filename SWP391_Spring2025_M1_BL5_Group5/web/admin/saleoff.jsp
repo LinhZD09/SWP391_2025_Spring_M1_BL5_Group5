@@ -1,6 +1,19 @@
+<%-- 
+    Document   : customer
+    Created on : 16 thg 4, 2025, 15:34:18
+    Author     : truon
+--%>
+
+
+
+
+
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<fmt:setTimeZone value="Asia/Ho_Chi_Minh"/>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,8 +37,14 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 
     </head>
+    <style>
+        .custom-modal{
+            max-width: 1000px;
+            width: 100%;
+        }
+    </style>
 
-    <body class="app sidebar-mini rtl">
+    <body onload="time()" class="app sidebar-mini rtl">
         <!-- Navbar-->nload="time()" class="app sidebar-mini rtl"
         <!-- Navbar-->
         <header class="app-header">
@@ -118,7 +137,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary" type="submit">Search</button>
+                                <button class="btn btn-primary" type="submit">Tìm kiếm</button>
                                 <div>Note:</div>
 
                                 <div>Percentage: giảm giá theo phần trăm(%)</div>
@@ -201,7 +220,7 @@
                             <c:forEach var="saleOff" items="${saleOffs}" varStatus="status">
                                 <div class="modal fade" id="ModalUP${saleOff.saleId}" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
                                      data-keyboard="false">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-dialog custom-modal modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-body">
                                                 <form action="saleoff" method="post">
@@ -250,13 +269,16 @@
                                                             <label class="control-label">Số Tiền Giảm Giá Tối Đa</label>
                                                             <input class="form-control" type="number"  name="maxDiscount" value="${saleOff.maxDiscount}">
                                                         </div>
+                                                        <fmt:formatDate value="${saleOff.start_date}" pattern="yyyy-MM-dd" var="formattedStartDate" />
+                                                        <fmt:formatDate value="${saleOff.end_date}" pattern="yyyy-MM-dd" var="formattedEndDate" />
+
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Bắt Đầu</label>
-                                                            <input class="form-control" type="Date"  name="startDate" value="${saleOff.start_date}">
+                                                            <input class="form-control" type="date" name="startDate" value="${formattedStartDate}">
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Kết Thúc</label>
-                                                            <input class="form-control" type="Date"  name="endDate" value="${saleOff.end_date}">
+                                                            <input class="form-control" type="date" name="endDate" value="${formattedEndDate}">
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Số lượng</label>
@@ -280,8 +302,9 @@
                                 -->
                                 <div class="modal fade" id="addSaleModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
                                      data-keyboard="false" aria-labelledby="addSaleModalLabel">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+
+                                        <div class="modal-content p-4" style="border-radius: 20px;" >
                                             <div class="modal-body">
                                                 <form action="saleoff" method="post">
                                                     <c:if test="${addFail}">
@@ -295,47 +318,70 @@
                                                             </div>
                                                         </c:if>
                                                     </c:if>
-                                                    <input type="hidden" name="action" value="add">
-
-                                                    <div class="row">
+                                                    <input type="hidden" name="action" value="add">                                                  
+                                                    <div>
                                                         <div class="form-group  col-md-12">
                                                             <span class="thong-tin-thanh-toan">
                                                                 <h5>Thêm giảm giá</h5>
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
-
+                                                    <div class="row" >
+                                                        <!-- Mã giảm giá -->
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Mã Giảm Giá</label>
-                                                            <input class="form-control" type="text"  name="saleCode" >
+                                                            <input class="form-control" type="text" name="saleCode"
+                                                                   value="${sessionScope.inputSaleCode != null ? sessionScope.inputSaleCode : ''}">
                                                         </div>
+
+                                                        <!-- Loại giảm giá -->
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Loại Giảm Giá</label>
                                                             <select class="form-control" name="discountType">
-                                                                <option value="Percentage" ${saleOff.discountType == 'Percentage' ? 'selected' : ''}>Giảm Theo Phần Trăm(%)</option>
-                                                                <option value="Fixed" ${saleOff.discountType == 'Fixed' ? 'selected' : ''}>Giảm Theo Số Tiền Cố Định(vnd)</option>
+                                                                <option value="Percentage"
+                                                                        ${sessionScope.inputDiscountType == 'Percentage' ? 'selected' : ''}>
+                                                                    Giảm Theo Phần Trăm(%)
+                                                                </option>
+                                                                <option value="Fixed"
+                                                                        ${sessionScope.inputDiscountType == 'Fixed' ? 'selected' : ''}>
+                                                                    Giảm Theo Số Tiền Cố Định(vnd)
+                                                                </option>
                                                             </select>
                                                         </div>
+
+                                                        <!-- Số tiền giảm -->
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Số Tiền Giảm Giá</label>
-                                                            <input class="form-control" type="text"  name="discountValue" >
+                                                            <input class="form-control" type="text" name="discountValue"
+                                                                   value="${sessionScope.inputDiscountValue != null ? sessionScope.inputDiscountValue : ''}">
                                                         </div>
+
+                                                        <!-- Giảm tối đa -->
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Số Tiền Giảm Giá Tối Đa</label>
-                                                            <input class="form-control" type="text"  name="maxDiscount" >
+                                                            <input class="form-control" type="text" name="maxDiscount"
+                                                                   value="${sessionScope.inputMaxDiscount != null ? sessionScope.inputMaxDiscount : ''}">
                                                         </div>
+
+                                                        <!-- Ngày bắt đầu -->
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Bắt Đầu</label>
-                                                            <input class="form-control" type="Date"  name="startDate" >
+                                                            <input class="form-control" type="date" name="startDate"
+                                                                   value="${sessionScope.inputStartDate != null ? sessionScope.inputStartDate : ''}" required="">
                                                         </div>
+
+                                                        <!-- Ngày kết thúc -->
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Kết Thúc</label>
-                                                            <input class="form-control" type="Date"  name="endDate">
+                                                            <input class="form-control" type="date" name="endDate"
+                                                                   value="${sessionScope.inputEndDate != null ? sessionScope.inputEndDate : ''}" required="">
                                                         </div>
+
+                                                        <!-- Số lượng -->
                                                         <div class="form-group col-md-6">
                                                             <label class="control-label">Số lượng</label>
-                                                            <input class="form-control" type="text" min="1" name="quantity" >
+                                                            <input class="form-control" type="text" min="1" name="quantity"
+                                                                   value="${sessionScope.inputQuantity != null ? sessionScope.inputQuantity : ''}">
                                                         </div>
                                                     </div>
                                                     <BR>
@@ -381,6 +427,48 @@
 
         <!-- ✅ (các script riêng của bạn để sau cùng) -->
         <script src="admin/js/main.js"></script>
+        <script type="text/javascript">
+        $('#sampleTable').DataTable();
+        //Thời Gian
+        function time() {
+            var today = new Date();
+            var weekday = new Array(7);
+            weekday[0] = "Chủ Nhật";
+            weekday[1] = "Thứ Hai";
+            weekday[2] = "Thứ Ba";
+            weekday[3] = "Thứ Tư";
+            weekday[4] = "Thứ Năm";
+            weekday[5] = "Thứ Sáu";
+            weekday[6] = "Thứ Bảy";
+            var day = weekday[today.getDay()];
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1;
+            var yyyy = today.getFullYear();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            nowTime = h + " giờ " + m + " phút " + s + " giây";
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+            today = day + ', ' + dd + '/' + mm + '/' + yyyy;
+            tmp = '<span class="date"> ' + today + ' - ' + nowTime +
+                    '</span>';
+            document.getElementById("clock").innerHTML = tmp;
+            clocktime = setTimeout("time()", "1000", "Javascript");
+            function checkTime(i) {
+                if (i < 10) {
+                    i = "0" + i;
+                }
+                return i;
+            }
+        }
+        </script>
         <script>
 
             $(document).ready(jQuery(function () {

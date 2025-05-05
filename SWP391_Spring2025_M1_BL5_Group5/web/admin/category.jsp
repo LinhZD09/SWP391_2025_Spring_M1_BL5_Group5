@@ -187,7 +187,7 @@
 
                                                         </div>
                                                 </div>
-                                                <button class="btn btn-save" type="submit">Lưu lại</button>
+                                                <button class="btn btn-save" type="submit">Lưu lại</button>s
                                                 <a class="btn btn-cancel" data-dismiss="modal" href="#">
                                                     Hủy bỏ
                                                 </a>
@@ -227,14 +227,14 @@
                         <button class="btn btn-save" type="submit">Lưu lại</button>
                         <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
                     </form>
-<!--                    <div class="form-group">
+                    <div class="form-group">
                         <label>Danh mục sản phẩm hiện đang có</label>
                         <ul style="padding-left:20px;">
                             <c:forEach items="${CategoryData1}" var="cat">
                                 <li>${cat.category_name}</li>
                                 </c:forEach>
                         </ul>
-                    </div>-->
+                    </div>
                 </div>
             </div>
         </div>

@@ -182,4 +182,87 @@ public class SaleOffDAO extends DBContext {
             e.printStackTrace();
         }
     }
+
+    public boolean isSaleCodeExists(String saleCode) {
+        String sql = "SELECT 1 FROM sale_off WHERE sale_off_code = ?";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, saleCode);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // nếu có dòng nào, tức là mã đã tồn tại
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean isSaleCodeExistsForOther(int saleId, String saleCode) {
+        String sql = "SELECT 1 FROM sale_off WHERE sale_off_code = ? AND sale_off_id != ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, saleCode);
+            ps.setInt(2, saleId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // nếu có dòng -> trùng mã với bản ghi khác
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<SaleOff> getValidSaleOffs(Date today) {
+        List<SaleOff> validSales = new ArrayList<>();
+        String sql = "SELECT * FROM sale_off WHERE start_date <= ? AND end_date >= ? AND quantity > 0";
+
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setDate(1, new java.sql.Date(today.getTime()));
+            ps.setDate(2, new java.sql.Date(today.getTime()));
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                SaleOff sale = new SaleOff(
+                        rs.getInt("sale_off_id"),
+                        rs.getString("sale_off_code"),
+                        rs.getString("discount_type"),
+                        rs.getDouble("discount_value"),
+                        rs.getDouble("max_discount"),
+                        rs.getDate("start_date"),
+                        rs.getDate("end_date"),
+                        rs.getInt("quantity")
+                );
+                validSales.add(sale);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return validSales;
+    }
+
+    public List<SaleOff> getAvailableCodes() {
+        List<SaleOff> list = new ArrayList<>();
+        String sql = "SELECT * FROM sale_off WHERE GETDATE() BETWEEN start_date AND end_date AND quantity > 0";
+
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                SaleOff s = new SaleOff();
+                s.setSaleCode(rs.getString("sale_off_code"));
+                s.setDiscountType(rs.getString("discount_type"));
+                s.setDiscountValue(rs.getDouble("discount_value"));
+                s.setMaxDiscount(rs.getDouble("max_discount"));
+                s.setStart_date(rs.getDate("start_date"));
+                s.setEnd_date(rs.getDate("end_date"));
+                s.setQuantity(rs.getInt("quantity"));
+                list.add(s);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+
+    }
+
 }

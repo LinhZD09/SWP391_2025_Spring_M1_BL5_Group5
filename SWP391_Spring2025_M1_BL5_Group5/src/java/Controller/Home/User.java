@@ -1,5 +1,6 @@
 package Controller.Home;
 
+import dal.SaleOffDAO;
 import dal.billDAO;
 import dal.UserDAO;
 import model.BillDetail;
@@ -14,14 +15,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class User extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, Exception {
+            throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
@@ -73,11 +71,23 @@ public class User extends HttpServlet {
             session.removeAttribute("user");
             session.setAttribute("logoutMessage", "Đăng xuất thành công!");
             response.sendRedirect("home");
-                } else if ("myaccount".equals(action)) {    
+        } else if (action.equals("myaccount")) {
             try {
                 HttpSession session = request.getSession();
                 model.User user = (model.User) session.getAttribute("user");
                 if (user != null) {
+                    String tab = request.getParameter("tab");
+
+                    // Nếu là tab Mã Giảm Giá
+                    if ("discounts".equals(tab)) {
+                        SaleOffDAO sdao = new SaleOffDAO();
+                        // hoặc getAllAvailableSales() nếu bạn đặt tên khác
+
+                        List<model.SaleOff> discounts = sdao.getAvailableCodes();
+                        request.setAttribute("availableCodes", discounts);
+                        request.getRequestDispatcher("my-account.jsp").forward(request, response);
+                        return;
+                    }
                     int user_id = user.getUser_id();
                     billDAO dao = new billDAO();
                     List<model.Bill> allBills = dao.getBillByID(user_id);
@@ -152,84 +162,60 @@ public class User extends HttpServlet {
             List<BillDetail> detail = dao.getDetail(id);
             request.setAttribute("detail", detail);
             request.getRequestDispatcher("billdetail.jsp").forward(request, response);
-        } else if ("updateinfo".equals(action)) {
-            HttpSession session = request.getSession();
-            model.User user = (model.User) session.getAttribute("user");
-            if (user == null) {
-                response.sendRedirect("user?action=login");
-                return;
-            }
-            String user_name = request.getParameter("user_name");
-            String user_email = request.getParameter("user_email");
-            String dateOfBirth = request.getParameter("dateOfBirth");
-            String address = request.getParameter("address");
-            String phoneNumber = request.getParameter("phoneNumber");
-
-            // 1. Validate date of birth
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        } else if (action.equals("updateinfo")) {
             try {
-                Date dob = sdf.parse(dateOfBirth);
-                if (dob.after(new Date())) {
-                    session.setAttribute("error_dob", "Ngày sinh không được lớn hơn ngày hiện tại");
-                    request.getRequestDispatcher("user?action=myaccount").forward(request, response);
-                    return;
+                HttpSession session = request.getSession();
+                model.User user = (model.User) session.getAttribute("user");
+                if (user != null) {
+                    String user_name = request.getParameter("user_name");
+                    String user_pass = request.getParameter("user_pass");
+                    String dateOfBirth = request.getParameter("dateOfBirth");
+                    String address = request.getParameter("address");
+                    String phoneNumber = request.getParameter("phoneNumber");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    address = (address != null ? address.trim() : "");
+                    if (address.isEmpty()) {
+                        session.setAttribute("error_address", "Địa chỉ không được để trống");
+                        request.getRequestDispatcher("user?action=myaccount").forward(request, response);
+                        return;
+                    }
+                    try {
+                        Date dob = sdf.parse(dateOfBirth);
+                        Date currentDate = new Date();
+                        if (dob.after(currentDate)) {
+                            session.setAttribute("error_dob", "Ngày sinh không được lớn hơn ngày hiện tại");
+                            request.getRequestDispatcher("user?action=myaccount").forward(request, response);
+                            return;
+                        }
+                    } catch (Exception ex) {
+                    }
+
+                    boolean isValidPassword = false;
+                    if (user_pass != null && !user_pass.isEmpty()) {
+                        boolean hasUpperCase = !user_pass.equals(user_pass.toLowerCase());
+                        boolean hasNumber = user_pass.matches(".*\\d.*");
+                        isValidPassword = hasUpperCase && hasNumber;
+                    }
+
+                    if (isValidPassword) {
+                        int user_id = user.getUser_id();
+                        UserDAO dao2 = new UserDAO();
+                        dao2.updateUser(user_id, user_name, user_pass, dateOfBirth, address, phoneNumber);
+                        model.User user1 = new model.User(user.getUser_id(), user_name, user.getUser_email(), user_pass, user.getIsAdmin(), dateOfBirth, address, phoneNumber, user.isBanned(), user.getAdminReason(), user.getIsStoreStaff());
+                        session.setAttribute("user", user1);
+                        session.setAttribute("updateMessage", "Cập nhật thông tin thành công!");
+                        response.sendRedirect("user?action=myaccount");
+                    } else {
+                        session.setAttribute("error_pass", "Mật khẩu chữ cái đầu phải viết hoa và có ít nhất 1 số");
+                        request.getRequestDispatcher("user?action=myaccount").forward(request, response);
+                    }
+                } else {
+                    response.sendRedirect("user?action=login");
                 }
-            } catch (ParseException e) {
-                session.setAttribute("error_dob", "Định dạng ngày sinh không hợp lệ");
-                request.getRequestDispatcher("user?action=myaccount").forward(request, response);
-                return;
+            } catch (Exception ex) {
+                response.sendRedirect("user?action=login");
             }
-            // 2. Validate User Name và Phone Number
-            boolean hasError = false;
-
-            // User Name: không được trống, 3–50 ký tự, không chứa khoảng trắng
-            if (user_name == null || user_name.trim().isEmpty()) {
-                session.setAttribute("error_userName", "User Name không được để trống");
-                hasError = true;
-            } else if (user_name.contains(" ")) {
-                session.setAttribute("error_userName", "User Name không được chứa khoảng trắng");
-                hasError = true;
-            } else if (user_name.length() < 3 || user_name.length() > 50) {
-                session.setAttribute("error_userName", "User Name phải từ 3 đến 50 ký tự");
-                hasError = true;
-            }
-
-            // Phone Number: đúng 10 chữ số, không chứa khoảng trắng hay ký tự chữ
-            if (phoneNumber == null || !phoneNumber.matches("\\d{10}")) {
-                session.setAttribute("error_phoneNumber",
-                        "Phone Number phải gồm đúng 10 chữ số, không được chứa khoảng trắng hay ký tự chữ");
-                hasError = true;
-            }
-
-            if (hasError) {
-                request.getRequestDispatcher("user?action=myaccount").forward(request, response);
-                return;
-            }
-
-            // 3. Cập nhật lên CSDL
-            int user_id = user.getUser_id();
-            UserDAO dao = new UserDAO();
-            dao.updateUser(user_id, user_name, user_email, dateOfBirth, address, phoneNumber);
-
-            // 4. Refresh session và thông báo thành công
-            model.User updatedUser = new model.User(
-                    user_id,
-                    user_name,
-                    user.getUser_email(),
-                    user_email,
-                    user.getIsAdmin(),
-                    dateOfBirth,
-                    address,
-                    phoneNumber,
-                    user.isBanned(),
-                    user.getAdminReason(),
-                    user.getIsStoreStaff()
-            );
-            session.setAttribute("user", updatedUser);
-            session.setAttribute("updateMessage", "Cập nhật thông tin thành công!");
-            response.sendRedirect("user?action=myaccount");
-        } else if (action.equals(
-                "signup")) {
+        } else if (action.equals("signup")) {
             HttpSession session = request.getSession();
             UserDAO da = new UserDAO();
             String email = request.getParameter("user_email");
@@ -276,21 +262,13 @@ public class User extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
-  
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     @Override

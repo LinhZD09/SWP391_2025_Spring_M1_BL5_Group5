@@ -112,6 +112,13 @@ public class SaleOffServlet extends HttpServlet {
                         request.setAttribute("successMessage", successMessage);
                         session.removeAttribute("successMessage");
                     }
+                    session.removeAttribute("inputSaleCode");
+                    session.removeAttribute("inputDiscountType");
+                    session.removeAttribute("inputDiscountValue");
+                    session.removeAttribute("inputMaxDiscount");
+                    session.removeAttribute("inputStartDate");
+                    session.removeAttribute("inputEndDate");
+                    session.removeAttribute("inputQuantity");
 
                     request.setAttribute("saleOffs", saleOffList);
                     request.getRequestDispatcher("admin/saleoff.jsp").forward(request, response);
@@ -136,10 +143,32 @@ public class SaleOffServlet extends HttpServlet {
         // Kiểm tra quyền admin từ session
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-
+        SaleOffDAO dao = new SaleOffDAO();
         if (user != null && user.getIsAdmin().equalsIgnoreCase("true")) {
             if (action.equalsIgnoreCase("add")) {
+                String saleCode = request.getParameter("saleCode");
+                if (dao.isSaleCodeExists(saleCode)) {
+                    List<String> errors = new ArrayList<>();
+                    errors.add("Mã giảm giá đã tồn tại. Vui lòng chọn mã khác.");
+
+                    // Gán lại dữ liệu nhập để giữ input
+                    session.setAttribute("errors", errors);
+                    session.setAttribute("addFail", true);
+                    session.setAttribute("inputSaleCode", saleCode);
+                    session.setAttribute("inputDiscountType", request.getParameter("discountType"));
+                    session.setAttribute("inputDiscountValue", request.getParameter("discountValue"));
+                    session.setAttribute("inputMaxDiscount", request.getParameter("maxDiscount"));
+                    session.setAttribute("inputStartDate", request.getParameter("startDate"));
+                    session.setAttribute("inputEndDate", request.getParameter("endDate"));
+                    session.setAttribute("inputQuantity", request.getParameter("quantity"));
+
+                    response.sendRedirect("saleoff");
+                    return;
+                }
+
+                // Nếu không trùng thì thêm
                 addSaleOff(request, response);
+
             } else if (action.equalsIgnoreCase("update")) {
                 updateSaleOff(request, response);
             } else if (action.equalsIgnoreCase("delete")) {
@@ -178,6 +207,7 @@ public class SaleOffServlet extends HttpServlet {
             if (!"Percentage".equalsIgnoreCase(discountType) && !"Fixed".equalsIgnoreCase(discountType)) {
                 errors.add("Loại giảm giá không hợp lệ.");
             }
+            
 
             double discountValue = 0;
             try {
@@ -214,7 +244,9 @@ public class SaleOffServlet extends HttpServlet {
 
             Date startDate = null, endDate = null;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
             try {
+                
                 if (startDateStr != null && !startDateStr.isEmpty()) {
                     startDate = sdf.parse(startDateStr);
                 }
@@ -230,22 +262,29 @@ public class SaleOffServlet extends HttpServlet {
 
             // Kiểm tra ngày bắt đầu không ở quá khứ
             Date today = new Date();
-            if (startDate != null && startDate.before(today)) {
-                errors.add("Ngày bắt đầu không được là ngày trong quá khứ.");
+            SimpleDateFormat sdfDateOnly = new SimpleDateFormat("yyyyMMdd");
+            String todayStr = sdfDateOnly.format(today);
+            String startDateStrOnly = sdfDateOnly.format(startDate);
+
+            if (startDate != null && Integer.parseInt(startDateStrOnly) < Integer.parseInt(todayStr)) {
+                errors.add("Ngày bắt đầu không được trước ngày hiện tại.");
             }
 
             // Kiểm tra mối quan hệ discountValue và maxDiscount theo loại
-            if ("Percentage".equalsIgnoreCase(discountType) && maxDiscount > discountValue) {
-                errors.add("Giảm tối đa không được lớn hơn phần trăm giảm.");
-            } else if ("Fixed".equalsIgnoreCase(discountType) && maxDiscount > discountValue) {
-                errors.add("Giảm tối đa không được lớn hơn số tiền giảm.");
-            }
-
             // Nếu có lỗi -> lưu lỗi vào session, redirect về saleoff
             if (!errors.isEmpty()) {
                 HttpSession session = request.getSession();
                 session.setAttribute("errors", errors);
                 session.setAttribute("addFail", true);
+
+                // Gửi lại các giá trị người dùng vừa nhập
+                session.setAttribute("inputSaleCode", saleCode);
+                session.setAttribute("inputDiscountType", discountType);
+                session.setAttribute("inputDiscountValue", discountValueStr);
+                session.setAttribute("inputMaxDiscount", maxDiscountStr);
+                session.setAttribute("inputStartDate", startDateStr);
+                session.setAttribute("inputEndDate", endDateStr);
+                session.setAttribute("inputQuantity", quantityStr);
                 response.sendRedirect("saleoff");
                 return;
             }
@@ -284,7 +323,7 @@ public class SaleOffServlet extends HttpServlet {
             String startDateStr = request.getParameter("startDate");
             String endDateStr = request.getParameter("endDate");
             String quantityStr = request.getParameter("quantity");
-
+            Date today = new Date();
             List<String> errors = new ArrayList<>();
             int saleId = 0;
             try {
@@ -299,7 +338,11 @@ public class SaleOffServlet extends HttpServlet {
             if (saleCode != null && saleCode.length() > 10) {
                 errors.add("Mã giảm giá không được vượt quá 10 ký tự.");
             }
-
+            // ❗️Check mã có bị trùng không (ngoại trừ chính nó)
+            SaleOffDAO dao = new SaleOffDAO();
+            if (dao.isSaleCodeExistsForOther(saleId, saleCode)) {
+                errors.add("Mã giảm giá đã tồn tại, vui lòng nhập tên mã giảm giá khác");
+            }
             if (!"Percentage".equalsIgnoreCase(discountType) && !"Fixed".equalsIgnoreCase(discountType)) {
                 errors.add("Loại giảm giá không hợp lệ.");
             }
@@ -339,6 +382,7 @@ public class SaleOffServlet extends HttpServlet {
 
             Date startDate = null, endDate = null;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
             try {
                 if (startDateStr != null && !startDateStr.isEmpty()) {
                     startDate = sdf.parse(startDateStr);
@@ -354,17 +398,15 @@ public class SaleOffServlet extends HttpServlet {
             }
 
             // Kiểm tra ngày bắt đầu không ở quá khứ
-            Date today = new Date();
-            if (startDate != null && startDate.before(today)) {
-                errors.add("Ngày bắt đầu không được là ngày trong quá khứ.");
+            SimpleDateFormat sdfDateOnly = new SimpleDateFormat("yyyyMMdd");
+            String todayStr = sdfDateOnly.format(today);
+            String startDateStrOnly = sdfDateOnly.format(startDate);
+
+            if (startDate != null && Integer.parseInt(startDateStrOnly) < Integer.parseInt(todayStr)) {
+                errors.add("Ngày bắt đầu không được trước ngày hiện tại.");
             }
 
             // Kiểm tra mối quan hệ discountValue và maxDiscount theo loại
-            if ("Percentage".equalsIgnoreCase(discountType) && maxDiscount > discountValue) {
-                errors.add("Giảm tối đa không được lớn hơn phần trăm giảm.");
-            } else if ("Fixed".equalsIgnoreCase(discountType) && maxDiscount > discountValue) {
-                errors.add("Giảm tối đa không được lớn hơn số tiền giảm.");
-            }
             try {
                 if (startDateStr != null && !startDateStr.isEmpty()) {
                     startDate = sdf.parse(startDateStr);
@@ -390,7 +432,7 @@ public class SaleOffServlet extends HttpServlet {
 
             // Nếu hợp lệ, cập nhật dữ liệu
             SaleOff updatedSale = new SaleOff(saleId, saleCode, discountType, discountValue, maxDiscount, startDate, endDate, quantity);
-            SaleOffDAO dao = new SaleOffDAO();
+
             boolean success = dao.updateSaleOff(updatedSale);
 
             if (success) {

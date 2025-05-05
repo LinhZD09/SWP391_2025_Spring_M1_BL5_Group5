@@ -214,6 +214,11 @@
                                     <li><a href="#account-details" data-toggle="tab" class="nav-link">Tài khoản của tôi</a></li>
                                     <li><a href="#change-password" data-toggle="tab" class="nav-link">Đổi Mật Khẩu</a></li>
                                     <li><a href="#orders" data-toggle="tab" class="nav-link">Đơn hàng</a></li>
+                                    <li>
+                                        <a href="user?action=myaccount&tab=discounts" class="nav-link ${param.tab == 'discounts' ? 'active' : ''}">Mã Giảm Giá</a>
+                                    </li>
+
+
                                     <!-- <li><a href="user?action=logout" class="nav-link">Đăng xuất</a></li> -->
                                 </ul>
                             </div>    
@@ -336,48 +341,27 @@
                                     </nav>
                                 </div>
                                 <!-- Tab TÀI KHOẢN CỦA TÔI -->
-                                <div class="tab-pane fade ${param.tab == null || param.tab != 'orders' ? 'show active' : ''}" id="account-details">
+                                <div class="tab-pane fade ${param.tab == null || (param.tab != 'orders' && param.tab != 'discounts') ? 'show active' : ''}" id="account-details">
+
                                     <h3>Tài khoản của tôi </h3>
                                     <div class="login">
                                         <div class="login_form_container">
                                             <div class="account_login_form">
                                                 <form action="user?action=updateinfo" method="POST">
                                                     <label><b>Tên người dùng</b></label>
-                                                    <input type="text" name="user_name"
-                                                           value="${sessionScope.user.user_name}"
-                                                           placeholder="Nhập tên người dùng">
-                                                    <c:if test="${not empty sessionScope.error_userName}">
-                                                        <div class="text-danger" style="margin-top:5px;">
-                                                            ${sessionScope.error_userName}
-                                                        </div>
-                                                        <c:remove var="error_userName" scope="session"/>
-                                                    </c:if>
+                                                    <input type="text" name="user_name" value="${sessionScope.user.user_name}" placeholder="Nhập tên người dùng">
 
                                                     <label><b>Email</b></label>
-                                                    <input type="text" readonly name="user_email"
-                                                           value="${sessionScope.user.user_email}">
+                                                    <input type="text" readonly name="user_email" value="${sessionScope.user.user_email}">
 
                                                     <label><b>Ngày sinh</b></label>
-                                                    <input type="date" name="dateOfBirth"
-                                                           value="${sessionScope.user.dateOfBirth}"
-                                                           placeholder="Nhập ngày sinh (ngày/tháng/năm)">
-                                                    <!-- error_dob sẽ show bằng toast phía dưới -->
+                                                    <input type="date" name="dateOfBirth" value="${sessionScope.user.dateOfBirth}" placeholder="Nhập ngày sinh(ngày/tháng/năm)">
 
                                                     <label><b>Địa chỉ</b></label>
-                                                    <input type="text" name="address"
-                                                           value="${sessionScope.user.address}"
-                                                           placeholder="Nhập địa chỉ (Xã,Huyện,Tỉnh)">
+                                                    <input type="text" name="address" value="${sessionScope.user.address}" placeholder="Nhập địa chỉ (Xã,Huyện,Tỉnh)">
 
                                                     <label><b>Số điện thoại</b></label>
-                                                    <input type="text" name="phoneNumber"
-                                                           value="${sessionScope.user.phoneNumber}"
-                                                           placeholder="Nhập số điện thoại (10 số)">
-                                                    <c:if test="${not empty sessionScope.error_phoneNumber}">
-                                                        <div class="text-danger" style="margin-top:5px;">
-                                                            ${sessionScope.error_phoneNumber}
-                                                        </div>
-                                                        <c:remove var="error_phoneNumber" scope="session"/>
-                                                    </c:if>
+                                                    <input type="text" name="phoneNumber" value="${sessionScope.user.phoneNumber}" placeholder="Nhập số điện thoại (10 số)">
 
                                                     <div class="cart_submit">
                                                         <button type="submit">Lưu</button>
@@ -387,12 +371,39 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+                                <div class="tab-pane fade ${param.tab == 'discounts' ? 'show active' : ''}" id="discounts">
+                                    <h3>Danh sách mã giảm giá</h3>
+                                    <c:if test="${empty availableCodes}">
+                                        <p>Không có mã giảm giá nào hiện tại.</p>
+                                    </c:if>
+                                    <c:forEach items="${availableCodes}" var="d">
+                                        <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 10px;">
+                                            <p><strong>Mã:</strong> ${d.saleCode}</p>
+                                            <p><strong>Loại:</strong> ${d.discountType}</p>
+                                            <p><strong>Giá trị:</strong>
+                                                <c:choose>
+                                                    <c:when test="${d.discountType == 'Percentage'}">${d.discountValue}%</c:when>
+                                                    <c:otherwise>${d.discountValue} VND</c:otherwise>
+                                                </c:choose>
+                                            </p>
+                                            <p><strong>Giảm tối đa:</strong> ${d.maxDiscount} VND</p>
+                                            <p><strong>HSD:</strong> ${d.start_date} → ${d.end_date}</p>
+                                            <p><strong>Số lượng còn:</strong> ${d.quantity}</p>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+
                                 <!-- end tab account-details -->
+
 
                             </div>
                         </div>
                     </div>
                 </div>  
+
+
             </div>        	
         </section>			
         <!-- my account end   --> 
@@ -428,16 +439,22 @@
                                                     }
 
                                                     // Kiểm tra và hiển thị thông báo khi trang được tải
-                                                               document.addEventListener('DOMContentLoaded', function () {
-                var errorDob      = "${fn:escapeXml(sessionScope.error_dob)}";
-                var updateMessage = "${fn:escapeXml(sessionScope.updateMessage)}";
-
-                if (errorDob)      { showNotification(errorDob, false); }
-                if (updateMessage) { showNotification(updateMessage, true); }
-            });
-        </script>
-        <c:remove var="error_dob" scope="session"/>
-        <c:remove var="updateMessage" scope="session"/>
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        var error_dob = "${sessionScope.error_dob}";
+                                                        var error_pass = "${sessionScope.error_pass}";
+                                                        var updateMessage = "${sessionScope.updateMessage}";
+                                                        if (error_dob) {
+                                                            showNotification(error_dob, false);
+            <% session.removeAttribute("error_dob"); %>
+                                                        }
+                                                        if (updateMessage) {
+                                                            showNotification(updateMessage, true);
+            <% session.removeAttribute("updateMessage"); %>
+                                                        } else if (error_pass) {
+                                                            showNotification(error_pass, false);
+            <% session.removeAttribute("error_pass"); %>
+                                                        }
+                                                    });
         </script>
     </body>
 </html>

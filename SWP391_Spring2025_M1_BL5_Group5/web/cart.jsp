@@ -78,6 +78,89 @@
             -webkit-appearance: none;
             margin: 0;
         }
+        .coupon_code {
+            border: none !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+        }
+
+        .coupon_inner {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* Đảm bảo input và button hiển thị cùng dòng */
+        .coupon_inner form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Tùy chỉnh input đẹp hơn (nếu cần) */
+        .coupon_inner input[type="text"] {
+            max-width: 250px;
+            padding: 6px 10px;
+        }
+        .discount-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .discount-form {
+            display: flex;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .discount-form input[type="text"] {
+            max-width: 200px;
+            padding: 6px 10px;
+        }
+
+        .discount-amount {
+            white-space: nowrap;
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .discount-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .discount-form {
+            display: flex;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .discount-form input[type="text"] {
+            max-width: 220px;
+            padding: 6px 10px;
+        }
+
+        .discount-amount {
+            color: #4caf50;
+            font-weight: bold;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .remove-discount-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
     </style>
     <body>
@@ -171,8 +254,34 @@
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12">
                                             <div class="coupon_code right">
+                                                <div class="col-lg-6 col-md-6">
+                                                    <div class="coupon_code left">
+                                                        <h3>Mã giảm giá</h3>
+                                                        <div class="coupon_inner">
+                                                            <form action="cart" method="post">
+                                                                <input type="hidden" name="action" value="applydiscount"/>
+                                                                <input type="text" name="discountCode" placeholder="Nhập mã giảm giá..." value="${sessionScope.discountCode}" />
+                                                                <button type="submit">Áp dụng</button>
+                                                            </form>
+
+                                                            <c:if test="${not empty sessionScope.discountCode}">
+                                                                <form action="cart" method="post" style="margin-top: 10px;">
+                                                                    <input type="hidden" name="action" value="removediscount"/>
+                                                                    <button type="submit" style="background-color: #f44336;">Hủy mã giảm giá</button>
+                                                                </form>
+                                                            </c:if>
+
+
+                                                            <c:if test="${not empty sessionScope.error}">
+                                                                <p style="color: red;">${sessionScope.error}</p>
+                                                                <% session.removeAttribute("error"); %>
+                                                            </c:if>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <h3>Hóa đơn</h3>
                                                 <div class="coupon_inner">
+
                                                     <div class="cart_subtotal">
                                                         <p>Tổng đơn hàng</p>
                                                         <p class="cart_amount" id="subtotal"><fmt:formatNumber pattern="##########" value="${sessionScope.total}" /> VNĐ</p>
@@ -181,37 +290,25 @@
                                                         <p>Phí vận chuyển </p>
                                                         <p class="cart_amount" id="shipping">0 VNĐ</p>
                                                     </div>
-                                                    <div class="col-lg-6 col-md-6">
-                                                        <div class="coupon_code left">
-                                                            <h3>Mã giảm giá</h3>
-                                                            <div class="coupon_inner">
-                                                                <form action="cart" method="post">
-                                                                    <input type="hidden" name="action" value="applydiscount"/>
-                                                                    <input type="text" name="discountCode" placeholder="Nhập mã giảm giá..." value="${sessionScope.discountCode}" />
-                                                                    <button type="submit">Áp dụng</button>
-                                                                </form>
-
-                                                                <c:if test="${not empty sessionScope.discountCode}">
-                                                                    <form action="cart" method="post" style="margin-top: 10px;">
-                                                                        <input type="hidden" name="action" value="removediscount"/>
-                                                                        <button type="submit" style="background-color: #f44336;">Hủy mã giảm giá</button>
-                                                                    </form>
+                                                    <c:if test="${not empty sessionScope.discountAmount}">
+                                                        <div class="cart_subtotal">
+                                                            <p>Giảm giá 
+                                                                <c:if test="${not empty sessionScope.discountPercent}">
+                                                                    (<fmt:formatNumber value="${sessionScope.discountPercent}" />%)
                                                                 </c:if>
-
-                                                                <c:if test="${not empty sessionScope.error}">
-                                                                    <p style="color: red;">${sessionScope.error}</p>
-                                                                    <% session.removeAttribute("error"); %>
-                                                                </c:if>
-                                                            </div>
+                                                            </p>
+                                                            <p class="cart_amount text-success">
+                                                                -<fmt:formatNumber value="${sessionScope.discountAmount}" pattern="###,###" /> VNĐ
+                                                            </p>
                                                         </div>
-                                                    </div>
+                                                    </c:if>                    
                                                     <div class="cart_subtotal">
                                                         <p>Tổng tiền</p>
                                                         <p class="cart_amount">
                                                             <span id="total">
                                                                 <fmt:formatNumber pattern="###,###"
                                                                                   value="${sessionScope.finalTotal != null ? sessionScope.finalTotal : sessionScope.total}" />
-                                                            </span> VNĐ
+                                                            </span>VNĐ
                                                         </p>
                                                     </div>
                                                     <div class="checkout_btn">
