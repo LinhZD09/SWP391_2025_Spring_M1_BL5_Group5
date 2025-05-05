@@ -109,10 +109,10 @@ public class Product_Search extends HttpServlet {
             } else {
                 for (String color : choose) {
                     switch (color) {
-                        case "0": listp.addAll(dao.getProductByColor("Red")); break;
-                        case "1": listp.addAll(dao.getProductByColor("Blue")); break;
-                        case "2": listp.addAll(dao.getProductByColor("White")); break;
-                        case "3": listp.addAll(dao.getProductByColor("Black")); break;
+                        case "0": listp.addAll(dao.getProductByColor("Đỏ")); break;
+                        case "1": listp.addAll(dao.getProductByColor("Xanh")); break;
+                        case "2": listp.addAll(dao.getProductByColor("Trắng")); break;
+                        case "3": listp.addAll(dao.getProductByColor("Đen")); break;
                     }
                 }
             }

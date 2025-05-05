@@ -1,4 +1,3 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -159,7 +158,7 @@
                 </div>
             </div>
             <hr>
-          <ul class="app-menu">
+            <ul class="app-menu">
                 <li><a class="app-menu__item" href="dashboard"><i class='app-menu__icon bx bx-tachometer'></i><span class="app-menu__label">Bảng thống kê</span></a></li>
                 <li><a class="app-menu__item" href="categorymanager"><i class='app-menu__icon bx bxs-category'></i><span class="app-menu__label">Quản lý danh mục</span></a></li>
                 <li><a class="app-menu__item" href="productmanager"><i class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a></li>
@@ -172,7 +171,7 @@
                     <li><a class="app-menu__item" href="aboutmanager"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý trang giới thiệu</span></a></li>
                     <li><a class="app-menu__item" href="commentmanager"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý bình luận</span></a></li>
                     <li><a class="app-menu__item" href="saleoff"><i class='app-menu__icon bx bx-receipt'></i><span class="app-menu__label">Quản lý sale</span></a></li>
-                </c:if>
+                            </c:if>
             </ul>
         </aside>
         <main class="app-content">
@@ -188,10 +187,10 @@
                         <h3 class="tile-title">Tạo mới sản phẩm</h3>
                         <div class="tile-body">
                             <div class="row element-button">
-                                
+
                             </div>
 
-                            <form class="row" action="productmanager" method="POST" >
+                            <form class="row" action="productmanager" method="POST" onsubmit="return validateForm();" id="productForm">
                                 <input type="hidden" name="action" value="insertproduct">
                                 <div class="form-group col-md-3">
                                     <label class="control-label">Mã sản phẩm </label>
@@ -216,7 +215,7 @@
                                     <input class="form-control" name="price" type="number">
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label class="control-label">Size</label>
+                                    <label class="control-label">Kích Thước</label>
                                     <input class="form-control" name="size" type="text" placeholder="S,L,XL,...">
                                 </div>
                                 <div class="form-group col-md-3">
@@ -295,6 +294,45 @@
             }
 
         </script>
+        <script>
+            function validateForm() {
+                const productId = document.querySelector('input[name="product_id"]').value.trim();
+                const productName = document.querySelector('input[name="product_name"]').value.trim();
+                const price = document.querySelector('input[name="price"]').value.trim();
+                const quantity = document.querySelector('input[name="quantity"]').value.trim();
+                const size = document.querySelector('input[name="size"]').value.trim();
+                const color = document.querySelector('input[name="color"]').value.trim();
+                const category = document.querySelector('select[name="category_id"]').value;
+
+                if (!productId || !productName || !price || !quantity || !size || !color || category === "-- Chọn danh mục --") {
+                    swal("Lỗi!", "Vui lòng nhập đầy đủ thông tin!", "error");
+                    return false;
+                }
+
+                if (isNaN(price) || price <= 0) {
+                    swal("Lỗi!", "Giá bán phải là số lớn hơn 0!", "error");
+                    return false;
+                }
+
+                if (isNaN(quantity) || quantity <= 0) {
+                    swal("Lỗi!", "Số lượng phải là số lớn hơn 0!", "error");
+                    return false;
+                }
+
+                return true; // Cho phép submit nếu hợp lệ
+            }
+        </script>
+        <c:if test="${not empty sessionScope.errorMsg}">
+            <script>
+                swal({
+                    title: "Lỗi!",
+                    text: "${sessionScope.errorMsg}",
+                    icon: "error",
+                    button: "OK",
+                });
+            </script>
+            <c:remove var="errorMsg" scope="session"/>
+        </c:if>
     </body>
 
 </html>

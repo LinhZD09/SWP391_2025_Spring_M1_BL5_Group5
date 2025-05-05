@@ -1,5 +1,3 @@
-
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="model.Product" %>
@@ -140,7 +138,7 @@
                                             <th>Danh mục</th>
                                             <th>Tên sản phẩm</th>
                                             <th>Giá</th>
-                                            <th>Size</th>
+                                            <th>Kích Thước</th>
                                             <th>Màu</th>
                                             <th>Thông tin</th>
                                             <th>Số lượng</th>
@@ -199,7 +197,7 @@
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
-                                                        <form action="productmanager" method="POST">
+                                                        <form action="productmanager" method="POST"  onsubmit="return validateForm(this);">
                                                             <input type="hidden" name="action" value="updateproduct">
                                                             <div class="row">
                                                                 <div class="form-group  col-md-12">
@@ -211,7 +209,7 @@
                                                             <div class="row">
                                                                 <div class="form-group col-md-6">
                                                                     <label class="control-label">Mã sản phẩm </label>
-                                                                    <input class="form-control" type="text" readonly name="product_id" value="${p.product_id}">
+                                                                    <input readonly class="form-control" type="text" readonly name="product_id" value="${p.product_id}">
                                                                 </div>
                                                                 <div class="form-group col-md-6">
                                                                     <label for="exampleSelect1" class="control-label">Danh mục</label>
@@ -236,7 +234,7 @@
                                                                         </div>
 
                                                                         <div class="form-group col-md-6">
-                                                                            <label class="control-label">Size</label>
+                                                                            <label class="control-label">Kích Thước</label>
                                                                             <input class="form-control" name="product_size" type="text" value="<c:forEach items="${SizeData}" var="s"><c:if test="${p.product_id==s.product_id}">${s.size},</c:if></c:forEach>">
                                                                         </div>
 
@@ -277,7 +275,7 @@
                                                                 </div>
                                                             </div>
                                                             <BR>
-                                                            <button class="btn btn-save" type="submit">Lưu lại</button>
+                                                            <button class="btn btn-save" type="button" onclick="submitModalForm(this)">Lưu lại</button>
                                                             <a class="btn btn-cancel" data-dismiss="modal" href="productmanager">Hủy bỏ</a>
                                                             <BR>
                                                         </form>
@@ -314,47 +312,47 @@
         <script type="text/javascript" src="admin/js/plugins/jquery.dataTables.min.js"></script>
         <script type="text/javascript" src="admin/js/plugins/dataTables.bootstrap.min.js"></script>
         <script type="text/javascript">
-                                                                            $('#sampleTable').DataTable();
-                                                                            //Thời Gian
-                                                                            function time() {
-                                                                                var today = new Date();
-                                                                                var weekday = new Array(7);
-                                                                                weekday[0] = "Chủ Nhật";
-                                                                                weekday[1] = "Thứ Hai";
-                                                                                weekday[2] = "Thứ Ba";
-                                                                                weekday[3] = "Thứ Tư";
-                                                                                weekday[4] = "Thứ Năm";
-                                                                                weekday[5] = "Thứ Sáu";
-                                                                                weekday[6] = "Thứ Bảy";
-                                                                                var day = weekday[today.getDay()];
-                                                                                var dd = today.getDate();
-                                                                                var mm = today.getMonth() + 1;
-                                                                                var yyyy = today.getFullYear();
-                                                                                var h = today.getHours();
-                                                                                var m = today.getMinutes();
-                                                                                var s = today.getSeconds();
-                                                                                m = checkTime(m);
-                                                                                s = checkTime(s);
-                                                                                nowTime = h + " giờ " + m + " phút " + s + " giây";
-                                                                                if (dd < 10) {
-                                                                                    dd = '0' + dd
-                                                                                }
-                                                                                if (mm < 10) {
-                                                                                    mm = '0' + mm
-                                                                                }
-                                                                                today = day + ', ' + dd + '/' + mm + '/' + yyyy;
-                                                                                tmp = '<span class="date"> ' + today + ' - ' + nowTime +
-                                                                                        '</span>';
-                                                                                document.getElementById("clock").innerHTML = tmp;
-                                                                                clocktime = setTimeout("time()", "1000", "Javascript");
+                                                                $('#sampleTable').DataTable();
+                                                                //Thời Gian
+                                                                function time() {
+                                                                    var today = new Date();
+                                                                    var weekday = new Array(7);
+                                                                    weekday[0] = "Chủ Nhật";
+                                                                    weekday[1] = "Thứ Hai";
+                                                                    weekday[2] = "Thứ Ba";
+                                                                    weekday[3] = "Thứ Tư";
+                                                                    weekday[4] = "Thứ Năm";
+                                                                    weekday[5] = "Thứ Sáu";
+                                                                    weekday[6] = "Thứ Bảy";
+                                                                    var day = weekday[today.getDay()];
+                                                                    var dd = today.getDate();
+                                                                    var mm = today.getMonth() + 1;
+                                                                    var yyyy = today.getFullYear();
+                                                                    var h = today.getHours();
+                                                                    var m = today.getMinutes();
+                                                                    var s = today.getSeconds();
+                                                                    m = checkTime(m);
+                                                                    s = checkTime(s);
+                                                                    nowTime = h + " giờ " + m + " phút " + s + " giây";
+                                                                    if (dd < 10) {
+                                                                        dd = '0' + dd
+                                                                    }
+                                                                    if (mm < 10) {
+                                                                        mm = '0' + mm
+                                                                    }
+                                                                    today = day + ', ' + dd + '/' + mm + '/' + yyyy;
+                                                                    tmp = '<span class="date"> ' + today + ' - ' + nowTime +
+                                                                            '</span>';
+                                                                    document.getElementById("clock").innerHTML = tmp;
+                                                                    clocktime = setTimeout("time()", "1000", "Javascript");
 
-                                                                                function checkTime(i) {
-                                                                                    if (i < 10) {
-                                                                                        i = "0" + i;
-                                                                                    }
-                                                                                    return i;
-                                                                                }
-                                                                            }
+                                                                    function checkTime(i) {
+                                                                        if (i < 10) {
+                                                                            i = "0" + i;
+                                                                        }
+                                                                        return i;
+                                                                    }
+                                                                }
         </script>
         <script>
 
@@ -387,6 +385,80 @@
                 }
             }
         </script>
+        <c:if test="${not empty sessionScope.successMsg}">
+            <script>
+                swal({
+                    title: "Thành công!",
+                    text: "${sessionScope.successMsg}",
+                    icon: "success",
+                    button: "OK",
+                });
+            </script>
+            <c:remove var="successMsg" scope="session"/>
+        </c:if>
+
+        <script>
+            function validateForm(form) {
+                const productId = form.querySelector('input[name="product_id"]').value.trim();
+                const productName = form.querySelector('input[name="product_name"]').value.trim();
+                const price = form.querySelector('input[name="product_price"]').value.trim();
+                const quantity = form.querySelector('input[name="product_quantity"]').value.trim();
+                const size = form.querySelector('input[name="product_size"]').value.trim();
+                const color = form.querySelector('input[name="product_color"]').value.trim();
+                const category = form.querySelector('select[name="category_id"]').value;
+
+                if (!productId || !productName || !price || !quantity || !size || !color || category === "") {
+                    swal({
+                        title: "Thiếu thông tin!",
+                        text: "Vui lòng nhập đầy đủ các trường bắt buộc.",
+                        icon: "warning",
+                        button: "OK",
+                    });
+                    return false;
+                }
+
+                if (isNaN(price) || parseFloat(price) <= 0) {
+                    swal({
+                        title: "Giá không hợp lệ!",
+                        text: "Giá bán phải là số lớn hơn 0.",
+                        icon: "error",
+                        button: "OK",
+                    });
+                    return false;
+                }
+
+                if (isNaN(quantity) || parseInt(quantity) <= 0) {
+                    swal({
+                        title: "Số lượng không hợp lệ!",
+                        text: "Số lượng phải là số nguyên dương.",
+                        icon: "error",
+                        button: "OK",
+                    });
+                    return false;
+                }
+
+                return true;
+            }
+        </script>
+        <script>
+            function submitModalForm(button) {
+                const form = button.closest("form");
+
+                // Nếu dùng CKEditor thì cần sync lại nội dung
+                if (typeof CKEDITOR !== 'undefined') {
+                    for (var instance in CKEDITOR.instances) {
+                        CKEDITOR.instances[instance].updateElement();
+                    }
+                }
+
+                if (validateForm(form)) {
+                    form.submit();
+                }
+            }
+        </script>
+
+
+
     </body>
 
 </html>

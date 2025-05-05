@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controller.Admin;
 
 import dal.productDAO;
@@ -81,23 +76,7 @@ public class ProductManager extends HttpServlet {
                     List<Category> category = c.getCategory();
                     request.setAttribute("CategoryData", category);
                     page = "admin/productinsert.jsp";
-                } else if (action.equalsIgnoreCase("insertcategory")) {
-                    String name = request.getParameter("name");
-                    if (name != null && !name.isEmpty()) {
-                        productDAO dao = new productDAO();
-                        Category c = dao.getCategoryByName(name);
-                        if (c != null) {
-                            request.setAttribute("error", name + " already exists.");
-                            page = "admin/category.jsp";
-                        } else {
-                            dao.insertCategory(name);
-                            response.sendRedirect("categorymanager");
-                            return;
-                        }
-                    } else {
-                        request.setAttribute("error", "Category name cannot be empty.");
-                        page = "admin/category.jsp";
-                    }
+
                 } else if (action.equalsIgnoreCase("insertproduct")) {
                     String product_id = request.getParameter("product_id");
                     String category_id = request.getParameter("category_id");
@@ -139,7 +118,17 @@ public class ProductManager extends HttpServlet {
                     product.setSize(list);
                     product.setColor(list2);
                     product.setActive(Pa);
+
+                    // 🔍 Kiểm tra mã sản phẩm đã tồn tại chưa
+                    if (dao.getProductByID(product_id) != null) {
+                        HttpSession sess = request.getSession();
+                        sess.setAttribute("errorMsg", "Mã sản phẩm '" + product_id + "' đã tồn tại!");
+                        response.sendRedirect("productmanager?action=insert");
+                        return;
+                    }
                     dao.insertProduct(product);
+                    HttpSession sess = request.getSession();
+                    sess.setAttribute("successMsg", "Sản phẩm đã được thêm thành công!");
                     response.sendRedirect("productmanager");
                     return;
                 } else if (action.equalsIgnoreCase("deleteproduct")) {
@@ -197,6 +186,8 @@ public class ProductManager extends HttpServlet {
                     product.setColor(list2);
                     product.setActive(activep);
                     dao.updateProduct(product, cid, list2, list);
+                    HttpSession sess = request.getSession();
+                    sess.setAttribute("successMsg", "Cập nhật sản phẩm thành công!");
                     response.sendRedirect("productmanager");
                     return;
                 } else if (action.equalsIgnoreCase("insertByExcel")) {
@@ -213,6 +204,8 @@ public class ProductManager extends HttpServlet {
                             handleExcelData(row);
                         }
                     }
+                    HttpSession sess = request.getSession();
+                    sess.setAttribute("successMsg", "Sản phẩm đã được thêm thành công!");
                     response.sendRedirect("productmanager");
                     return;
                 }
@@ -222,7 +215,7 @@ public class ProductManager extends HttpServlet {
             }
 
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
             page = "404.jsp";
         }
 
